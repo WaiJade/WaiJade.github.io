@@ -26,28 +26,28 @@ export default function FloatingToc({ headings }: FloatingTocProps) {
         aria-label="文章目录"
       >
         {!collapsed ? (
-          <div className="article-toc__inner article-toc__inner--desktop">
-            <div className="article-toc-desktop__header">
+          <div className="article-toc-desktop__panel">
+            <button
+              type="button"
+              className="article-toc-desktop__edge"
+              aria-label="隐藏目录"
+              onClick={() => setCollapsed(true)}
+            >
+              TOC
+            </button>
+            <div className="article-toc__inner article-toc__inner--desktop">
               <p className="article-toc__eyebrow">Contents</p>
-              <button
-                type="button"
-                className="article-toc-desktop__toggle"
-                aria-label="隐藏目录"
-                onClick={() => setCollapsed(true)}
-              >
-                HIDE
-              </button>
+              <ol className="article-toc__list">
+                {headings.map((heading) => (
+                  <li
+                    key={heading.slug}
+                    className={`article-toc__item is-depth-${heading.depth}`}
+                  >
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ol>
             </div>
-            <ol className="article-toc__list">
-              {headings.map((heading) => (
-                <li
-                  key={heading.slug}
-                  className={`article-toc__item is-depth-${heading.depth}`}
-                >
-                  <a href={`#${heading.slug}`}>{heading.text}</a>
-                </li>
-              ))}
-            </ol>
           </div>
         ) : (
           <button
