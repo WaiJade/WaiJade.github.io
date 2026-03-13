@@ -329,10 +329,8 @@ html:not(.dark) .hero__vignette {
 
 .post-preview__meta {
   margin: 1rem 0 0;
-  color: color-mix(in srgb, var(--foreground) 48%, transparent);
-  font-size: 0.95rem;
-  line-height: 1.7;
-  font-style: italic;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .post-preview__link:hover .post-preview__title,
@@ -378,6 +376,7 @@ html:not(.dark) .hero__vignette {
 }
 
 .post-card__meta,
+.post-preview__meta,
 .archive-item__meta,
 .post-pagination__label,
 .tag-card__count {

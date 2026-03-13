@@ -28,9 +28,11 @@ const nextUrl = currentPage < totalPages ? getIndexPageUrl(currentPage + 1) : nu
         )}
         <div class="post-preview__excerpt">{getPostExcerpt(post, 200, false)}</div>
       </a>
-      <p class="post-preview__meta">
-        Posted by {post.data.author || "WaiJade"} on {formatPostDate(post.data.pubDate)}
-      </p>
+      <div class="post-preview__meta archive-item__meta">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formatPostDate(post.data.pubDate)}
+        </time>
+      </div>
     </article>
   ))}
 
