@@ -1,0 +1,158 @@
+.animate-fadeIn {
+  opacity: 0;
+  animation: aboutFadeIn 0.55s ease-out forwards;
+}
+
+.about-page {
+  position: relative;
+  z-index: 1;
+  padding-top: 8.8rem;
+  padding-bottom: 4rem;
+}
+
+.about-page__panel {
+  margin-top: 0;
+  max-width: min(100%, 58rem);
+  padding: clamp(1.6rem, 2.6vw, 2.4rem);
+}
+
+.about-section__container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.about-section__title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-transform: uppercase;
+}
+
+.about-section__title-text {
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--foreground) 96%, transparent);
+}
+
+.about-section__copy,
+.about-section__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-section__copy,
+.about-section__body {
+  gap: 0.65rem;
+}
+
+.about-section__lead,
+.about-section__body > :where(p, ul, ol, blockquote) {
+  margin: 0;
+}
+
+.about-section__body > :first-child {
+  margin-top: 0;
+}
+
+.about-section__body > :last-child {
+  margin-bottom: 0;
+}
+
+.about-section__lead {
+  font-size: clamp(1rem, 1.4vw, 1.22rem);
+  line-height: 1.75;
+  color: color-mix(in srgb, var(--foreground) 90%, transparent);
+}
+
+.about-section__lead del {
+  margin-right: 0.45rem;
+  color: color-mix(in srgb, var(--foreground) 64%, transparent);
+  text-decoration-thickness: 1.5px;
+}
+
+.about-section__body > :where(p, ul, ol, blockquote, li) {
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+  line-height: 1.82;
+  color: color-mix(in srgb, var(--foreground) 84%, transparent);
+}
+
+.about-section__body p + p,
+.about-section__body p + ul,
+.about-section__body ul + p,
+.about-section__body ol + p,
+.about-section__body blockquote + p {
+  margin-top: 0.65rem;
+}
+
+.about-page .link-tag {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+  margin: 0.1rem 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.5rem;
+  background-color: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  text-decoration: none;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.about-page .link-tag:hover {
+  background-color: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: color-mix(in srgb, var(--accent) 72%, white 28%);
+}
+
+.about-page .link-tag__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.95em;
+  height: 0.95em;
+  flex-shrink: 0;
+  opacity: 0.96;
+}
+
+.about-page .link-tag__icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes aboutFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .about-page__panel {
+    padding: 1.35rem;
+  }
+
+  .about-section__copy,
+  .about-section__body {
+    gap: 0.9rem;
+  }
+
+  .about-section__lead {
+    font-size: clamp(1.08rem, 4.5vw, 1.2rem);
+    line-height: 1.82;
+  }
+
+  .about-section__body > :where(p, ul, ol, blockquote, li) {
+    font-size: clamp(1rem, 4.1vw, 1.12rem);
+    line-height: 1.9;
+  }
+}

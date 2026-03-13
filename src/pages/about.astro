@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/about.css";
 
 const aboutPage = (await getCollection("pages")).find((entry) => entry.id === "about.mdx");
 
@@ -12,17 +13,20 @@ const { Content } = await aboutPage.render();
 ---
 
 <BaseLayout title={aboutPage.data.title} description={aboutPage.data.description}>
-  <section class="shell archives-page about-page">
-    <div class="archives-page__intro">
+  <section class="shell about-page">
+    <div class="about-page__panel page-panel animate-fadeIn">
       <p class="page-panel__eyebrow">ABOUT</p>
-      <h1 class="page-panel__title archives-page__title">{aboutPage.data.title}</h1>
-      {aboutPage.data.lead && <p class="page-panel__text" set:html={aboutPage.data.lead} />}
-    </div>
-
-    <div class="article-body-panel page-panel__body">
-      <section class="article-content">
-        <Content />
-      </section>
+      <div class="about-section__container">
+        <h1 class="about-section__title">
+          <span class="about-section__title-text">{aboutPage.data.title}</span>
+        </h1>
+        <div class="about-section__copy">
+          {aboutPage.data.lead && <p class="about-section__lead" set:html={aboutPage.data.lead} />}
+          <div class="about-section__body">
+            <Content />
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </BaseLayout>
