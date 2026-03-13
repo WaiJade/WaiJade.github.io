@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import aboutSource from "../content/pages/about.mdx?raw";
+import { friendsLinks } from "../content/friends";
 import "../styles/about.css";
 
 const aboutPage = (await getCollection("pages")).find((entry) => entry.id === "about.mdx");
@@ -30,5 +31,38 @@ if (!aboutParagraphs.length) {
         {aboutParagraphs.map((paragraph) => <p class="about-section__text" set:html={paragraph} />)}
       </div>
     </div>
+
+    {friendsLinks.length > 0 && (
+      <section class="about-page__friends page-panel">
+        <p class="page-panel__eyebrow">FRIENDS</p>
+        <h2 class="surface-card__title about-page__friends-title">友情链接</h2>
+        <div class="friends-grid" aria-label="friends-links">
+          {friendsLinks.map((friend) => (
+            <a
+              class="friend-card"
+              href={friend.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div class="friend-card__inner">
+                <div class="friend-card__avatar-wrap">
+                  <img
+                    class="friend-card__avatar"
+                    src={friend.avatar}
+                    alt={friend.name}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="friend-card__meta">
+                  <h3 class="friend-card__name">{friend.name}</h3>
+                  {friend.description && <p class="friend-card__desc">{friend.description}</p>}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
   </section>
 </BaseLayout>
