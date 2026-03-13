@@ -3,9 +3,47 @@ import { getCollection, type CollectionEntry } from "astro:content";
 export type PostEntry = CollectionEntry<"posts">;
 export const POSTS_PER_PAGE = 10;
 
+function getLegacyPostPathId(id: string) {
+  return id.replace(/\.(md|mdx)$/i, "");
+}
+
+function padSlugDatePart(value: number | string) {
+  return String(value).padStart(2, "0");
+}
+
+function slugifyPostTitle(title: string) {
+  const slug = title
+    .normalize("NFKC")
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/\+/g, " plus ")
+    .replace(/[“”"'"`‘’《》〈〉「」『』【】\[\]{}()（）]/g, " ")
+    .replace(/[·•・:：;；,，.。!！?？~～/\\|]/g, " ")
+    .replace(/[^a-z0-9\u3400-\u9fff]+/g, "-")
+    .replace(/-{2,}/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return slug || "post";
+}
+
+function normalizeLegacyPostPathId(id: string) {
+  const base = getLegacyPostPathId(id);
+  const matched = base.match(/^(\d{4})-(\d{1,2})-(\d{1,2})-(.+)$/);
+
+  if (!matched) {
+    return slugifyPostTitle(base);
+  }
+
+  const [, year, month, day, rawTitle] = matched;
+  return `${year}-${padSlugDatePart(month)}-${padSlugDatePart(day)}-${slugifyPostTitle(
+    rawTitle,
+  )}`;
+}
+
 export function getPostPathId(post: Pick<PostEntry, "id"> | string) {
   const id = typeof post === "string" ? post : post.id;
-  return id.replace(/\.(md|mdx)$/i, "");
+  return normalizeLegacyPostPathId(id);
 }
 
 export async function getPublishedPosts() {
