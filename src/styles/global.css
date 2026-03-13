@@ -405,14 +405,14 @@ html:not(.dark) .hero__vignette {
 .post-card__title,
 .archive-item__title {
   font-size: clamp(1.3rem, 2vw, 1.9rem);
-  line-height: 1.15;
+  line-height: 1.06;
 }
 
 .post-card__excerpt,
 .archive-item__excerpt {
-  margin: 0.45rem 0 0;
+  margin: 0.18rem 0 0;
   color: var(--muted);
-  line-height: 1.8;
+  line-height: 1.65;
 }
 
 .post-card__tags {
