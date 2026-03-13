@@ -1,6 +1,7 @@
 ---
 import type { PostEntry } from "../../lib/posts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import FloatingToc from "../../components/posts/FloatingToc";
 import {
   formatPostDate,
   getPostPathId,
@@ -93,5 +94,7 @@ const hasToc = tocHeadings.length > 0;
         <div class="post-pagination__item is-empty" />
       )}
     </nav>
+
+    {hasToc && <FloatingToc client:load headings={tocHeadings} />}
   </article>
 </BaseLayout>

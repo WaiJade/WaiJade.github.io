@@ -147,6 +147,80 @@
   font-size: 0.88rem;
 }
 
+.article-toc-fab {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 24;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 18px 42px rgba(3, 7, 18, 0.22);
+  color: var(--foreground);
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.article-toc-sheet__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 29;
+  background: rgba(3, 7, 18, 0.54);
+  backdrop-filter: blur(10px);
+}
+
+.article-toc-sheet {
+  position: fixed;
+  inset: auto 1rem 1rem 1rem;
+  z-index: 30;
+  max-height: min(70vh, 34rem);
+  overflow: auto;
+  border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  border-radius: 1.5rem;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--card) 100%, transparent),
+      color-mix(in srgb, var(--card) 76%, transparent)
+    );
+  backdrop-filter: blur(24px);
+  box-shadow: 0 28px 80px rgba(3, 7, 18, 0.34);
+  padding: 1rem;
+}
+
+.article-toc-sheet:focus-visible {
+  outline: none;
+}
+
+.article-toc-sheet__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.article-toc-sheet__title {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-size: 1.55rem;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.article-toc__list--sheet {
+  gap: 0.25rem;
+}
+
 .article-body-panel {
   width: 100%;
   border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
@@ -413,6 +487,12 @@
     top: 7.8rem;
   }
 
+  .article-toc-fab,
+  .article-toc-sheet__overlay,
+  .article-toc-sheet {
+    display: none;
+  }
+
   .post-pagination {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -443,9 +523,8 @@
     border-radius: 1.5rem;
   }
 
-  .article-toc__inner {
-    border-radius: 1.25rem;
-    padding: 0.9rem;
+  .article-toc {
+    display: none;
   }
 
   .article-content {
