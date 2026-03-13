@@ -11,7 +11,16 @@
 }
 
 .about-page__intro {
+  margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+}
+
+.about-page__intro:first-of-type {
+  margin-top: 0;
+}
+
+.about-page__friends-intro {
+  margin-top: 3.2rem;
 }
 
 .about-page__panel {
@@ -21,12 +30,8 @@
 }
 
 .about-page__friends {
-  margin-top: 1rem;
+  margin-top: 0;
   max-width: min(100%, 58rem);
-}
-
-.about-page__friends-title {
-  margin-bottom: 1rem;
 }
 
 .about-section__copy {
@@ -198,12 +203,15 @@
 }
 
 @media (max-width: 768px) {
+  .about-page__friends-intro {
+    margin-top: 2.6rem;
+  }
+
   .about-page__panel {
     padding: 1.35rem;
   }
 
   .about-page__friends {
-    margin-top: 0.9rem;
     padding: 1.35rem;
   }
 
