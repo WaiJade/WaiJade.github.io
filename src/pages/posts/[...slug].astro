@@ -31,6 +31,7 @@ const pageDescription = post.data.description || getPostExcerpt(post, 180, false
 const summary = post.data.description?.trim();
 const { Content, headings } = await post.render();
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const hasToc = tocHeadings.length > 0;
 ---
 
 <BaseLayout title={post.data.title} description={pageDescription}>
@@ -50,8 +51,8 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.
       )}
     </header>
 
-    <div class="article-body-wrap article-layout">
-      {tocHeadings.length > 0 && (
+    <div class:list={["article-body-wrap", hasToc && "article-layout--with-toc"]}>
+      {hasToc && (
         <aside class="article-toc" aria-label="文章目录">
           <div class="article-toc__inner">
             <p class="article-toc__eyebrow">Contents</p>
