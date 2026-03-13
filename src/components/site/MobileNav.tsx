@@ -18,7 +18,11 @@ export default function MobileNav({
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button type="button" className="topbar__action" aria-label="打开菜单">
+        <button
+          type="button"
+          className="topbar__icon-button topbar__icon-button--menu"
+          aria-label="打开菜单"
+        >
           MENU
         </button>
       </Dialog.Trigger>
@@ -33,7 +37,7 @@ export default function MobileNav({
             <Dialog.Close asChild>
               <button
                 type="button"
-                className="topbar__action"
+                className="topbar__icon-button topbar__icon-button--menu"
                 aria-label="关闭菜单"
               >
                 CLOSE

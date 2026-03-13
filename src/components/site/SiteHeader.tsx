@@ -9,10 +9,13 @@ type SiteHeaderProps = {
 
 export default function SiteHeader({ currentPath }: SiteHeaderProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const [isElevated, setIsElevated] = useState(false);
 
   useEffect(() => {
+    setIsVisible(true);
+
     function handleScroll() {
-      setIsVisible(window.scrollY > 48);
+      setIsElevated(window.scrollY > 48);
     }
 
     handleScroll();
@@ -21,37 +24,43 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
   }, []);
 
   return (
-    <header className={`topbar ${isVisible ? "is-visible" : ""}`}>
-      <div className="topbar__fade" aria-hidden="true" />
-      <div className="topbar__inner">
+    <header
+      className={`topbar ${isVisible ? "is-visible" : ""} ${
+        isElevated ? "is-elevated" : ""
+      }`}
+    >
+      <div className="topbar__shell">
         <a className="topbar__brand" href="/">
-          <span className="topbar__brand-mark" aria-hidden="true">
-            W
-          </span>
-          <span>WaiJade</span>
+          <img
+            src={site.brand.avatar}
+            alt={`${site.brand.name} 头像`}
+            width="40"
+            height="40"
+          />
+          <span>{site.brand.name}</span>
         </a>
 
-        <nav className="topbar__nav-wrap" aria-label="主导航">
-          <ul className="topbar__nav">
-            {site.nav.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  className={currentPath === item.href ? "is-active" : ""}
-                  aria-current={currentPath === item.href ? "page" : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div className="topbar__actions">
+        <div className="topbar__nav-dock">
+          <nav className="topbar__nav-wrap" aria-label="主导航">
+            <ul className="topbar__nav">
+              {site.nav.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    className={currentPath === item.href ? "is-active" : ""}
+                    aria-current={currentPath === item.href ? "page" : undefined}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
           <div className="topbar__desktop-action">
             <ThemeToggle />
           </div>
-          <div className="topbar__mobile-action">
+          <div className="topbar__mobile-actions">
+            <ThemeToggle />
             <MobileNav
               currentPath={currentPath}
               nav={site.nav}

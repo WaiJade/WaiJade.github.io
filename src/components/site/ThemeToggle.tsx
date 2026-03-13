@@ -34,11 +34,12 @@ export default function ThemeToggle() {
   return (
     <button
       type="button"
-      className="topbar__action"
+      className="topbar__icon-button"
       onClick={handleToggle}
       aria-label={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"}
+      title={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"}
     >
-      {theme === "dark" ? "LIGHT" : "DARK"}
+      {theme === "dark" ? "LT" : "DK"}
     </button>
   );
 }

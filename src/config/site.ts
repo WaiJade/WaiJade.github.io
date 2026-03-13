@@ -13,6 +13,10 @@ export const site = {
   description: "A fully rebuilt static blog powered by Astro, React, Tailwind, Radix UI, and MDX.",
   url: "https://blog.waijade.cn",
   author: "WaiJade",
+  brand: {
+    name: "WaiJade",
+    avatar: "/avatar.jpg",
+  },
   nav: [
     { label: "HOME", href: "/" },
     { label: "ARCHIVES", href: "/archives" },

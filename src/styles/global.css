@@ -131,7 +131,7 @@ html:not(.dark) .hero__vignette {
   left: 0;
   right: 0;
   z-index: 50;
-  padding: 1rem;
+  padding: 0.7rem 0.9rem;
   transform: translateY(-0.65rem);
   opacity: 0;
   transition: transform 0.3s ease, opacity 0.3s ease;
@@ -142,71 +142,102 @@ html:not(.dark) .hero__vignette {
   opacity: 1;
 }
 
-.topbar__fade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(5, 8, 22, 0.48), transparent);
+.topbar.is-elevated .topbar__nav-dock {
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
 }
 
-html:not(.dark) .topbar__fade {
-  background: linear-gradient(to bottom, rgba(246, 248, 255, 0.85), transparent);
-}
-
-.topbar__inner {
-  position: relative;
-  width: min(1120px, calc(100vw - 2rem));
+.topbar__shell {
+  width: min(1200px, calc(100vw - 1.8rem));
   margin: 0 auto;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
-  background: color-mix(in srgb, var(--background-soft) 88%, transparent);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  gap: 1.25rem;
 }
 
 .topbar__brand {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  gap: 0.65rem;
+  color: var(--foreground);
+  font-family: "Ubuntu Mono", "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-weight: 760;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  padding-top: 0.2rem;
 }
 
-.topbar__brand-mark {
+.topbar__brand img {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  transform: translateX(-14px);
+  box-shadow: 0 10px 30px rgba(3, 7, 18, 0.25);
+}
+
+html:not(.dark) .topbar__brand img {
+  border-color: rgba(16, 23, 45, 0.12);
+}
+
+.topbar__brand span {
+  font-family: "Ubuntu Mono", "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: clamp(1.05rem, 1.15vw, 1.28rem);
+  font-weight: 900;
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+.topbar.is-visible .topbar__brand img {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.42s ease, transform 0.42s ease;
+  transition-delay: 0.06s;
+}
+
+.topbar.is-visible .topbar__brand span {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.42s ease, transform 0.42s ease;
+  transition-delay: 0.14s;
+}
+
+.topbar__nav-dock {
+  --surface: color-mix(in srgb, var(--background-soft) 94%, transparent);
+  --outline: color-mix(in srgb, var(--foreground) 10%, transparent);
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.08);
-  font-family: ui-monospace, "JetBrains Mono", monospace;
-  font-size: 0.85rem;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 48px;
+  padding: 3px;
+  border-radius: 48px;
+  border: 1px solid var(--outline);
+  background: var(--surface);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  -webkit-backdrop-filter: blur(8px) saturate(1.02);
+  backdrop-filter: blur(8px) saturate(1.02);
+  width: fit-content;
+  max-width: 540px;
+  margin-left: auto;
 }
 
 .topbar__nav-wrap {
-  flex: 1;
   display: none;
-  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
 }
 
 .topbar__nav {
   margin: 0;
-  padding: 0.25rem;
+  padding: 0 0 0 4px;
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(6px);
+  gap: 2px;
+  white-space: nowrap;
 }
 
 .topbar__nav li {
@@ -216,53 +247,77 @@ html:not(.dark) .topbar__fade {
 .topbar__nav a {
   display: inline-flex;
   align-items: center;
-  padding: 0.55rem 1.1rem;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
   border-radius: 999px;
   color: var(--muted);
-  font-family: ui-monospace, "JetBrains Mono", monospace;
+  font-family: "Ubuntu Mono", "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
   font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.12em;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  letter-spacing: 0.1em;
+  transition:
+    background-color 0.22s ease,
+    color 0.22s ease,
+    transform 0.18s ease;
 }
 
 .topbar__nav a:hover,
 .topbar__nav a.is-active {
   color: var(--foreground);
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
 }
 
-.topbar__actions {
+.topbar__nav a:hover {
+  transform: translateY(-1px);
+}
+
+.topbar__desktop-action,
+.topbar__mobile-actions {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 8px;
 }
 
 .topbar__desktop-action {
   display: none;
 }
 
-.topbar__mobile-action {
+.topbar__mobile-actions {
   display: inline-flex;
 }
 
-.topbar__action {
-  border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--foreground);
-  padding: 0.65rem 0.9rem;
+.topbar__icon-button {
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
-  font-family: ui-monospace, "JetBrains Mono", monospace;
-  font-size: 0.75rem;
+  border: none;
+  background: transparent;
+  color: var(--foreground);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Ubuntu Mono", "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   cursor: pointer;
-  transition: background-color 0.25s ease, transform 0.25s ease;
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+  flex-shrink: 0;
 }
 
-.topbar__action:hover {
-  background: rgba(255, 255, 255, 0.14);
+.topbar__icon-button:hover {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
   transform: translateY(-1px);
+}
+
+.topbar__icon-button--menu {
+  width: auto;
+  min-width: 40px;
+  padding: 0 14px;
 }
 
 .hero {
@@ -497,7 +552,31 @@ html:not(.dark) .topbar__fade {
     display: inline-flex;
   }
 
-  .topbar__mobile-action {
+  .topbar__mobile-actions {
     display: none;
+  }
+}
+
+@media (max-width: 959px) {
+  .topbar__shell {
+    width: calc(100vw - 1.8rem);
+  }
+
+  .topbar__brand {
+    gap: 0.55rem;
+    padding-top: 0.15rem;
+  }
+
+  .topbar__brand img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .topbar__brand span {
+    font-size: 1rem;
+  }
+
+  .topbar__nav-dock {
+    max-width: none;
   }
 }
