@@ -52,7 +52,7 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
             width="40"
             height="40"
           />
-          <span>{site.brand.name}</span>
+          <span>{site.brand.name}&apos;s BLOG</span>
         </a>
 
         <nav className="topbar__nav-wrap topbar__nav-wrap--desktop" aria-label="主导航">
