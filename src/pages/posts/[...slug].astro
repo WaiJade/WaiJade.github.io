@@ -28,8 +28,9 @@ const currentIndex = posts.findIndex((entry) => entry.id === post.id);
 const newerPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
 const olderPost = currentIndex >= 0 ? posts[currentIndex + 1] : null;
 const pageDescription = post.data.description || getPostExcerpt(post, 180, false);
-const summary = post.data.description.trim();
-const { Content } = await post.render();
+const summary = post.data.description?.trim();
+const { Content, headings } = await post.render();
+const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 ---
 
 <BaseLayout title={post.data.title} description={pageDescription}>
@@ -52,7 +53,22 @@ const { Content } = await post.render();
       )}
     </header>
 
-    <div class="article-body-wrap">
+    <div class="article-body-wrap article-layout">
+      {tocHeadings.length > 0 && (
+        <aside class="article-toc" aria-label="文章目录">
+          <div class="article-toc__inner">
+            <p class="article-toc__eyebrow">Contents</p>
+            <ol class="article-toc__list">
+              {tocHeadings.map((heading) => (
+                <li class:list={["article-toc__item", `is-depth-${heading.depth}`]}>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </aside>
+      )}
+
       <section class="article-body-panel">
         <section class="article-content">
           <Content />
