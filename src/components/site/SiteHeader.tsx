@@ -28,6 +28,7 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
         isElevated ? "is-elevated" : ""
       }`}
     >
+      <div className="topbar__fade" aria-hidden="true" />
       <div className="topbar__shell">
         <a className="topbar__brand" href="/">
           <img

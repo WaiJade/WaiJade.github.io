@@ -10,18 +10,18 @@ export type SocialItem = {
 
 export const site = {
   title: "WaiJade",
-  description: "A fully rebuilt static blog powered by Astro, React, Tailwind, Radix UI, and MDX.",
+  description: "一个基于 Astro、React、Tailwind、Radix UI 与 MDX 重构中的静态个人博客。",
   url: "https://blog.waijade.cn",
   author: "WaiJade",
   brand: {
     name: "WaiJade",
-    avatar: "/avatar.jpg",
+    avatar: "/avatar.png",
   },
   nav: [
-    { label: "HOME", href: "/" },
-    { label: "ARCHIVES", href: "/archives" },
-    { label: "TAGS", href: "/tags" },
-    { label: "ABOUT", href: "/about" },
+    { label: "首页", href: "/" },
+    { label: "归档", href: "/archives" },
+    { label: "标签", href: "/tags" },
+    { label: "关于", href: "/about" },
   ] satisfies NavItem[],
   social: [
     { label: "GitHub", href: "https://github.com/CheongSzesuen" },

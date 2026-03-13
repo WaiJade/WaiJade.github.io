@@ -3,18 +3,21 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 const cards = [
   {
-    title: "ARCHITECTURE",
-    body: "Astro now owns the site shell. The legacy Jekyll runtime is being removed instead of preserved.",
+    eyebrow: "重构 / 架构",
+    title: "新的站点骨架",
+    body: "现在由 Astro 接管整个站点结构，旧 Jekyll 模板不再作为运行体系保留。",
     href: "/archives",
   },
   {
-    title: "CONTENT MODEL",
-    body: "Posts, pages, and notes will move into content collections with centralized site configuration.",
+    eyebrow: "重构 / 内容",
+    title: "新的内容模型",
+    body: "文章、单页与短文会进入 content collections，并由统一配置文件管理站点信息。",
     href: "/tags",
   },
   {
-    title: "VISUAL DIRECTION",
-    body: "The new site keeps the atmospheric glow, floating nav, and glass-card language while staying blog-first.",
+    eyebrow: "重构 / 视觉",
+    title: "新的视觉方向",
+    body: "新站会延续品牌化背景、悬浮导航和玻璃卡片的语言，但始终以个人博客为核心。",
     href: "/about",
   },
 ];
@@ -23,8 +26,8 @@ const cards = [
 <BaseLayout>
   <section class="hero">
     <div class="hero__content shell">
-      <p class="hero__eyebrow">ASTRO REBUILD / PHASE 1</p>
-      <h1 class="hero__title">A static blog rebuilt from the ground up.</h1>
+      <p class="hero__eyebrow">ASTRO 重构 / 第一阶段</p>
+      <h1 class="hero__title">从旧模板彻底抽离，重建新的静态博客。</h1>
       <p class="hero__lead">
         旧 Jekyll 模板已经退出主流程。现在开始由 Astro、React、Tailwind 和
         Radix UI 接管整个站点骨架。
@@ -39,7 +42,8 @@ const cards = [
   <section class="shell section-grid" aria-label="阶段一说明卡片">
     {cards.map((card) => (
       <a class="surface-card" href={card.href}>
-        <p class="surface-card__eyebrow">{card.title}</p>
+        <p class="surface-card__eyebrow">{card.eyebrow}</p>
+        <h2 class="surface-card__title">{card.title}</h2>
         <p class="surface-card__body">{card.body}</p>
       </a>
     ))}
