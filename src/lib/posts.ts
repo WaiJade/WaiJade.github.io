@@ -31,6 +31,36 @@ export function formatPostDate(date: Date) {
     .replace(/\//g, ".");
 }
 
+function normalizeWhitespace(value: string) {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+export function getPostExcerpt(
+  post: Pick<PostEntry, "body" | "data">,
+  maxLength = 160,
+  preferDescription = true,
+) {
+  if (preferDescription && post.data.description) {
+    return post.data.description;
+  }
+
+  const plainText = normalizeWhitespace(
+    post.body
+      .replace(/<br\s*\/?>/gi, " ")
+      .replace(/<\/?(center|div|p|span|sup|sub|blockquote|pre|code)[^>]*>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/!\[[^\]]*\]\([^)]+\)/g, " ")
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      .replace(/[`*_>#~-]/g, " "),
+  );
+
+  if (plainText.length <= maxLength) {
+    return plainText;
+  }
+
+  return `${plainText.slice(0, maxLength).trim()}...`;
+}
+
 export function groupPostsByYear(posts: PostEntry[]) {
   const grouped = new Map<string, PostEntry[]>();
 

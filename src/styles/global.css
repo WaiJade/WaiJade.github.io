@@ -488,6 +488,72 @@ html:not(.dark) .topbar__brand img {
   z-index: 1;
 }
 
+.home-index {
+  max-width: 52rem;
+  padding-top: 8.8rem;
+  padding-bottom: 4rem;
+}
+
+.post-preview {
+  padding: 0 0 2.25rem;
+  margin-bottom: 2.15rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+}
+
+.post-preview__link {
+  display: block;
+}
+
+.post-preview__link:hover,
+.post-preview__link:focus {
+  text-decoration: none;
+}
+
+.post-preview__title {
+  margin: 0;
+  font-family: var(--font-family-display);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  line-height: 1.18;
+  letter-spacing: -0.04em;
+  font-weight: 400;
+  transition: color 0.24s ease;
+}
+
+.post-preview__subtitle {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.55;
+  font-weight: 400;
+  transition: color 0.24s ease;
+}
+
+.post-preview__excerpt {
+  margin-top: 1rem;
+  color: color-mix(in srgb, var(--foreground) 52%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.95;
+  font-style: italic;
+  transition: color 0.24s ease;
+}
+
+.post-preview__meta {
+  margin: 1rem 0 0;
+  color: color-mix(in srgb, var(--foreground) 48%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  font-style: italic;
+}
+
+.post-preview__link:hover .post-preview__title,
+.post-preview__link:focus .post-preview__title,
+.post-preview__link:hover .post-preview__subtitle,
+.post-preview__link:focus .post-preview__subtitle,
+.post-preview__link:hover .post-preview__excerpt,
+.post-preview__link:focus .post-preview__excerpt {
+  color: var(--accent);
+}
+
 .home-posts {
   padding-bottom: 4rem;
 }

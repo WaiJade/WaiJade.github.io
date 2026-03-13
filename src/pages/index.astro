@@ -1,79 +1,30 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { formatPostDate, getPostUrl, getPublishedPosts } from "../lib/posts";
+import {
+  formatPostDate,
+  getPostExcerpt,
+  getPostUrl,
+  getPublishedPosts,
+} from "../lib/posts";
 
-const cards = [
-  {
-    eyebrow: "重构 / 架构",
-    title: "新的站点骨架",
-    body: "现在由 Astro 接管整个站点结构，旧 Jekyll 模板不再作为运行体系保留。",
-    href: "/archives",
-  },
-  {
-    eyebrow: "重构 / 内容",
-    title: "新的内容模型",
-    body: "文章、单页与短文会进入 content collections，并由统一配置文件管理站点信息。",
-    href: "/tags",
-  },
-  {
-    eyebrow: "重构 / 视觉",
-    title: "新的视觉方向",
-    body: "新站会延续品牌化背景、悬浮导航和玻璃卡片的语言，但始终以个人博客为核心。",
-    href: "/about",
-  },
-];
-
-const latestPosts = (await getPublishedPosts()).slice(0, 3);
+const posts = await getPublishedPosts();
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <div class="hero__content shell">
-      <p class="hero__eyebrow">ASTRO 重构 / 第一阶段</p>
-      <h1 class="hero__title">从旧模板彻底抽离，重建新的静态博客。</h1>
-      <p class="hero__lead">
-        旧 Jekyll 模板已经退出主流程。现在开始由 Astro、React、Tailwind 和
-        Radix UI 接管整个站点骨架。
-      </p>
-      <div class="hero__actions">
-        <a class="button-primary" href="/archives">查看归档</a>
-        <a class="button-secondary" href="/about">阅读说明</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="shell section-grid" aria-label="阶段一说明卡片">
-    {cards.map((card) => (
-      <a class="surface-card" href={card.href}>
-        <p class="surface-card__eyebrow">{card.eyebrow}</p>
-        <h2 class="surface-card__title">{card.title}</h2>
-        <p class="surface-card__body">{card.body}</p>
-      </a>
-    ))}
-  </section>
-
-  <section class="shell home-posts" aria-label="最新文章">
-    <div class="home-posts__heading">
-      <p class="page-panel__eyebrow">LATEST WRITING</p>
-      <h2 class="surface-card__title">开始回到真正的博客内容</h2>
-    </div>
-    <div class="home-posts__grid">
-      {latestPosts.map((post) => (
-        <a class="post-card" href={getPostUrl(post)}>
-          <p class="post-card__meta">{formatPostDate(post.data.pubDate)}</p>
-          <h3 class="post-card__title">{post.data.title}</h3>
+  <section class="shell home-index" aria-label="文章索引">
+    {posts.map((post) => (
+      <article class="post-preview">
+        <a class="post-preview__link" href={getPostUrl(post)}>
+          <h2 class="post-preview__title">{post.data.title}</h2>
           {post.data.description && (
-            <p class="post-card__excerpt">{post.data.description}</p>
+            <h3 class="post-preview__subtitle">{post.data.description}</h3>
           )}
-          {post.data.tags.length > 0 && (
-            <div class="post-card__tags">
-              {post.data.tags.slice(0, 3).map((tag) => (
-                <span>{tag}</span>
-              ))}
-            </div>
-          )}
+          <div class="post-preview__excerpt">{getPostExcerpt(post, 200, false)}</div>
         </a>
-      ))}
-    </div>
+        <p class="post-preview__meta">
+          Posted by {post.data.author || "WaiJade"} on {formatPostDate(post.data.pubDate)}
+        </p>
+      </article>
+    ))}
   </section>
 </BaseLayout>
