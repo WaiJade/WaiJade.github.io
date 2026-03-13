@@ -1,6 +1,7 @@
 ---
+import PostListingRow from "../../components/posts/PostListingRow.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { formatPostDate, getPostUrl, getPublishedPosts, getTagStats } from "../../lib/posts";
+import { getPublishedPosts, getTagStats } from "../../lib/posts";
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -19,29 +20,15 @@ const { tag, posts } = Astro.props;
 ---
 
 <BaseLayout title={`TAG ${tag}`}>
-  <section class="shell tag-posts-page">
-    <div class="tags-page__intro">
+  <section class="shell listing-page">
+    <div class="listing-header">
       <p class="page-panel__eyebrow">TAG</p>
-      <h1 class="page-panel__title">{tag}</h1>
-      <p class="page-panel__text">当前标签下共有 {posts.length} 篇文章。</p>
+      <h1 class="listing-header__title">{tag}</h1>
+      <p class="listing-header__text">当前标签下共有 {posts.length} 篇文章，按日期倒序显示。</p>
     </div>
 
-    <div class="archive-year__list">
-      {posts.map((post) => (
-        <a class="archive-item" href={getPostUrl(post)}>
-          <div class="archive-item__main">
-            <h2 class="archive-item__title">{post.data.title}</h2>
-            {post.data.description && (
-              <p class="archive-item__excerpt">{post.data.description}</p>
-            )}
-          </div>
-          <div class="archive-item__meta">
-            <time datetime={post.data.pubDate.toISOString()}>
-              {formatPostDate(post.data.pubDate)}
-            </time>
-          </div>
-        </a>
-      ))}
+    <div class="archive-group__list">
+      {posts.map((post) => <PostListingRow post={post} currentTag={tag} />)}
     </div>
   </section>
 </BaseLayout>

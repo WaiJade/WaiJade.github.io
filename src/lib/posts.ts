@@ -97,6 +97,45 @@ export function getTagStats(posts: PostEntry[]) {
     .sort((left, right) => right.count - left.count || left.tag.localeCompare(right.tag));
 }
 
+export function getTagDirectory(posts: PostEntry[]) {
+  const directory = new Map<string, { count: number; latestPost: PostEntry }>();
+
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      const current = directory.get(tag);
+
+      if (!current) {
+        directory.set(tag, { count: 1, latestPost: post });
+        continue;
+      }
+
+      directory.set(tag, {
+        count: current.count + 1,
+        latestPost:
+          post.data.pubDate.getTime() > current.latestPost.data.pubDate.getTime()
+            ? post
+            : current.latestPost,
+      });
+    }
+  }
+
+  return [...directory.entries()]
+    .map(([tag, value]) => ({
+      tag,
+      count: value.count,
+      latestPost: value.latestPost,
+    }))
+    .sort((left, right) => {
+      if (right.count !== left.count) {
+        return right.count - left.count;
+      }
+
+      return (
+        right.latestPost.data.pubDate.getTime() - left.latestPost.data.pubDate.getTime()
+      );
+    });
+}
+
 export function paginatePosts(
   posts: PostEntry[],
   currentPage: number,

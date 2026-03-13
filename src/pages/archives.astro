@@ -1,44 +1,31 @@
 ---
+import PostListingRow from "../components/posts/PostListingRow.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { formatPostDate, getPostUrl, getPublishedPosts, groupPostsByYear } from "../lib/posts";
+import { getPublishedPosts, groupPostsByYear } from "../lib/posts";
 
 const posts = await getPublishedPosts();
 const postGroups = groupPostsByYear(posts);
 ---
 
 <BaseLayout title="ARCHIVES">
-  <section class="shell archives-page">
-    <div class="archives-page__intro">
+  <section class="shell listing-page">
+    <div class="listing-header">
       <p class="page-panel__eyebrow">ARCHIVES</p>
-      <h1 class="page-panel__title">开始接管旧文章归档</h1>
-      <p class="page-panel__text">
-        旧 `_posts/` 中的文章已经进入新的内容集合。这里先按年份整理为归档入口，后续再补专题、标签聚合和更完整的阅读路径。
+      <h1 class="listing-header__title">按时间浏览全部文章</h1>
+      <p class="listing-header__text">
+        这里回到更接近旧博客的归档方式，直接按年份展开，减少大卡片，优先保证信息密度和浏览速度。
       </p>
     </div>
 
-    <div class="archives-page__groups">
+    <div class="archive-directory">
       {postGroups.map(([year, yearPosts]) => (
-        <section class="archive-year">
-          <div class="archive-year__label">
+        <section class="archive-group">
+          <div class="archive-group__heading">
             <span>{year}</span>
-            <small>{yearPosts.length} 篇</small>
+            <small>{yearPosts.length} POSTS</small>
           </div>
-          <div class="archive-year__list">
-            {yearPosts.map((post) => (
-              <a class="archive-item" href={getPostUrl(post)}>
-                <div class="archive-item__main">
-                  <h2 class="archive-item__title">{post.data.title}</h2>
-                  {post.data.description && (
-                    <p class="archive-item__excerpt">{post.data.description}</p>
-                  )}
-                </div>
-                <div class="archive-item__meta">
-                  <time datetime={post.data.pubDate.toISOString()}>
-                    {formatPostDate(post.data.pubDate)}
-                  </time>
-                </div>
-              </a>
-            ))}
+          <div class="archive-group__list">
+            {yearPosts.map((post) => <PostListingRow post={post} />)}
           </div>
         </section>
       ))}

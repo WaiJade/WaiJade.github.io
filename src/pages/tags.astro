@@ -1,26 +1,34 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getPublishedPosts, getTagStats } from "../lib/posts";
+import { formatPostDate, getPublishedPosts, getTagDirectory } from "../lib/posts";
 
 const posts = await getPublishedPosts();
-const tags = getTagStats(posts);
+const tags = getTagDirectory(posts);
 ---
 
 <BaseLayout title="TAGS">
-  <section class="shell tags-page">
-    <div class="tags-page__intro">
+  <section class="shell listing-page">
+    <div class="listing-header">
       <p class="page-panel__eyebrow">TAGS</p>
-      <h1 class="page-panel__title">以主题重新组织文章</h1>
-      <p class="page-panel__text">
-        这里先接入标签总览。下一步会继续补单个标签页、相关文章联动和更完整的内容浏览路径。
+      <h1 class="listing-header__title">按主题浏览文章目录</h1>
+      <p class="listing-header__text">
+        标签页也改成更紧凑的目录视图。每个标签显示文章数量，并附最近一篇文章，方便直接进入。
       </p>
     </div>
 
-    <div class="tags-page__grid">
+    <div class="tag-directory">
       {tags.map((item) => (
-        <a class="tag-card" href={`/tags/${encodeURIComponent(item.tag)}/`}>
-          <span class="tag-card__count">{item.count}</span>
-          <h2 class="tag-card__title">{item.tag}</h2>
+        <a class="tag-directory__item" href={`/tags/${encodeURIComponent(item.tag)}/`}>
+          <div class="tag-directory__main">
+            <h2 class="tag-directory__title">{item.tag}</h2>
+            <p class="tag-directory__latest">{item.latestPost.data.title}</p>
+          </div>
+          <div class="tag-directory__meta">
+            <span class="tag-directory__count">{item.count} POSTS</span>
+            <span class="tag-directory__stats">
+              {formatPostDate(item.latestPost.data.pubDate)}
+            </span>
+          </div>
         </a>
       ))}
     </div>

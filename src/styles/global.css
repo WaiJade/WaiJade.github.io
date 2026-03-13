@@ -2,6 +2,7 @@
 @import "./header.css";
 @import "./buttons.css";
 @import "./article.css";
+@import "./listing.css";
 
 @font-face {
   font-family: "NSourceSong";
@@ -323,7 +324,6 @@ html:not(.dark) .hero__vignette {
   color: color-mix(in srgb, var(--foreground) 52%, transparent);
   font-size: 0.95rem;
   line-height: 1.95;
-  font-style: italic;
   transition: color 0.24s ease;
 }
 
