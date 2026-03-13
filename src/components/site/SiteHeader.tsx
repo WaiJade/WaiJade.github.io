@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { site } from "../../config/site";
 import MobileNav from "./MobileNav";
 
@@ -7,16 +7,31 @@ type SiteHeaderProps = {
 };
 
 export default function SiteHeader({ currentPath }: SiteHeaderProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [isElevated, setIsElevated] = useState(false);
+  const lastScrollY = useRef(0);
+  const normalizedCurrentPath =
+    currentPath !== "/" && currentPath.endsWith("/")
+      ? currentPath.slice(0, -1)
+      : currentPath;
 
   useEffect(() => {
-    setIsVisible(true);
-
     function handleScroll() {
-      setIsElevated(window.scrollY > 48);
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY.current;
+
+      setIsElevated(currentScrollY > 48);
+
+      if (currentScrollY <= 24) {
+        setIsVisible(true);
+      } else if (Math.abs(delta) > 4) {
+        setIsVisible(delta < 0);
+      }
+
+      lastScrollY.current = currentScrollY;
     }
 
+    lastScrollY.current = window.scrollY;
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -40,29 +55,28 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
           <span>{site.brand.name}</span>
         </a>
 
-        <div className="topbar__nav-dock">
-          <nav className="topbar__nav-wrap" aria-label="主导航">
-            <ul className="topbar__nav">
-              {site.nav.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    className={currentPath === item.href ? "is-active" : ""}
-                    aria-current={currentPath === item.href ? "page" : undefined}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <div className="topbar__mobile-actions">
-            <MobileNav
-              currentPath={currentPath}
-              nav={site.nav}
-              social={site.social}
-            />
-          </div>
+        <nav className="topbar__nav-wrap topbar__nav-wrap--desktop" aria-label="主导航">
+          <ul className="topbar__nav">
+            {site.nav.map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  className={normalizedCurrentPath === item.href ? "is-active" : ""}
+                  aria-current={normalizedCurrentPath === item.href ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="topbar__mobile-menu" aria-label="移动端导航">
+          <MobileNav
+            currentPath={normalizedCurrentPath}
+            nav={site.nav}
+            social={site.social}
+          />
         </div>
       </div>
     </header>

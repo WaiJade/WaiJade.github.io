@@ -189,19 +189,15 @@ html:not(.dark) .hero__vignette {
     );
 }
 
-.topbar.is-elevated .topbar__nav-dock {
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
-}
-
 .topbar__shell {
   position: relative;
   z-index: 1;
-  width: min(1200px, calc(100vw - 1.8rem));
+  width: min(1120px, calc(100% - 2rem));
   margin: 0 auto;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .topbar__brand {
@@ -253,93 +249,60 @@ html:not(.dark) .topbar__brand img {
   transition-delay: 0.14s;
 }
 
-.topbar__nav-dock {
-  --surface: color-mix(in srgb, var(--background-soft) 94%, transparent);
-  --outline: color-mix(in srgb, var(--foreground) 10%, transparent);
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  min-height: 48px;
-  padding: 3px;
-  border-radius: 48px;
-  border: 1px solid var(--outline);
-  background: var(--surface);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-  -webkit-backdrop-filter: blur(8px) saturate(1.02);
-  backdrop-filter: blur(8px) saturate(1.02);
-  width: fit-content;
-  max-width: 540px;
-  margin-left: auto;
-}
-
 .topbar__nav-wrap {
-  display: none;
-  align-items: center;
   overflow-x: auto;
 }
 
 .topbar__nav {
   margin: 0;
-  padding: 0 0 0 4px;
+  padding: 4px;
   list-style: none;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
+  border-radius: 33554432px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(4px) brightness(1.4);
+  backdrop-filter: blur(4px) brightness(1.4);
   white-space: nowrap;
 }
 
 .topbar__nav li {
   display: flex;
+  align-items: center;
+  gap: 0;
 }
 
 .topbar__nav a {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  padding: 0 16px;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--muted);
-  font-family: var(--font-family-sans);
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  padding: 8px 20px;
+  border-radius: 9999px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 20px;
+  mix-blend-mode: lighten;
   transition:
-    background-color 0.22s ease,
-    color 0.22s ease,
-    transform 0.18s ease;
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .topbar__nav a:hover {
-  color: var(--foreground);
-  background: var(--nav-indicator);
-}
-
-.topbar__nav a:active {
-  background: var(--nav-indicator-active);
-  transform: scale(0.98);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .topbar__nav a.is-active {
-  background: var(--nav-active-bg);
-  color: var(--nav-active-color);
-}
-
-.topbar__nav a.is-active:hover {
-  background: var(--nav-active-bg-hover);
-  color: var(--nav-active-color);
-}
-
-.topbar__nav a.is-active:active {
-  background: var(--nav-active-bg-active);
-  color: var(--nav-active-color);
-  transform: scale(0.98);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .topbar__desktop-action,
-.topbar__mobile-actions {
+.topbar__mobile-actions,
+.topbar__mobile-menu {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -351,6 +314,12 @@ html:not(.dark) .topbar__brand img {
 
 .topbar__mobile-actions {
   display: inline-flex;
+}
+
+.topbar__mobile-menu {
+  display: none;
+  align-items: center;
+  margin-left: auto;
 }
 
 .topbar__icon-button {
@@ -623,13 +592,15 @@ html:not(.dark) .topbar__brand img {
 @media (min-width: 960px) {
   .topbar__nav-wrap {
     display: flex;
+    align-items: center;
   }
 
   .topbar__desktop-action {
     display: inline-flex;
   }
 
-  .topbar__mobile-actions {
+  .topbar__mobile-actions,
+  .topbar__mobile-menu {
     display: none;
   }
 }
@@ -653,7 +624,11 @@ html:not(.dark) .topbar__brand img {
     font-size: 1rem;
   }
 
-  .topbar__nav-dock {
-    max-width: none;
+  .topbar__nav-wrap--desktop {
+    display: none;
+  }
+
+  .topbar__mobile-menu {
+    display: flex;
   }
 }

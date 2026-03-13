@@ -23,7 +23,7 @@ export default function MobileNav({
           className="topbar__icon-button topbar__icon-button--menu"
           aria-label="打开菜单"
         >
-          菜单
+          MENU
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -32,7 +32,7 @@ export default function MobileNav({
           <div className="mobile-nav__header">
             <div>
               <p className="mobile-nav__eyebrow">WAIJADE</p>
-              <Dialog.Title className="mobile-nav__title">站点导航</Dialog.Title>
+              <Dialog.Title className="mobile-nav__title">BLOG NAV</Dialog.Title>
             </div>
             <Dialog.Close asChild>
               <button
@@ -40,7 +40,7 @@ export default function MobileNav({
                 className="topbar__icon-button topbar__icon-button--menu"
                 aria-label="关闭菜单"
               >
-                关闭
+                CLOSE
               </button>
             </Dialog.Close>
           </div>

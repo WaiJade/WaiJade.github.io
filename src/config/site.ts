@@ -18,10 +18,10 @@ export const site = {
     avatar: "/avatar.png",
   },
   nav: [
-    { label: "首页", href: "/" },
-    { label: "归档", href: "/archives" },
-    { label: "标签", href: "/tags" },
-    { label: "关于", href: "/about" },
+    { label: "HOME", href: "/" },
+    { label: "ARCHIVES", href: "/archives" },
+    { label: "TAGS", href: "/tags" },
+    { label: "ABOUT", href: "/about" },
   ] satisfies NavItem[],
   social: [
     { label: "GitHub", href: "https://github.com/CheongSzesuen" },
