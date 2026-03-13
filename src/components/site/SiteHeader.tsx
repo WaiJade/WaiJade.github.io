@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { site } from "../../config/site";
 import MobileNav from "./MobileNav";
+import SiteSearch from "./SiteSearch";
 
 type SiteHeaderProps = {
   currentPath: string;
@@ -70,6 +71,8 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
             ))}
           </ul>
         </nav>
+
+        <SiteSearch />
 
         <div className="topbar__mobile-menu" aria-label="移动端导航">
           <MobileNav

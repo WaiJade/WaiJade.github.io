@@ -78,15 +78,10 @@ function normalizeWhitespace(value: string) {
   return value.replace(/\s+/g, " ").trim();
 }
 
-export function getPostExcerpt(
+export function getPostPlainText(
   post: Pick<PostEntry, "body" | "data">,
-  maxLength = 160,
-  preferDescription = true,
+  maxLength?: number,
 ) {
-  if (preferDescription && post.data.description) {
-    return post.data.description;
-  }
-
   const plainText = normalizeWhitespace(
     post.body
       .replace(/<br\s*\/?>/gi, " ")
@@ -96,6 +91,24 @@ export function getPostExcerpt(
       .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
       .replace(/[`*_>#~-]/g, " "),
   );
+
+  if (!maxLength || plainText.length <= maxLength) {
+    return plainText;
+  }
+
+  return plainText.slice(0, maxLength).trim();
+}
+
+export function getPostExcerpt(
+  post: Pick<PostEntry, "body" | "data">,
+  maxLength = 160,
+  preferDescription = true,
+) {
+  if (preferDescription && post.data.description) {
+    return post.data.description;
+  }
+
+  const plainText = getPostPlainText(post);
 
   if (plainText.length <= maxLength) {
     return plainText;
