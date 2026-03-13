@@ -355,6 +355,10 @@ html:not(.dark) .hero__vignette {
   margin-bottom: 1.5rem;
 }
 
+.archives-page__title {
+  max-width: none;
+}
+
 .home-posts__grid,
 .tags-page__grid {
   display: grid;
