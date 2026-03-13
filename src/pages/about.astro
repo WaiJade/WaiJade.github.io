@@ -19,16 +19,15 @@ if (!aboutParagraphs.length) {
 
 <BaseLayout title={aboutPage.data.title} description={aboutPage.data.description}>
   <section class="shell about-page">
-    <div class="about-page__panel page-panel animate-fadeIn">
+    <div class="about-page__intro archives-page__intro">
       <p class="page-panel__eyebrow">ABOUT</p>
-      <div class="about-section__container">
-        <h1 class="about-section__title">
-          <span class="about-section__title-text">{aboutPage.data.title}</span>
-        </h1>
-        <div class="about-section__copy">
-          {aboutPage.data.lead && <p class="about-section__lead" set:html={aboutPage.data.lead} />}
-          {aboutParagraphs.map((paragraph) => <p class="about-section__text" set:html={paragraph} />)}
-        </div>
+      <h1 class="page-panel__title archives-page__title">{aboutPage.data.title}</h1>
+    </div>
+
+    <div class="about-page__panel page-panel animate-fadeIn">
+      <div class="about-section__copy">
+        {aboutPage.data.lead && <p class="about-section__lead" set:html={aboutPage.data.lead} />}
+        {aboutParagraphs.map((paragraph) => <p class="about-section__text" set:html={paragraph} />)}
       </div>
     </div>
   </section>
