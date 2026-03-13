@@ -410,7 +410,7 @@ html:not(.dark) .hero__vignette {
 
 .post-card__excerpt,
 .archive-item__excerpt {
-  margin: 0.9rem 0 0;
+  margin: 0.45rem 0 0;
   color: var(--muted);
   line-height: 1.8;
 }
