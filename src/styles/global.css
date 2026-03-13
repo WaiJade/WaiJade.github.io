@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "./header.css";
 @import "./buttons.css";
+@import "./article.css";
 
 @font-face {
   font-family: "NSourceSong";
@@ -378,7 +379,6 @@ html:not(.dark) .hero__vignette {
 
 .post-card__meta,
 .archive-item__meta,
-.post-hero__meta,
 .post-pagination__label,
 .tag-card__count {
   color: var(--accent);
@@ -390,8 +390,7 @@ html:not(.dark) .hero__vignette {
 }
 
 .post-card__title,
-.archive-item__title,
-.post-hero__title {
+.archive-item__title {
   margin: 0;
   font-family: var(--font-family-display);
   font-weight: 400;
@@ -411,16 +410,14 @@ html:not(.dark) .hero__vignette {
   line-height: 1.8;
 }
 
-.post-card__tags,
-.post-tags {
+.post-card__tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
   margin-top: 1rem;
 }
 
-.post-card__tags span,
-.post-tag {
+.post-card__tags span {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -508,104 +505,6 @@ html:not(.dark) .hero__vignette {
   font-size: clamp(1.4rem, 2.2vw, 2rem);
   font-weight: 400;
   letter-spacing: -0.04em;
-}
-
-.post-shell {
-  padding-top: 9rem;
-}
-
-.post-hero {
-  margin-bottom: 1.5rem;
-}
-
-.post-hero__title {
-  font-size: clamp(2.8rem, 6vw, 5rem);
-  line-height: 0.95;
-}
-
-.post-hero__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem 1.1rem;
-  margin-top: 1rem;
-}
-
-.post-cover {
-  margin-top: 1.4rem;
-  overflow: hidden;
-  border-radius: 2rem;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--card) 100%, transparent);
-}
-
-.post-cover img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.post-content.surface-card {
-  padding: clamp(1.4rem, 2vw, 2.3rem);
-}
-
-.post-content :where(p, ul, ol, blockquote, pre, hr, img, h2, h3, h4, center, div[align]) {
-  margin: 0 0 1.2rem;
-}
-
-.post-content :where(p, li, blockquote, center, div[align]) {
-  color: var(--foreground);
-  font-size: 1.03rem;
-  line-height: 1.95;
-}
-
-.post-content :where(h2, h3, h4) {
-  font-family: var(--font-family-display);
-  font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -0.04em;
-}
-
-.post-content h2 {
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
-}
-
-.post-content h3 {
-  font-size: clamp(1.4rem, 2.2vw, 1.85rem);
-}
-
-.post-content blockquote {
-  padding-left: 1rem;
-  border-left: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
-  color: var(--muted);
-}
-
-.post-content pre {
-  overflow-x: auto;
-  padding: 1rem 1.1rem;
-  border-radius: 1.25rem;
-  background: rgba(0, 0, 0, 0.22);
-}
-
-.post-content img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  border-radius: 1.25rem;
-}
-
-.post-content [align="center"],
-.post-content center {
-  text-align: center;
-}
-
-.post-content [align="right"] {
-  text-align: right;
-}
-
-.post-pagination {
-  display: grid;
-  gap: 1rem;
-  margin-top: 1.5rem;
 }
 
 .post-pagination__item strong {

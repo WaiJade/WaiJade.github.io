@@ -1,0 +1,378 @@
+.article-page {
+  padding-top: 9rem;
+}
+
+.article-header {
+  display: grid;
+  gap: 1.4rem;
+  max-width: min(920px, 100%);
+  margin: 0 auto 1.8rem;
+}
+
+.article-header__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.article-header__eyebrow,
+.article-header__status {
+  margin: 0;
+  color: var(--accent);
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.article-header__status {
+  color: color-mix(in srgb, var(--foreground) 55%, transparent);
+}
+
+.article-header__title {
+  margin: 0;
+  max-width: 12ch;
+  font-family: var(--font-family-display);
+  font-size: clamp(3rem, 6vw, 5.8rem);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.05em;
+}
+
+.article-header__summary {
+  margin: 0;
+  max-width: 48rem;
+  color: color-mix(in srgb, var(--foreground) 78%, transparent);
+  font-size: clamp(1.02rem, 1.55vw, 1.18rem);
+  line-height: 1.9;
+}
+
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.article-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0 0.85rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  background: color-mix(in srgb, var(--foreground) 4%, transparent);
+  color: color-mix(in srgb, var(--foreground) 88%, transparent);
+  font-size: 0.86rem;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.article-tag:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  border-color: color-mix(in srgb, var(--foreground) 14%, transparent);
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+.article-tag:active {
+  transform: scale(0.975);
+}
+
+.article-body-wrap {
+  max-width: min(920px, 100%);
+  margin: 0 auto;
+}
+
+.article-body-panel {
+  border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  border-radius: 2rem;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--card) 100%, transparent),
+      color-mix(in srgb, var(--card) 72%, transparent)
+    );
+  backdrop-filter: blur(18px);
+  box-shadow: 0 24px 80px rgba(3, 7, 18, 0.16);
+  overflow: hidden;
+}
+
+.article-content {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: clamp(1.6rem, 2.4vw, 2.8rem);
+}
+
+.article-content > :first-child {
+  margin-top: 0;
+}
+
+.article-content > :last-child {
+  margin-bottom: 0;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6,
+.article-content p,
+.article-content li,
+.article-content blockquote,
+.article-content pre,
+.article-content table,
+.article-content hr {
+  color: var(--foreground);
+}
+
+.article-content p,
+.article-content li {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.92;
+}
+
+.article-content p,
+.article-content center,
+.article-content div[align],
+.article-content p[align] {
+  margin: 0 0 0.8rem;
+  opacity: 0.92;
+}
+
+.article-content p:nth-last-child(1),
+.article-content p:has(+ *:not(p)),
+.article-content div[align]:last-child,
+.article-content center:last-child,
+.article-content p[align]:last-child {
+  margin-bottom: 1.1rem;
+}
+
+.article-content center,
+.article-content div[align],
+.article-content p[align] {
+  white-space: pre-line;
+  line-height: 1.92;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  margin: 1.6rem 0 0.7rem;
+  font-family: var(--font-family-display);
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: -0.04em;
+}
+
+.article-content h2 {
+  font-size: clamp(1.95rem, 3vw, 2.65rem);
+}
+
+.article-content h3 {
+  font-size: clamp(1.5rem, 2.1vw, 1.95rem);
+}
+
+.article-content h4 {
+  font-size: clamp(1.18rem, 1.8vw, 1.45rem);
+}
+
+.article-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 0.16em;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.article-content a:hover {
+  color: var(--accent-strong);
+  text-decoration-color: currentColor;
+}
+
+.article-content ul,
+.article-content ol {
+  margin: 0 0 1rem;
+  padding-left: 1.2rem;
+}
+
+.article-content ul {
+  list-style: disc;
+}
+
+.article-content li + li {
+  margin-top: 0.35rem;
+}
+
+.article-content hr {
+  margin: 1.5rem 0;
+  border: none;
+  border-top: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  opacity: 0.7;
+}
+
+.article-content code {
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+
+.article-content code:not(pre code) {
+  padding: 0.16rem 0.42rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--foreground) 6%, transparent);
+}
+
+.article-content p code {
+  padding-top: 0.08rem;
+  padding-bottom: 0.08rem;
+}
+
+.article-content pre {
+  overflow-x: auto;
+  margin: 1rem 0 1.2rem;
+  padding: 1rem 1.15rem;
+  border-radius: 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  background: rgba(0, 0, 0, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.article-content pre code {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.article-content blockquote {
+  margin: 1rem 0 1.2rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 13%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--foreground) 3%, transparent);
+  color: color-mix(in srgb, var(--foreground) 84%, transparent);
+}
+
+.article-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.2rem;
+  font-size: 0.95rem;
+}
+
+.article-content th {
+  padding: 0.85rem 0.9rem 0.85rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 16%, transparent);
+  color: color-mix(in srgb, var(--foreground) 76%, transparent);
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.article-content td {
+  padding: 0.8rem 0.9rem 0.8rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+  vertical-align: top;
+}
+
+.article-content tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.article-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1rem auto 1.2rem;
+  border-radius: 1.25rem;
+}
+
+.article-content kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.45rem;
+  padding: 0.08rem 0.42rem;
+  border-radius: 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+  background: color-mix(in srgb, var(--foreground) 7%, transparent);
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--foreground) 10%, transparent);
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.82em;
+}
+
+.article-content [align="center"],
+.article-content center {
+  text-align: center;
+}
+
+.article-content [align="right"] {
+  text-align: right;
+}
+
+.post-pagination {
+  max-width: min(920px, 100%);
+  margin: 1.5rem auto 0;
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 960px) {
+  .post-pagination {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .article-page {
+    padding-top: 8.2rem;
+  }
+
+  .article-header {
+    gap: 1.15rem;
+    margin-bottom: 1.3rem;
+  }
+
+  .article-header__title {
+    max-width: none;
+    font-size: clamp(2.3rem, 11vw, 3.7rem);
+    line-height: 0.98;
+  }
+
+  .article-header__summary {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .article-body-panel {
+    border-radius: 1.5rem;
+  }
+
+  .article-content {
+    padding: 1.25rem 1.1rem 1.35rem;
+  }
+
+  .article-content p,
+  .article-content li {
+    font-size: 0.98rem;
+    line-height: 1.88;
+  }
+}

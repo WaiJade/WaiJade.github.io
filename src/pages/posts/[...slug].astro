@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
   formatPostDate,
   getPostPathId,
+  getPostExcerpt,
   getPostUrl,
   getPublishedPosts,
 } from "../../lib/posts";
@@ -26,37 +27,38 @@ const posts = await getPublishedPosts();
 const currentIndex = posts.findIndex((entry) => entry.id === post.id);
 const newerPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
 const olderPost = currentIndex >= 0 ? posts[currentIndex + 1] : null;
+const pageDescription = post.data.description || getPostExcerpt(post, 180, false);
+const summary = post.data.description.trim();
 const { Content } = await post.render();
 ---
 
-<BaseLayout title={post.data.title}>
-  <article class="shell post-shell">
-    <header class="post-hero">
-      <p class="page-panel__eyebrow">POST / {formatPostDate(post.data.pubDate)}</p>
-      <h1 class="post-hero__title">{post.data.title}</h1>
-      <div class="post-hero__meta">
-        <time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>
-        {post.data.author && <span>{post.data.author}</span>}
+<BaseLayout title={post.data.title} description={pageDescription}>
+  <article class="shell article-page">
+    <header class="article-header">
+      <div class="article-header__topline">
+        <p class="article-header__eyebrow">Article / {formatPostDate(post.data.pubDate)}</p>
+        <p class="article-header__status">{post.data.author || "WaiJade"}</p>
       </div>
+      <h1 class="article-header__title">{post.data.title}</h1>
+      {summary && <p class="article-header__summary">{summary}</p>}
       {post.data.tags.length > 0 && (
-        <div class="post-tags">
+        <div class="article-tags" aria-label="文章标签">
           {post.data.tags.map((tag) => (
-            <a class="post-tag" href={`/tags/${encodeURIComponent(tag)}/`}>
+            <a class="article-tag" href={`/tags/${encodeURIComponent(tag)}/`}>
               {tag}
             </a>
           ))}
         </div>
       )}
-      {post.data.cover && (
-        <div class="post-cover">
-          <img src={post.data.cover} alt={post.data.title} loading="eager" />
-        </div>
-      )}
     </header>
 
-    <section class="post-content surface-card">
-      <Content />
-    </section>
+    <div class="article-body-wrap">
+      <section class="article-body-panel">
+        <section class="article-content">
+          <Content />
+        </section>
+      </section>
+    </div>
 
     <nav class="post-pagination" aria-label="文章翻页">
       {newerPost ? (
