@@ -356,13 +356,10 @@ html:not(.dark) .hero__vignette {
 }
 
 .post-preview__link:hover .post-preview__subtitle,
-.post-preview__link:focus .post-preview__subtitle {
-  color: color-mix(in srgb, var(--foreground) 78%, var(--muted));
-}
-
+.post-preview__link:focus .post-preview__subtitle,
 .post-preview__link:hover .post-preview__excerpt,
 .post-preview__link:focus .post-preview__excerpt {
-  color: color-mix(in srgb, var(--foreground) 68%, transparent);
+  color: var(--accent);
 }
 
 .home-posts {
