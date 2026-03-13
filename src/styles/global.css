@@ -339,6 +339,11 @@ html:not(.dark) .hero__vignette {
   transition: color 0.24s ease;
 }
 
+.post-preview__excerpt,
+.post-preview__excerpt * {
+  transition: color 0.24s ease;
+}
+
 .post-preview__meta {
   margin: 1rem 0 0;
   display: flex;
