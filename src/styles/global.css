@@ -264,7 +264,7 @@ html:not(.dark) .topbar__brand img {
   justify-content: center;
   min-height: 40px;
   padding: 0 16px;
-  border-radius: 14px;
+  border-radius: 999px;
   background: var(--nav-btn-bg);
   color: var(--muted);
   font-family: "Ubuntu Mono", "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
