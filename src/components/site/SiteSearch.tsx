@@ -1,7 +1,11 @@
-import * as Dialog from "@radix-ui/react-dialog";
+import {
+  ArrowDownIcon,
+  MagnifyingGlassIcon,
+} from "@phosphor-icons/react";
 import {
   useDeferredValue,
   useEffect,
+  useEffectEvent,
   useId,
   useRef,
   useState,
@@ -111,20 +115,11 @@ function SearchButton({
       title="搜索文章（Ctrl + K）"
     >
       <span className="topbar__icon-button__inner">
-        <svg
+        <MagnifyingGlassIcon
           className="topbar__icon-button__icon"
-          viewBox="0 0 24 24"
           aria-hidden="true"
-        >
-          <path
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="1.85"
-            d="M11 5.5a5.5 5.5 0 1 0 0 11a5.5 5.5 0 0 0 0-11m4.2 9.7L19 19"
-          />
-        </svg>
+          weight="bold"
+        />
       </span>
     </button>
   );
@@ -139,9 +134,33 @@ export default function SiteSearch() {
   );
   const deferredQuery = useDeferredValue(query);
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastActiveElementRef = useRef<HTMLElement | null>(null);
   const inputId = useId();
   const normalizedQuery = normalizeSearchValue(deferredQuery);
   const tokens = normalizedQuery ? normalizedQuery.split(" ").filter(Boolean) : [];
+
+  const openSearch = useEffectEvent(() => {
+    if (document.activeElement instanceof HTMLElement) {
+      lastActiveElementRef.current = document.activeElement;
+    }
+
+    setOpen(true);
+  });
+
+  const closeSearch = useEffectEvent((restoreFocus = true) => {
+    setOpen(false);
+    setQuery("");
+
+    if (restoreFocus) {
+      const previousElement = lastActiveElementRef.current;
+
+      if (previousElement) {
+        window.requestAnimationFrame(() => {
+          previousElement.focus();
+        });
+      }
+    }
+  });
 
   useEffect(() => {
     function handleKeydown(event: KeyboardEvent) {
@@ -150,19 +169,41 @@ export default function SiteSearch() {
         event.key.toLowerCase() === "k"
       ) {
         event.preventDefault();
-        setOpen((current) => !current);
+
+        if (open) {
+          closeSearch();
+        } else {
+          openSearch();
+        }
+
         return;
       }
 
-      if (event.key === "/" && !isEditableTarget(event.target)) {
+      if (event.key === "Escape" && open) {
         event.preventDefault();
-        setOpen(true);
+        closeSearch();
+        return;
+      }
+
+      if (event.key === "/" && !open && !isEditableTarget(event.target)) {
+        event.preventDefault();
+        openSearch();
       }
     }
 
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
-  }, []);
+  }, [closeSearch, open, openSearch]);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("search-open", open);
+    document.body.classList.toggle("search-open", open);
+
+    return () => {
+      document.documentElement.classList.remove("search-open");
+      document.body.classList.remove("search-open");
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) {
@@ -189,13 +230,13 @@ export default function SiteSearch() {
     return () => window.cancelAnimationFrame(frameId);
   }, [open, status]);
 
-  let panelTitle = "最新文章";
+  let panelTitle = "最近文章";
   let panelDescription = "输入标题、摘要、标签或正文片段来搜索。";
   let visibleItems: SearchIndexItem[] = [];
 
   if (status === "ready") {
     if (!tokens.length) {
-      visibleItems = items.slice(0, 8);
+      visibleItems = items.slice(0, 12);
     } else {
       const scoredItems = items
         .map((item) => ({
@@ -205,17 +246,9 @@ export default function SiteSearch() {
         .filter((entry) => entry.score >= 0)
         .sort((left, right) => right.score - left.score);
 
-      visibleItems = scoredItems.slice(0, 10).map((entry) => entry.item);
+      visibleItems = scoredItems.slice(0, 16).map((entry) => entry.item);
       panelTitle = `搜索结果 ${scoredItems.length}`;
       panelDescription = `关键词：${query.trim()}`;
-    }
-  }
-
-  function handleOpenChange(nextOpen: boolean) {
-    setOpen(nextOpen);
-
-    if (!nextOpen) {
-      setQuery("");
     }
   }
 
@@ -223,125 +256,125 @@ export default function SiteSearch() {
     <>
       <div className="topbar__desktop-action">
         <SearchButton
-          onClick={() => setOpen(true)}
+          onClick={openSearch}
           className="topbar__icon-button topbar__icon-button--search"
         />
       </div>
 
       <div className="topbar__mobile-actions">
         <SearchButton
-          onClick={() => setOpen(true)}
+          onClick={openSearch}
           className="topbar__icon-button topbar__icon-button--search"
         />
       </div>
 
-      <Dialog.Root open={open} onOpenChange={handleOpenChange}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="search-dialog__overlay" />
-          <Dialog.Content className="search-dialog__content">
-            <div className="search-dialog__header">
-              <div>
-                <p className="search-dialog__eyebrow">SEARCH</p>
-                <Dialog.Title className="search-dialog__title">
-                  搜索文章
-                </Dialog.Title>
-                <Dialog.Description className="search-dialog__description">
-                  用标题、摘要、标签或正文片段快速定位内容。
-                </Dialog.Description>
-              </div>
+      <section
+        className={`search-page ${open ? "search-page--active" : ""}`}
+        aria-hidden={!open}
+      >
+        <div className="search-page__veil" aria-hidden="true" />
 
-              <Dialog.Close asChild>
-                <button
-                  type="button"
-                  className="topbar__icon-button topbar__icon-button--menu"
-                  aria-label="关闭搜索"
-                >
-                  <span className="topbar__icon-button__inner">CLOSE</span>
-                </button>
-              </Dialog.Close>
+        <div className="search-page__main shell">
+          <div className="search-page__topbar">
+            <div className="search-page__intro">
+              <p className="search-page__eyebrow">SEARCH</p>
+              <h2 className="search-page__title">搜索文章</h2>
+              <p className="search-page__description">
+                这里不再是弹窗，而是像旧博客那样直接接管整页。支持标题、摘要、标签和正文片段搜索。
+              </p>
             </div>
 
-            <label className="search-dialog__field" htmlFor={inputId}>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.85"
-                  d="M11 5.5a5.5 5.5 0 1 0 0 11a5.5 5.5 0 0 0 0-11m4.2 9.7L19 19"
+            <button
+              type="button"
+              className="topbar__icon-button topbar__icon-button--search search-page__close"
+              onClick={() => closeSearch()}
+              aria-label="关闭搜索"
+            >
+              <span className="topbar__icon-button__inner">
+                <ArrowDownIcon
+                  className="topbar__icon-button__icon"
+                  aria-hidden="true"
+                  weight="bold"
                 />
-              </svg>
-              <input
-                id={inputId}
-                ref={inputRef}
-                type="search"
-                inputMode="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="搜索标题、摘要、标签或正文片段"
-                autoComplete="off"
-                spellCheck={false}
-              />
-              <span className="search-dialog__shortcut">Ctrl + K</span>
-            </label>
+              </span>
+            </button>
+          </div>
 
-            <div className="search-dialog__meta">
-              <div>
-                <strong>{panelTitle}</strong>
-                <span>{panelDescription}</span>
-              </div>
+          <label className="search-page__field" htmlFor={inputId}>
+            <MagnifyingGlassIcon
+              className="search-page__field-icon"
+              aria-hidden="true"
+              weight="bold"
+            />
+            <input
+              id={inputId}
+              ref={inputRef}
+              type="search"
+              inputMode="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="$ grep 标题 / 标签 / 正文片段"
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </label>
+
+          <div className="search-page__meta">
+            <div>
+              <strong>{panelTitle}</strong>
+              <span>{panelDescription}</span>
             </div>
+            <p className="search-page__shortcut">Ctrl + K | / | ESC</p>
+          </div>
 
-            <div className="search-dialog__results" aria-live="polite">
-              {status === "loading" && (
-                <p className="search-dialog__empty">正在载入搜索索引…</p>
-              )}
+          <div className="search-page__results" aria-live="polite">
+            {status === "loading" && (
+              <p className="search-page__empty">正在载入搜索索引…</p>
+            )}
 
-              {status === "error" && (
-                <p className="search-dialog__empty">
-                  搜索索引加载失败，请稍后重试。
-                </p>
-              )}
+            {status === "error" && (
+              <p className="search-page__empty">
+                搜索索引加载失败，请稍后重试。
+              </p>
+            )}
 
-              {status === "ready" && !visibleItems.length && (
-                <p className="search-dialog__empty">
-                  没找到匹配内容，试试标题关键词、标签或更短的片段。
-                </p>
-              )}
+            {status === "ready" && !visibleItems.length && (
+              <p className="search-page__empty">
+                没找到匹配内容，试试更短的标题关键词、标签或正文片段。
+              </p>
+            )}
 
-              {status === "ready" &&
-                visibleItems.map((item) => (
-                  <a
-                    key={item.url}
-                    href={item.url}
-                    className="search-dialog__result"
-                    onClick={() => handleOpenChange(false)}
-                  >
-                    <div className="search-dialog__result-head">
-                      <h3>{item.title}</h3>
-                      <span>{item.pubDate}</span>
+            {status === "ready" &&
+              visibleItems.map((item) => (
+                <a
+                  key={item.url}
+                  href={item.url}
+                  className="search-page__result"
+                  onClick={() => closeSearch(false)}
+                >
+                  <div className="search-page__result-head">
+                    <h3>{item.title}</h3>
+                    <span>{item.pubDate}</span>
+                  </div>
+
+                  {(item.description || item.excerpt) && (
+                    <p className="search-page__result-excerpt">
+                      {item.description || item.excerpt}
+                    </p>
+                  )}
+
+                  {item.tags.length > 0 && (
+                    <div className="search-page__result-tags">
+                      {item.tags.slice(0, 4).map((tag) => (
+                        <span key={`${item.url}-${tag}`}>{tag}</span>
+                      ))}
                     </div>
-
-                    {(item.description || item.excerpt) && (
-                      <p className="search-dialog__result-excerpt">
-                        {item.description || item.excerpt}
-                      </p>
-                    )}
-
-                    {item.tags.length > 0 && (
-                      <div className="search-dialog__result-tags">
-                        {item.tags.slice(0, 4).map((tag) => (
-                          <span key={`${item.url}-${tag}`}>{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                  </a>
-                ))}
-            </div>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+                  )}
+                </a>
+              ))}
+          </div>
+        </div>
+      </section>
     </>
   );
 }

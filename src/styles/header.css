@@ -256,6 +256,7 @@ html:not(.dark) .topbar__brand img {
 }
 
 .topbar__icon-button:hover {
+  transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--foreground) 18%, transparent);
   background: color-mix(in srgb, var(--card-hover) 88%, transparent);
   box-shadow: 0 18px 36px rgba(3, 7, 18, 0.24);
@@ -266,7 +267,7 @@ html:not(.dark) .topbar__brand img {
 }
 
 .topbar__icon-button:active {
-  transform: scale(1.08);
+  transform: scale(0.92);
 }
 
 .topbar__icon-button:focus-visible {
@@ -290,15 +291,41 @@ html:not(.dark) .topbar__brand img {
 }
 
 .topbar__icon-button--search {
-  width: 2.5rem;
-  min-width: 2.5rem;
+  width: 2.75rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
   padding: 0;
   border-radius: 999px;
+  border-color: color-mix(in srgb, var(--accent) 26%, transparent);
+  background:
+    radial-gradient(
+      circle at 30% 26%,
+      color-mix(in srgb, var(--accent) 36%, transparent) 0%,
+      transparent 56%
+    ),
+    color-mix(in srgb, var(--card) 90%, var(--accent) 10%);
+  box-shadow: 0 14px 32px rgba(3, 7, 18, 0.24);
+}
+
+.topbar__icon-button--search:hover {
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+  background:
+    radial-gradient(
+      circle at 30% 26%,
+      color-mix(in srgb, var(--accent) 42%, transparent) 0%,
+      transparent 58%
+    ),
+    color-mix(in srgb, var(--card-hover) 84%, var(--accent) 16%);
+  box-shadow: 0 18px 38px rgba(3, 7, 18, 0.28);
+}
+
+.topbar__icon-button--search:active {
+  transform: scale(0.88);
 }
 
 .topbar__icon-button__icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .topbar__icon-button--menu {
@@ -478,9 +505,9 @@ html:not(.dark) .topbar__brand img {
   .mobile-nav__overlay,
   .mobile-nav__content,
   .mobile-nav__link,
-  .search-dialog__overlay,
-  .search-dialog__content,
-  .search-dialog__result {
+  .search-page,
+  .search-page__main,
+  .search-page__result {
     transition: none;
   }
 }
