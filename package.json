@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "sync:about": "node scripts/sync-main-about.mjs",
+    "predev": "npm run sync:about",
     "dev": "astro dev",
+    "prebuild": "npm run sync:about",
     "build": "astro build",
     "preview": "astro preview",
+    "precheck": "npm run sync:about",
     "check": "astro check",
     "migrate:posts": "node scripts/migrate-legacy-posts.mjs"
   },

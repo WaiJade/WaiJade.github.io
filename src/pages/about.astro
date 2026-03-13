@@ -12,8 +12,13 @@ const { Content } = await aboutPage.render();
 ---
 
 <BaseLayout title={aboutPage.data.title} description={aboutPage.data.description}>
-  <section class="shell page-panel">
-    <p class="page-panel__eyebrow">ABOUT</p>
+  <section class="shell archives-page about-page">
+    <div class="archives-page__intro">
+      <p class="page-panel__eyebrow">ABOUT</p>
+      <h1 class="page-panel__title archives-page__title">{aboutPage.data.title}</h1>
+      {aboutPage.data.lead && <p class="page-panel__text" set:html={aboutPage.data.lead} />}
+    </div>
+
     <div class="article-body-panel page-panel__body">
       <section class="article-content">
         <Content />
