@@ -5,11 +5,11 @@ import {
 import {
   useDeferredValue,
   useEffect,
-  useEffectEvent,
   useId,
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 import type { SearchIndexItem } from "../../lib/search";
 
 let searchIndexPromise: Promise<SearchIndexItem[]> | null = null;
@@ -135,19 +135,20 @@ export default function SiteSearch() {
   const deferredQuery = useDeferredValue(query);
   const inputRef = useRef<HTMLInputElement>(null);
   const lastActiveElementRef = useRef<HTMLElement | null>(null);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
   const inputId = useId();
   const normalizedQuery = normalizeSearchValue(deferredQuery);
   const tokens = normalizedQuery ? normalizedQuery.split(" ").filter(Boolean) : [];
 
-  const openSearch = useEffectEvent(() => {
+  function openSearch() {
     if (document.activeElement instanceof HTMLElement) {
       lastActiveElementRef.current = document.activeElement;
     }
 
     setOpen(true);
-  });
+  }
 
-  const closeSearch = useEffectEvent((restoreFocus = true) => {
+  function closeSearch(restoreFocus = true) {
     setOpen(false);
     setQuery("");
 
@@ -160,7 +161,7 @@ export default function SiteSearch() {
         });
       }
     }
-  });
+  }
 
   useEffect(() => {
     function handleKeydown(event: KeyboardEvent) {
@@ -193,7 +194,11 @@ export default function SiteSearch() {
 
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
-  }, [closeSearch, open, openSearch]);
+  }, [open]);
+
+  useEffect(() => {
+    setPortalTarget(document.body);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle("search-open", open);
@@ -252,6 +257,116 @@ export default function SiteSearch() {
     }
   }
 
+  const searchLayer = (
+    <section
+      className={`search-page ${open ? "search-page--active" : ""}`}
+      aria-hidden={!open}
+    >
+      <div className="search-page__veil" aria-hidden="true" />
+
+      <div className="search-page__main shell">
+        <div className="search-page__topbar">
+          <div className="search-page__intro">
+            <p className="search-page__eyebrow">SEARCH</p>
+            <h2 className="search-page__title">搜索文章</h2>
+            <p className="search-page__description">
+              这里不再是弹窗，而是像旧博客那样直接接管整页。支持标题、摘要、标签和正文片段搜索。
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="topbar__icon-button topbar__icon-button--search search-page__close"
+            onClick={() => closeSearch()}
+            aria-label="关闭搜索"
+          >
+            <span className="topbar__icon-button__inner">
+              <ArrowDownIcon
+                className="topbar__icon-button__icon"
+                aria-hidden="true"
+                weight="bold"
+              />
+            </span>
+          </button>
+        </div>
+
+        <label className="search-page__field" htmlFor={inputId}>
+          <MagnifyingGlassIcon
+            className="search-page__field-icon"
+            aria-hidden="true"
+            weight="bold"
+          />
+          <input
+            id={inputId}
+            ref={inputRef}
+            type="search"
+            inputMode="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="$ grep 标题 / 标签 / 正文片段"
+            autoComplete="off"
+            spellCheck={false}
+          />
+        </label>
+
+        <div className="search-page__meta">
+          <div>
+            <strong>{panelTitle}</strong>
+            <span>{panelDescription}</span>
+          </div>
+          <p className="search-page__shortcut">Ctrl + K | / | ESC</p>
+        </div>
+
+        <div className="search-page__results" aria-live="polite">
+          {status === "loading" && (
+            <p className="search-page__empty">正在载入搜索索引…</p>
+          )}
+
+          {status === "error" && (
+            <p className="search-page__empty">
+              搜索索引加载失败，请稍后重试。
+            </p>
+          )}
+
+          {status === "ready" && !visibleItems.length && (
+            <p className="search-page__empty">
+              没找到匹配内容，试试更短的标题关键词、标签或正文片段。
+            </p>
+          )}
+
+          {status === "ready" &&
+            visibleItems.map((item) => (
+              <a
+                key={item.url}
+                href={item.url}
+                className="search-page__result"
+                onClick={() => closeSearch(false)}
+              >
+                <div className="search-page__result-head">
+                  <h3>{item.title}</h3>
+                  <span>{item.pubDate}</span>
+                </div>
+
+                {(item.description || item.excerpt) && (
+                  <p className="search-page__result-excerpt">
+                    {item.description || item.excerpt}
+                  </p>
+                )}
+
+                {item.tags.length > 0 && (
+                  <div className="search-page__result-tags">
+                    {item.tags.slice(0, 4).map((tag) => (
+                      <span key={`${item.url}-${tag}`}>{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </a>
+            ))}
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <>
       <div className="topbar__desktop-action">
@@ -267,114 +382,7 @@ export default function SiteSearch() {
           className="topbar__icon-button topbar__icon-button--search"
         />
       </div>
-
-      <section
-        className={`search-page ${open ? "search-page--active" : ""}`}
-        aria-hidden={!open}
-      >
-        <div className="search-page__veil" aria-hidden="true" />
-
-        <div className="search-page__main shell">
-          <div className="search-page__topbar">
-            <div className="search-page__intro">
-              <p className="search-page__eyebrow">SEARCH</p>
-              <h2 className="search-page__title">搜索文章</h2>
-              <p className="search-page__description">
-                这里不再是弹窗，而是像旧博客那样直接接管整页。支持标题、摘要、标签和正文片段搜索。
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="topbar__icon-button topbar__icon-button--search search-page__close"
-              onClick={() => closeSearch()}
-              aria-label="关闭搜索"
-            >
-              <span className="topbar__icon-button__inner">
-                <ArrowDownIcon
-                  className="topbar__icon-button__icon"
-                  aria-hidden="true"
-                  weight="bold"
-                />
-              </span>
-            </button>
-          </div>
-
-          <label className="search-page__field" htmlFor={inputId}>
-            <MagnifyingGlassIcon
-              className="search-page__field-icon"
-              aria-hidden="true"
-              weight="bold"
-            />
-            <input
-              id={inputId}
-              ref={inputRef}
-              type="search"
-              inputMode="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="$ grep 标题 / 标签 / 正文片段"
-              autoComplete="off"
-              spellCheck={false}
-            />
-          </label>
-
-          <div className="search-page__meta">
-            <div>
-              <strong>{panelTitle}</strong>
-              <span>{panelDescription}</span>
-            </div>
-            <p className="search-page__shortcut">Ctrl + K | / | ESC</p>
-          </div>
-
-          <div className="search-page__results" aria-live="polite">
-            {status === "loading" && (
-              <p className="search-page__empty">正在载入搜索索引…</p>
-            )}
-
-            {status === "error" && (
-              <p className="search-page__empty">
-                搜索索引加载失败，请稍后重试。
-              </p>
-            )}
-
-            {status === "ready" && !visibleItems.length && (
-              <p className="search-page__empty">
-                没找到匹配内容，试试更短的标题关键词、标签或正文片段。
-              </p>
-            )}
-
-            {status === "ready" &&
-              visibleItems.map((item) => (
-                <a
-                  key={item.url}
-                  href={item.url}
-                  className="search-page__result"
-                  onClick={() => closeSearch(false)}
-                >
-                  <div className="search-page__result-head">
-                    <h3>{item.title}</h3>
-                    <span>{item.pubDate}</span>
-                  </div>
-
-                  {(item.description || item.excerpt) && (
-                    <p className="search-page__result-excerpt">
-                      {item.description || item.excerpt}
-                    </p>
-                  )}
-
-                  {item.tags.length > 0 && (
-                    <div className="search-page__result-tags">
-                      {item.tags.slice(0, 4).map((tag) => (
-                        <span key={`${item.url}-${tag}`}>{tag}</span>
-                      ))}
-                    </div>
-                  )}
-                </a>
-              ))}
-          </div>
-        </div>
-      </section>
+      {portalTarget ? createPortal(searchLayer, portalTarget) : null}
     </>
   );
 }
