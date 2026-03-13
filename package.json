@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "migrate:posts": "node scripts/migrate-legacy-posts.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.0",

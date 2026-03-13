@@ -1,0 +1,81 @@
+---
+import type { PostEntry } from "../../lib/posts";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  formatPostDate,
+  getPostPathId,
+  getPostUrl,
+  getPublishedPosts,
+} from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+
+  return posts.map((post) => ({
+    params: { slug: getPostPathId(post) },
+    props: { post },
+  }));
+}
+
+type Props = {
+  post: PostEntry;
+};
+
+const { post } = Astro.props;
+const posts = await getPublishedPosts();
+const currentIndex = posts.findIndex((entry) => entry.id === post.id);
+const newerPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
+const olderPost = currentIndex >= 0 ? posts[currentIndex + 1] : null;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={post.data.title}>
+  <article class="shell post-shell">
+    <header class="post-hero">
+      <p class="page-panel__eyebrow">POST / {formatPostDate(post.data.pubDate)}</p>
+      <h1 class="post-hero__title">{post.data.title}</h1>
+      <div class="post-hero__meta">
+        <time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>
+        {post.data.author && <span>{post.data.author}</span>}
+      </div>
+      {post.data.tags.length > 0 && (
+        <div class="post-tags">
+          {post.data.tags.map((tag) => (
+            <a class="post-tag" href={`/tags/${encodeURIComponent(tag)}/`}>
+              {tag}
+            </a>
+          ))}
+        </div>
+      )}
+      {post.data.cover && (
+        <div class="post-cover">
+          <img src={post.data.cover} alt={post.data.title} loading="eager" />
+        </div>
+      )}
+    </header>
+
+    <section class="post-content surface-card">
+      <Content />
+    </section>
+
+    <nav class="post-pagination" aria-label="文章翻页">
+      {newerPost ? (
+        <a class="post-pagination__item" href={getPostUrl(newerPost)}>
+          <span class="post-pagination__label">NEWER</span>
+          <strong>{newerPost.data.title}</strong>
+        </a>
+      ) : (
+        <div class="post-pagination__item is-empty" />
+      )}
+
+      {olderPost ? (
+        <a class="post-pagination__item post-pagination__item--align-end" href={getPostUrl(olderPost)}>
+          <span class="post-pagination__label">OLDER</span>
+          <strong>{olderPost.data.title}</strong>
+        </a>
+      ) : (
+        <div class="post-pagination__item is-empty" />
+      )}
+    </nav>
+  </article>
+</BaseLayout>

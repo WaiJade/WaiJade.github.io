@@ -1,13 +1,47 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { formatPostDate, getPostUrl, getPublishedPosts, groupPostsByYear } from "../lib/posts";
+
+const posts = await getPublishedPosts();
+const postGroups = groupPostsByYear(posts);
 ---
 
-<BaseLayout title="归档">
-  <section class="shell page-panel">
-    <p class="page-panel__eyebrow">归档</p>
-    <h1 class="page-panel__title">归档页骨架已接管</h1>
-    <p class="page-panel__text">
-      这里将在后续阶段接入 `_posts/` 迁移后的文章列表、年份归档与专题分组。阶段一只先建立新的 Astro 路由和页面壳层。
-    </p>
+<BaseLayout title="ARCHIVES">
+  <section class="shell archives-page">
+    <div class="archives-page__intro">
+      <p class="page-panel__eyebrow">ARCHIVES</p>
+      <h1 class="page-panel__title">开始接管旧文章归档</h1>
+      <p class="page-panel__text">
+        旧 `_posts/` 中的文章已经进入新的内容集合。这里先按年份整理为归档入口，后续再补专题、标签聚合和更完整的阅读路径。
+      </p>
+    </div>
+
+    <div class="archives-page__groups">
+      {postGroups.map(([year, yearPosts]) => (
+        <section class="archive-year">
+          <div class="archive-year__label">
+            <span>{year}</span>
+            <small>{yearPosts.length} 篇</small>
+          </div>
+          <div class="archive-year__list">
+            {yearPosts.map((post) => (
+              <a class="archive-item" href={getPostUrl(post)}>
+                <div class="archive-item__main">
+                  <h2 class="archive-item__title">{post.data.title}</h2>
+                  {post.data.description && (
+                    <p class="archive-item__excerpt">{post.data.description}</p>
+                  )}
+                </div>
+                <div class="archive-item__meta">
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {formatPostDate(post.data.pubDate)}
+                  </time>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
   </section>
 </BaseLayout>

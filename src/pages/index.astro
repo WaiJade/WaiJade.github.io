@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { formatPostDate, getPostUrl, getPublishedPosts } from "../lib/posts";
 
 const cards = [
   {
@@ -21,6 +22,8 @@ const cards = [
     href: "/about",
   },
 ];
+
+const latestPosts = (await getPublishedPosts()).slice(0, 3);
 ---
 
 <BaseLayout>
@@ -47,5 +50,30 @@ const cards = [
         <p class="surface-card__body">{card.body}</p>
       </a>
     ))}
+  </section>
+
+  <section class="shell home-posts" aria-label="最新文章">
+    <div class="home-posts__heading">
+      <p class="page-panel__eyebrow">LATEST WRITING</p>
+      <h2 class="surface-card__title">开始回到真正的博客内容</h2>
+    </div>
+    <div class="home-posts__grid">
+      {latestPosts.map((post) => (
+        <a class="post-card" href={getPostUrl(post)}>
+          <p class="post-card__meta">{formatPostDate(post.data.pubDate)}</p>
+          <h3 class="post-card__title">{post.data.title}</h3>
+          {post.data.description && (
+            <p class="post-card__excerpt">{post.data.description}</p>
+          )}
+          {post.data.tags.length > 0 && (
+            <div class="post-card__tags">
+              {post.data.tags.slice(0, 3).map((tag) => (
+                <span>{tag}</span>
+              ))}
+            </div>
+          )}
+        </a>
+      ))}
+    </div>
   </section>
 </BaseLayout>

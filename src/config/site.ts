@@ -9,7 +9,7 @@ export type SocialItem = {
 };
 
 export const site = {
-  title: "WaiJade",
+  title: "WaiJade's Blog",
   description: "一个基于 Astro、React、Tailwind、Radix UI 与 MDX 重构中的静态个人博客。",
   url: "https://blog.waijade.cn",
   author: "WaiJade",
