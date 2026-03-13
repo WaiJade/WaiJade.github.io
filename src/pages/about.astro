@@ -1,13 +1,23 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const aboutPage = (await getCollection("pages")).find((entry) => entry.id === "about.mdx");
+
+if (!aboutPage) {
+  throw new Error("缺少 src/content/pages/about.mdx");
+}
+
+const { Content } = await aboutPage.render();
 ---
 
-<BaseLayout title="ABOUT">
+<BaseLayout title={aboutPage.data.title} description={aboutPage.data.description}>
   <section class="shell page-panel">
-    <p class="page-panel__eyebrow">关于重构</p>
-    <h1 class="page-panel__title">关于这次重构</h1>
-    <p class="page-panel__text">
-      新站将保持个人博客的内容重心，但在视觉和结构上彻底摆脱旧模板。当前页面是阶段一占位页，后续会迁入正式内容。
-    </p>
+    <p class="page-panel__eyebrow">ABOUT</p>
+    <div class="article-body-panel page-panel__body">
+      <section class="article-content">
+        <Content />
+      </section>
+    </div>
   </section>
 </BaseLayout>
