@@ -52,22 +52,7 @@ const hasToc = tocHeadings.length > 0;
       )}
     </header>
 
-    <div class:list={["article-body-wrap", hasToc && "article-layout--with-toc"]}>
-      {hasToc && (
-        <aside class="article-toc" aria-label="文章目录">
-          <div class="article-toc__inner">
-            <p class="article-toc__eyebrow">Contents</p>
-            <ol class="article-toc__list">
-              {tocHeadings.map((heading) => (
-                <li class:list={["article-toc__item", `is-depth-${heading.depth}`]}>
-                  <a href={`#${heading.slug}`}>{heading.text}</a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </aside>
-      )}
-
+    <div class="article-body-wrap">
       <section class="article-body-panel">
         <section class="article-content">
           <Content />
