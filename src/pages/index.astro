@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const cards = [
+  {
+    title: "ARCHITECTURE",
+    body: "Astro now owns the site shell. The legacy Jekyll runtime is being removed instead of preserved.",
+    href: "/archives",
+  },
+  {
+    title: "CONTENT MODEL",
+    body: "Posts, pages, and notes will move into content collections with centralized site configuration.",
+    href: "/tags",
+  },
+  {
+    title: "VISUAL DIRECTION",
+    body: "The new site keeps the atmospheric glow, floating nav, and glass-card language while staying blog-first.",
+    href: "/about",
+  },
+];
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="hero__content shell">
+      <p class="hero__eyebrow">ASTRO REBUILD / PHASE 1</p>
+      <h1 class="hero__title">A static blog rebuilt from the ground up.</h1>
+      <p class="hero__lead">
+        旧 Jekyll 模板已经退出主流程。现在开始由 Astro、React、Tailwind 和
+        Radix UI 接管整个站点骨架。
+      </p>
+      <div class="hero__actions">
+        <a class="button-primary" href="/archives">查看归档</a>
+        <a class="button-secondary" href="/about">阅读说明</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell section-grid" aria-label="阶段一说明卡片">
+    {cards.map((card) => (
+      <a class="surface-card" href={card.href}>
+        <p class="surface-card__eyebrow">{card.title}</p>
+        <p class="surface-card__body">{card.body}</p>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

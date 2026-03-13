@@ -1,0 +1,20 @@
+---
+import { site } from "../../config/site";
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__title">{site.title}</p>
+    <p class="site-footer__copy">
+      Phase 1 of the full Astro rebuild is now live. Content migration will follow in
+      later phases.
+    </p>
+    <div class="site-footer__links">
+      {site.social.map((item) => (
+        <a href={item.href} target="_blank" rel="noreferrer">
+          {item.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</footer>

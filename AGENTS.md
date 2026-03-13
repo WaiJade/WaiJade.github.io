@@ -1,44 +1,57 @@
 # Repository Guidelines
 
 ## 当前阶段
-- 本仓库正在从旧 Jekyll 博客模板重构为新的 Astro 静态博客站。
+- 本仓库正在从旧 Jekyll 博客模板完全重构为新的 Astro 静态博客站。
 - 后续所有分析、设计、实现任务开始前，必须先阅读根目录的 `BLOG_REBUILD_PLAN.md`。
-- 当现有仓库中的旧目录、旧命令或旧模板结构与 `BLOG_REBUILD_PLAN.md` 冲突时，以计划文档中的目标架构、迁移阶段和界面方向为准。
-- 在重构完成前，不应继续把旧模板体系当作长期标准来扩展。
+- 旧 Jekyll 站点不再作为并存方案保留；若仓库中仍有遗留文件，只能视为迁移素材，不得继续按旧模板思路扩展。
+- 当仓库现状与 `BLOG_REBUILD_PLAN.md` 冲突时，以计划文档中的目标架构、迁移阶段和界面方向为准。
 
 ## 沟通与协作规则
-- 与用户交流必须使用中文；计划、变更说明、问题反馈也统一使用中文。
-- 回复时先给可执行结论，再补充必要细节，避免空泛表述。
-- 修改仓库前先确认影响范围；若涉及页面结构、文章展示或资源路径，说明受影响页面。
+- 与用户交流必须使用中文。
+- 解释、计划、变更说明、问题反馈均使用中文。
+- 每次回复优先给出可执行结论，再补充必要细节。
 
-## 项目结构与模块组织
-- 当前仓库仍保留旧 Jekyll 结构，但这只是重构过渡期现状，不是最终目标架构。
-- 新站的目标结构、内容模型和页面分层以 `BLOG_REBUILD_PLAN.md` 为准。
-- `_posts/`：文章正文，文件名使用 `YYYY-MM-DD-title.md`。
-- `_layouts/` 与 `_includes/`：Jekyll/Liquid 模板，控制页面骨架、导航、页头页脚等公共片段。
-- `less/`：样式源码；`css/`：编译后的样式文件。优先修改 `less/`，不要直接手改压缩产物。
-- `js/`：站点脚本，优先修改未压缩源文件，再生成对应 `.min.js`。
-- `img/`、`fonts/`、`pwa/`、`download/`：静态资源；`_doc/`：项目说明文档。
+## 项目结构
+- 新站以 `src/` 为核心目录：
+  - `src/pages/`：页面路由。
+  - `src/layouts/`：页面布局。
+  - `src/components/`：Astro 与 React 组件。
+  - `src/content/`：文章、单页和内容 schema。
+  - `src/config/`：站点级配置。
+  - `src/styles/`：全局样式与设计令牌。
+- `public/`：静态资源输出目录。
+- `_posts/`、`img/` 等旧目录如果仍存在，只作为迁移素材来源，不应继续视为新站源码目录。
 
-## 构建、开发与验证命令
-- 以下命令主要服务于旧 Jekyll 模板；在 Astro 重构阶段，它们属于过渡期参考，而不是新站的长期命令体系。
+## 常用命令
 ```bash
-bundle install   # 安装 Jekyll 相关 Ruby 依赖
-npm install      # 安装 Grunt 相关前端依赖
-npm start        # 本地启动 Jekyll 预览，默认 http://127.0.0.1:4000
-npm run dev      # 同时运行 grunt watch 与 Jekyll 预览
-grunt            # 编译 less、压缩 JS、补充 banner
+npm install      # 安装依赖
+npm run dev      # 启动 Astro 开发环境
+npm run build    # 生成静态构建产物
+npm run preview  # 预览构建结果
+npm run check    # 运行 Astro/TypeScript 检查
 ```
-- 修改 `less/` 或 `js/` 后，提交前至少执行一次 `grunt` 或 `npm run dev` 验证生成结果。
-- 当前无自动化测试，默认以本地预览手动检查首页、文章页、导航、搜索或 PWA 相关改动。
+- 提交前至少执行一次 `npm run build`；涉及类型、内容 schema 或路由时同时执行 `npm run check`。
 
-## 编码风格与命名
-- 保持现有仓库风格：JS、Grunt、YAML 以 4 空格缩进为主，Markdown Front Matter 简洁明确。
-- 资源文件名建议使用小写加连字符；文章与图片目录名称应可读、稳定，不频繁改名。
-- 模板改动遵循现有 Jekyll/Liquid 结构，不引入仓库内未使用的新构建工具。
+## 代码风格
+- Astro、TypeScript、React 代码统一使用 2 空格缩进。
+- 变量/函数使用 `camelCase`，组件与文件使用 `PascalCase`。
+- 资源文件名使用小写加连字符；frontmatter 保持简洁、稳定。
+- 站点级信息集中在 `src/config/site.ts`，内容模型集中在 `src/content/config.ts`，避免配置散落。
 
-## 提交与 Pull Request 规范
-- 每完成一个独立功能或一组紧密相关修改，立即执行一次 `git commit`。
-- 提交格式强制使用 `type(scope): subject`，`subject` 必须为简体中文；如有 `body`，也必须为简体中文。
-- 示例：`feat(posts): 添加朝圣路的排版修正`、`fix(pwa): 修正离线缓存路径`
-- Pull Request 需写清变更范围、验证方式、影响页面；涉及视觉或布局调整时附截图。
+## 提交规范（强制）
+- 每完成一个独立功能或一组紧密相关修改，必须立即执行一次 `git commit`。
+- 提交格式：`type(scope): subject`，可选 body。
+- 提交信息必须使用简体中文书写：
+  - `subject` 必须是简体中文。
+  - 若有 `body`，`body` 也必须是简体中文。
+- 示例：
+  - `feat(astro): 初始化阶段一重构骨架`
+  - `fix(nav): 修正移动端抽屉菜单滚动问题`
+
+## 文件规模限制（强制）
+- 单个源码文件不应超过 1000 行。
+- 当文件接近或超过 1000 行时，必须及时拆分文件，避免继续堆叠逻辑。
+- 拆分优先级建议：
+  - 页面按模块拆分为子组件。
+  - 样式按功能拆分并在入口统一引入。
+  - 工具函数与配置常量拆到独立文件。
