@@ -1,15 +1,20 @@
 ---
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import aboutSource from "../content/pages/about.mdx?raw";
 import "../styles/about.css";
 
 const aboutPage = (await getCollection("pages")).find((entry) => entry.id === "about.mdx");
+const aboutBody = aboutSource.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
+const aboutParagraphs = Array.from(aboutBody.matchAll(/<p>([\s\S]*?)<\/p>/g), (match) => match[1].trim()).filter(Boolean);
 
 if (!aboutPage) {
   throw new Error("缺少 src/content/pages/about.mdx");
 }
 
-const { Content } = await aboutPage.render();
+if (!aboutParagraphs.length) {
+  throw new Error("src/content/pages/about.mdx 缺少正文段落");
+}
 ---
 
 <BaseLayout title={aboutPage.data.title} description={aboutPage.data.description}>
@@ -22,9 +27,7 @@ const { Content } = await aboutPage.render();
         </h1>
         <div class="about-section__copy">
           {aboutPage.data.lead && <p class="about-section__lead" set:html={aboutPage.data.lead} />}
-          <div class="about-section__body">
-            <Content />
-          </div>
+          {aboutParagraphs.map((paragraph) => <p class="about-section__text" set:html={paragraph} />)}
         </div>
       </div>
     </div>
