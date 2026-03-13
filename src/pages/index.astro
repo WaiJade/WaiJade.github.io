@@ -1,30 +1,16 @@
 ---
+import PostIndexList from "../components/posts/PostIndexList.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import {
-  formatPostDate,
-  getPostExcerpt,
-  getPostUrl,
-  getPublishedPosts,
-} from "../lib/posts";
+import { getPublishedPosts, paginatePosts } from "../lib/posts";
 
-const posts = await getPublishedPosts();
+const allPosts = await getPublishedPosts();
+const pagination = paginatePosts(allPosts, 1);
 ---
 
 <BaseLayout>
-  <section class="shell home-index" aria-label="文章索引">
-    {posts.map((post) => (
-      <article class="post-preview">
-        <a class="post-preview__link" href={getPostUrl(post)}>
-          <h2 class="post-preview__title">{post.data.title}</h2>
-          {post.data.description && (
-            <h3 class="post-preview__subtitle">{post.data.description}</h3>
-          )}
-          <div class="post-preview__excerpt">{getPostExcerpt(post, 200, false)}</div>
-        </a>
-        <p class="post-preview__meta">
-          Posted by {post.data.author || "WaiJade"} on {formatPostDate(post.data.pubDate)}
-        </p>
-      </article>
-    ))}
-  </section>
+  <PostIndexList
+    posts={pagination?.posts ?? []}
+    currentPage={pagination?.currentPage ?? 1}
+    totalPages={pagination?.totalPages ?? 1}
+  />
 </BaseLayout>

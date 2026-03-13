@@ -1,0 +1,36 @@
+---
+import PostIndexList from "../../components/posts/PostIndexList.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { POSTS_PER_PAGE, getPublishedPosts, paginatePosts } from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const allPosts = await getPublishedPosts();
+  const totalPages = Math.max(1, Math.ceil(allPosts.length / POSTS_PER_PAGE));
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => {
+    const currentPage = index + 2;
+    const pagination = paginatePosts(allPosts, currentPage, POSTS_PER_PAGE);
+
+    return {
+      params: { page: String(currentPage) },
+      props: {
+        posts: pagination?.posts ?? [],
+        currentPage,
+        totalPages,
+      },
+    };
+  });
+}
+
+type Props = {
+  posts: Awaited<ReturnType<typeof getPublishedPosts>>;
+  currentPage: number;
+  totalPages: number;
+};
+
+const { posts, currentPage, totalPages } = Astro.props;
+---
+
+<BaseLayout title={`PAGE ${currentPage}`}>
+  <PostIndexList posts={posts} currentPage={currentPage} totalPages={totalPages} />
+</BaseLayout>

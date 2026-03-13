@@ -1,0 +1,56 @@
+---
+import {
+  formatPostDate,
+  getIndexPageUrl,
+  getPostExcerpt,
+  getPostUrl,
+  type PostEntry,
+} from "../../lib/posts";
+
+type Props = {
+  posts: PostEntry[];
+  currentPage: number;
+  totalPages: number;
+};
+
+const { posts, currentPage, totalPages } = Astro.props;
+const previousUrl = currentPage > 1 ? getIndexPageUrl(currentPage - 1) : null;
+const nextUrl = currentPage < totalPages ? getIndexPageUrl(currentPage + 1) : null;
+---
+
+<section class="shell home-index" aria-label="文章索引">
+  {posts.map((post) => (
+    <article class="post-preview">
+      <a class="post-preview__link" href={getPostUrl(post)}>
+        <h2 class="post-preview__title">{post.data.title}</h2>
+        {post.data.description && (
+          <h3 class="post-preview__subtitle">{post.data.description}</h3>
+        )}
+        <div class="post-preview__excerpt">{getPostExcerpt(post, 200, false)}</div>
+      </a>
+      <p class="post-preview__meta">
+        Posted by {post.data.author || "WaiJade"} on {formatPostDate(post.data.pubDate)}
+      </p>
+    </article>
+  ))}
+
+  {totalPages > 1 && (
+    <ul class="pager" aria-label="首页翻页">
+      {previousUrl ? (
+        <li class="pager__item pager__item--previous">
+          <a class="pager__link" href={previousUrl}>
+            &larr; 上一页
+          </a>
+        </li>
+      ) : null}
+
+      {nextUrl ? (
+        <li class="pager__item pager__item--next">
+          <a class="pager__link" href={nextUrl}>
+            下一页 &rarr;
+          </a>
+        </li>
+      ) : null}
+    </ul>
+  )}
+</section>

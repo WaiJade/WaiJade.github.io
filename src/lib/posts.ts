@@ -1,6 +1,7 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 
 export type PostEntry = CollectionEntry<"posts">;
+export const POSTS_PER_PAGE = 10;
 
 export function getPostPathId(post: Pick<PostEntry, "id"> | string) {
   const id = typeof post === "string" ? post : post.id;
@@ -19,6 +20,10 @@ export function getPostUrl(post: Pick<PostEntry, "id"> | string) {
     .split("/")
     .map((segment) => encodeURIComponent(segment))
     .join("/")}/`;
+}
+
+export function getIndexPageUrl(page: number) {
+  return page <= 1 ? "/" : `/page/${page}/`;
 }
 
 export function formatPostDate(date: Date) {
@@ -90,4 +95,25 @@ export function getTagStats(posts: PostEntry[]) {
   return [...stats.entries()]
     .map(([tag, count]) => ({ tag, count }))
     .sort((left, right) => right.count - left.count || left.tag.localeCompare(right.tag));
+}
+
+export function paginatePosts(
+  posts: PostEntry[],
+  currentPage: number,
+  pageSize = POSTS_PER_PAGE,
+) {
+  const totalPages = Math.max(1, Math.ceil(posts.length / pageSize));
+
+  if (currentPage < 1 || currentPage > totalPages) {
+    return null;
+  }
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+
+  return {
+    posts: posts.slice(startIndex, endIndex),
+    currentPage,
+    totalPages,
+  };
 }
