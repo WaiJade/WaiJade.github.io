@@ -1,13 +1,28 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getPublishedPosts, getTagStats } from "../lib/posts";
+
+const posts = await getPublishedPosts();
+const tags = getTagStats(posts);
 ---
 
-<BaseLayout title="标签">
-  <section class="shell page-panel">
-    <p class="page-panel__eyebrow">标签</p>
-    <h1 class="page-panel__title">标签页将在内容迁移后接入</h1>
-    <p class="page-panel__text">
-      阶段一只固定博客路由和导航结构，后续会依据 content collections 自动生成标签列表与对应文章聚合页。
-    </p>
+<BaseLayout title="TAGS">
+  <section class="shell tags-page">
+    <div class="tags-page__intro">
+      <p class="page-panel__eyebrow">TAGS</p>
+      <h1 class="page-panel__title">以主题重新组织文章</h1>
+      <p class="page-panel__text">
+        这里先接入标签总览。下一步会继续补单个标签页、相关文章联动和更完整的内容浏览路径。
+      </p>
+    </div>
+
+    <div class="tags-page__grid">
+      {tags.map((item) => (
+        <a class="tag-card" href={`/tags/${encodeURIComponent(item.tag)}/`}>
+          <span class="tag-card__count">{item.count}</span>
+          <h2 class="tag-card__title">{item.tag}</h2>
+        </a>
+      ))}
+    </div>
   </section>
 </BaseLayout>
