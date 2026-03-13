@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { site } from "../../config/site";
 import MobileNav from "./MobileNav";
-import ThemeToggle from "./ThemeToggle";
 
 type SiteHeaderProps = {
   currentPath: string;
@@ -56,11 +55,7 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
               ))}
             </ul>
           </nav>
-          <div className="topbar__desktop-action">
-            <ThemeToggle />
-          </div>
           <div className="topbar__mobile-actions">
-            <ThemeToggle />
             <MobileNav
               currentPath={currentPath}
               nav={site.nav}

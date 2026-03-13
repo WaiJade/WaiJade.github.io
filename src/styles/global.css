@@ -14,6 +14,13 @@
   --grid-line: rgba(255, 255, 255, 0.08);
   --hero-grid-opacity: 0.38;
   --hero-bright-opacity: 1;
+  --nav-btn-bg: rgba(255, 255, 255, 0.06);
+  --nav-active-color: rgba(255, 255, 255, 0.92);
+  --nav-active-bg: color-mix(in srgb, var(--nav-active-color) 18%, transparent);
+  --nav-active-bg-hover: color-mix(in srgb, var(--nav-active-color) 26%, transparent);
+  --nav-active-bg-active: color-mix(in srgb, var(--nav-active-color) 34%, transparent);
+  --nav-indicator: rgba(255, 255, 255, 0.1);
+  --nav-indicator-active: rgba(255, 255, 255, 0.16);
 }
 
 html {
@@ -32,6 +39,13 @@ html:not(.dark) {
   --accent: #465fbc;
   --accent-strong: #26366e;
   --grid-line: rgba(70, 95, 188, 0.12);
+  --nav-btn-bg: rgba(70, 95, 188, 0.08);
+  --nav-active-color: rgba(16, 23, 45, 0.92);
+  --nav-active-bg: color-mix(in srgb, var(--accent) 18%, transparent);
+  --nav-active-bg-hover: color-mix(in srgb, var(--accent) 24%, transparent);
+  --nav-active-bg-active: color-mix(in srgb, var(--accent) 30%, transparent);
+  --nav-indicator: rgba(16, 23, 45, 0.06);
+  --nav-indicator-active: rgba(16, 23, 45, 0.11);
 }
 
 * {
@@ -250,10 +264,11 @@ html:not(.dark) .topbar__brand img {
   justify-content: center;
   min-height: 40px;
   padding: 0 16px;
-  border-radius: 999px;
+  border-radius: 14px;
+  background: var(--nav-btn-bg);
   color: var(--muted);
   font-family: "Ubuntu Mono", "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   transition:
@@ -262,14 +277,30 @@ html:not(.dark) .topbar__brand img {
     transform 0.18s ease;
 }
 
-.topbar__nav a:hover,
-.topbar__nav a.is-active {
+.topbar__nav a:hover {
   color: var(--foreground);
-  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  background: var(--nav-indicator);
 }
 
-.topbar__nav a:hover {
-  transform: translateY(-1px);
+.topbar__nav a:active {
+  background: var(--nav-indicator-active);
+  transform: scale(0.98);
+}
+
+.topbar__nav a.is-active {
+  background: var(--nav-active-bg);
+  color: var(--nav-active-color);
+}
+
+.topbar__nav a.is-active:hover {
+  background: var(--nav-active-bg-hover);
+  color: var(--nav-active-color);
+}
+
+.topbar__nav a.is-active:active {
+  background: var(--nav-active-bg-active);
+  color: var(--nav-active-color);
+  transform: scale(0.98);
 }
 
 .topbar__desktop-action,
