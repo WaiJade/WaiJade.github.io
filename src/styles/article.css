@@ -9,16 +9,7 @@
   margin: 0 auto 1.8rem;
 }
 
-.article-header__topline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.article-header__eyebrow,
-.article-header__status {
+.article-header__eyebrow {
   margin: 0;
   color: var(--accent);
   font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
@@ -26,10 +17,6 @@
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-}
-
-.article-header__status {
-  color: color-mix(in srgb, var(--foreground) 55%, transparent);
 }
 
 .article-header__title {
@@ -86,7 +73,7 @@
 }
 
 .article-body-wrap {
-  max-width: min(920px, 100%);
+  width: min(100%, 1180px);
   margin: 0 auto;
 }
 
@@ -415,9 +402,9 @@
 
 @media (min-width: 960px) {
   .article-layout {
-    grid-template-columns: minmax(0, 1fr) 260px;
+    grid-template-columns: minmax(0, 820px) 260px;
+    justify-content: center;
     gap: 1.3rem;
-    max-width: min(1180px, 100%);
   }
 
   .article-toc {

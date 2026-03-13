@@ -36,10 +36,7 @@ const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.
 <BaseLayout title={post.data.title} description={pageDescription}>
   <article class="shell article-page">
     <header class="article-header">
-      <div class="article-header__topline">
-        <p class="article-header__eyebrow">Article / {formatPostDate(post.data.pubDate)}</p>
-        <p class="article-header__status">{post.data.author || "WaiJade"}</p>
-      </div>
+      <p class="article-header__eyebrow">Article / {formatPostDate(post.data.pubDate)}</p>
       <h1 class="article-header__title">{post.data.title}</h1>
       {summary && <p class="article-header__summary">{summary}</p>}
       {post.data.tags.length > 0 && (
