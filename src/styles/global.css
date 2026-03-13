@@ -6,8 +6,10 @@
 
 @font-face {
   font-family: "NSourceSong";
-  src: url("https://astrobox-statics.waterflames.cn/NSourceSong_Headline.woff2")
-    format("woff2");
+  src:
+    url("/fonts/NSourceSong_Headline.woff2") format("woff2"),
+    url("https://astrobox-statics.waterflames.cn/NSourceSong_Headline.woff2")
+      format("woff2");
   font-display: swap;
 }
 
