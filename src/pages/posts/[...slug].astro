@@ -2,6 +2,7 @@
 import type { PostEntry } from "../../lib/posts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FloatingToc from "../../components/posts/FloatingToc";
+import { site } from "../../config/site";
 import {
   formatPostDate,
   getPostPathId,
@@ -32,7 +33,7 @@ const pageDescription = post.data.description || getPostExcerpt(post, 180, false
 const summary = post.data.description?.trim();
 const { Content, headings } = await post.render();
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
-const hasToc = tocHeadings.length > 0;
+const hasToc = site.features.showToc && tocHeadings.length > 0;
 ---
 
 <BaseLayout title={post.data.title} description={pageDescription}>

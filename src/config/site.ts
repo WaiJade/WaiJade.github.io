@@ -27,6 +27,9 @@ export const site = {
     { label: "GitHub", href: "https://github.com/CheongSzesuen" },
     { label: "BandBBS", href: "https://www.bandbbs.cn/members/344224/" },
   ] satisfies SocialItem[],
+  features: {
+    showToc: false,
+  },
   theme: {
     defaultMode: "dark" as const,
   },
