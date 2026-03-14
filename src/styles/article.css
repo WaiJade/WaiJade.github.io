@@ -319,9 +319,8 @@
 
 .content-writing-time {
   display: block;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
-  margin-left: auto;
   text-align: right;
 }
 
@@ -330,9 +329,8 @@
 .article-content p[align="right"]:not(:has(a, sup)),
 .note-page__content p[align="right"]:not(:has(a, sup)) {
   display: block;
-  width: fit-content;
+  width: 100%;
   max-width: 100%;
-  margin-left: auto;
   text-align: right;
 }
 
