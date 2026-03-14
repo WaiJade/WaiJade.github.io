@@ -34,9 +34,35 @@ const summary = post.data.description?.trim();
 const { Content, headings } = await post.render();
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const hasToc = site.features.showToc && tocHeadings.length > 0;
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: pageDescription,
+  author: {
+    "@type": "Person",
+    name: site.author,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: site.title,
+  },
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  mainEntityOfPage: new URL(getPostUrl(post), site.url).toString(),
+  keywords: post.data.tags,
+};
 ---
 
-<BaseLayout title={post.data.title} description={pageDescription}>
+<BaseLayout
+  title={post.data.title}
+  description={pageDescription}
+  ogType="article"
+  keywords={post.data.tags}
+  publishedTime={post.data.pubDate.toISOString()}
+  updatedTime={(post.data.updatedDate ?? post.data.pubDate).toISOString()}
+  articleTags={post.data.tags}
+>
   <article class="shell article-page">
     <header class="article-header">
       <p class="article-header__eyebrow">Article / {formatPostDate(post.data.pubDate)}</p>
@@ -45,7 +71,7 @@ const hasToc = site.features.showToc && tocHeadings.length > 0;
       {post.data.tags.length > 0 && (
         <div class="article-tags" aria-label="文章标签">
           {post.data.tags.map((tag) => (
-            <a class="article-tag" href={`/tags/${encodeURIComponent(tag)}/`}>
+            <a class="article-tag" href={`/archives/?tag=${encodeURIComponent(tag)}`}>
               {tag}
             </a>
           ))}
@@ -83,4 +109,5 @@ const hasToc = site.features.showToc && tocHeadings.length > 0;
 
     {hasToc && <FloatingToc client:load headings={tocHeadings} />}
   </article>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
 </BaseLayout>

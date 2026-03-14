@@ -1,0 +1,104 @@
+.archive-browser {
+  display: grid;
+  gap: 1.6rem;
+}
+
+.archive-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.archive-filter__tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 2rem;
+  padding: 0 0.85rem;
+  border: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--foreground) 6%, transparent);
+  color: color-mix(in srgb, var(--foreground) 76%, transparent);
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background-color 0.22s ease,
+    color 0.22s ease,
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease;
+}
+
+.archive-filter__tag sup {
+  font-size: 0.68rem;
+  line-height: 1;
+  opacity: 0.82;
+}
+
+.archive-filter__tag:hover {
+  background: color-mix(in srgb, var(--foreground) 10%, transparent);
+  color: var(--foreground);
+}
+
+.archive-filter__tag:active {
+  transform: scale(0.98);
+}
+
+.archive-filter__tag.is-active {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--foreground);
+  box-shadow: 0 10px 24px rgba(3, 7, 18, 0.14);
+}
+
+.archive-filter__tag--all {
+  font-weight: 800;
+}
+
+.archive-browser__status {
+  display: flex;
+  align-items: center;
+  min-height: 1.5rem;
+}
+
+.archive-browser__status p {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.archive-browser__status strong {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.archive-browser__status span {
+  color: color-mix(in srgb, var(--foreground) 52%, transparent);
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .archive-browser {
+    gap: 1.2rem;
+  }
+
+  .archive-filter {
+    gap: 0.45rem;
+  }
+
+  .archive-filter__tag {
+    min-height: 1.9rem;
+    padding: 0 0.72rem;
+    font-size: 0.76rem;
+  }
+}

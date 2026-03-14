@@ -1,9 +1,28 @@
 ---
+import ArchiveFilter from "../components/archives/ArchiveFilter";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { formatPostDate, getPostUrl, getPublishedPosts, groupPostsByYear } from "../lib/posts";
+import "../styles/archives.css";
+import {
+  formatPostDate,
+  getPostUrl,
+  getPublishedPosts,
+  getTagStats,
+  groupPostsByYear,
+} from "../lib/posts";
 
 const posts = await getPublishedPosts();
 const postGroups = groupPostsByYear(posts);
+const archiveGroups = postGroups.map(([year, yearPosts]) => ({
+  year,
+  posts: yearPosts.map((post) => ({
+    title: post.data.title,
+    url: getPostUrl(post),
+    date: formatPostDate(post.data.pubDate),
+    dateTime: post.data.pubDate.toISOString(),
+    tags: post.data.tags,
+  })),
+}));
+const tagStats = getTagStats(posts);
 ---
 
 <BaseLayout title="ARCHIVES">
@@ -12,36 +31,10 @@ const postGroups = groupPostsByYear(posts);
       <p class="page-panel__eyebrow">ARCHIVES</p>
       <h1 class="page-panel__title archives-page__title">文章归档</h1>
       <p class="page-panel__text">
-        此页按年份整理本站已发布内容，便于检索、回顾与持续阅读。
+        此页按年份整理本站文章，并支持直接按标签筛选，便于检索、回顾与持续阅读。
       </p>
     </div>
 
-    <div class="archives-page__groups">
-      {postGroups.map(([year, yearPosts]) => (
-        <section class="archive-year">
-          <div class="archive-year__label">
-            <span>{year}</span>
-            <small>{yearPosts.length} 篇</small>
-          </div>
-          <div class="archive-year__list">
-            {yearPosts.map((post) => (
-              <a class="archive-item" href={getPostUrl(post)}>
-                <div class="archive-item__main">
-                  <h2 class="archive-item__title">{post.data.title}</h2>
-                  {post.data.description && (
-                    <p class="archive-item__excerpt">{post.data.description}</p>
-                  )}
-                </div>
-                <div class="archive-item__meta">
-                  <time datetime={post.data.pubDate.toISOString()}>
-                    {formatPostDate(post.data.pubDate)}
-                  </time>
-                </div>
-              </a>
-            ))}
-          </div>
-        </section>
-      ))}
-    </div>
+    <ArchiveFilter client:load groups={archiveGroups} tags={tagStats} />
   </section>
 </BaseLayout>
