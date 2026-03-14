@@ -11,7 +11,6 @@ export type SocialItem = {
 import { siteControls } from "./site-controls";
 
 const features = siteControls.features;
-const isDev = import.meta.env.DEV;
 
 export const site = {
   title: "WaiJade's BLOG",
@@ -27,7 +26,6 @@ export const site = {
     ...(features.showNotes ? ([{ label: "NOTES", href: "/notes" }] satisfies NavItem[]) : []),
     { label: "ARCHIVES", href: "/archives" },
     { label: "ABOUT", href: "/about" },
-    ...(isDev ? ([{ label: "CONSOLE", href: "/console" }] satisfies NavItem[]) : []),
   ] satisfies NavItem[],
   social: [
     { label: "GitHub", href: "https://github.com/CheongSzesuen" },

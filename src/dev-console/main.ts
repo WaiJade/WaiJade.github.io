@@ -199,6 +199,28 @@ function renderFeatureList() {
     .join("");
 }
 
+function renderLoadingGroup(kind: "feature" | "post", count: number) {
+  return `<div class="dev-console__group dev-console__group--loading" role="status" aria-live="polite">
+    <p class="dev-console__loading-hint">正在加载…</p>
+    ${Array.from({ length: count }, () => {
+      return `<div class="dev-console__item is-loading">
+        <span class="dev-console__loading-icon" aria-hidden="true"></span>
+        <div class="dev-console__copy">
+          <span class="dev-console__loading-bar dev-console__loading-bar--title" aria-hidden="true"></span>
+          ${
+            kind === "post"
+              ? `<p class="dev-console__loading-text">正在加载…</p>`
+              : `<span class="dev-console__loading-bar dev-console__loading-bar--desc" aria-hidden="true"></span>`
+          }
+        </div>
+        <div class="dev-console__actions">
+          <span class="dev-console__loading-switch" aria-hidden="true"></span>
+        </div>
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
 function renderPostVisibilityList(posts: PostItem[]) {
   if (posts.length === 0) {
     return `<div class="dev-console__group"><p class="dev-console__empty">当前没有文章。</p></div>`;
@@ -241,6 +263,7 @@ function renderPostVisibilityList(posts: PostItem[]) {
 }
 
 function render() {
+  const isLoading = currentState === null;
   const allPosts = getSortedPosts(currentState);
   const dirty = hasPendingChanges();
 
@@ -256,18 +279,20 @@ function render() {
     <div class="dev-console__sections">
       <section class="dev-console__section">
         <p class="dev-console__section-title">网站功能</p>
-        <div class="dev-console__group">
-          ${renderFeatureList()}
-        </div>
+        ${
+          isLoading
+            ? renderLoadingGroup("feature", featureConfig.length)
+            : `<div class="dev-console__group">${renderFeatureList()}</div>`
+        }
       </section>
 
       <section class="dev-console__section">
-        <p class="dev-console__section-title">文章显示 · ${String(allPosts.length)}</p>
-        ${renderPostVisibilityList(allPosts)}
+        <p class="dev-console__section-title">文章显示${isLoading ? " · 正在加载" : ` · ${String(allPosts.length)}`}</p>
+        ${isLoading ? renderLoadingGroup("post", 5) : renderPostVisibilityList(allPosts)}
       </section>
     </div>
 
-    <div class="dev-console__floating-actions" data-visible="${String(dirty)}">
+    <div class="dev-console__floating-actions" data-visible="${String(!isLoading && dirty)}">
       <button
         type="button"
         class="dev-console__floating-button dev-console__floating-button--secondary"

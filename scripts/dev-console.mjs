@@ -357,6 +357,102 @@ function getConsoleHtml() {
         backdrop-filter: blur(24px);
       }
 
+      .dev-console-shell__loading {
+        display: grid;
+        gap: 14px;
+      }
+
+      .dev-console-shell__loading-text {
+        margin: 0;
+        color: var(--console-muted);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .dev-console-shell__loading-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .dev-console-shell__loading-icon,
+      .dev-console-shell__loading-bar,
+      .dev-console-shell__loading-switch {
+        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .dev-console-shell__loading-icon::after,
+      .dev-console-shell__loading-bar::after,
+      .dev-console-shell__loading-switch::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.12) 45%,
+          rgba(255, 255, 255, 0.24) 50%,
+          rgba(255, 255, 255, 0.12) 55%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        background-size: 220% 100%;
+        animation: dev-console-shell-wave 1.55s linear infinite;
+      }
+
+      .dev-console-shell__loading-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        flex-shrink: 0;
+      }
+
+      .dev-console-shell__loading-copy {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .dev-console-shell__loading-bar {
+        display: block;
+        height: 13px;
+        border-radius: 999px;
+      }
+
+      .dev-console-shell__loading-bar--title {
+        width: min(180px, 68%);
+      }
+
+      .dev-console-shell__loading-bar--desc {
+        width: min(260px, 92%);
+        margin-top: 6px;
+        opacity: 0.8;
+      }
+
+      .dev-console-shell__loading-switch {
+        width: 54px;
+        height: 32px;
+        border-radius: 999px;
+      }
+
+      @keyframes dev-console-shell-wave {
+        from {
+          background-position: 200% 0;
+        }
+
+        to {
+          background-position: -200% 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .dev-console-shell__loading-icon::after,
+        .dev-console-shell__loading-bar::after,
+        .dev-console-shell__loading-switch::after {
+          animation: none;
+        }
+      }
+
       @media (max-width: 720px) {
         .dev-console-shell {
           width: min(100vw - 1.2rem, 880px);
@@ -420,7 +516,25 @@ function getConsoleHtml() {
           正在加载控制台内容。如果这里长期为空，先看浏览器控制台里的模块或缓存报错。
         </p>
         <div class="dev-console-shell__card">
-          当前入口只在 <code>npm run dev</code> 时存在，生产环境不会生成这个页面。
+          <div class="dev-console-shell__loading" role="status" aria-live="polite">
+            <p class="dev-console-shell__loading-text">正在加载文章与功能开关…</p>
+            <div class="dev-console-shell__loading-row">
+              <span class="dev-console-shell__loading-icon" aria-hidden="true"></span>
+              <div class="dev-console-shell__loading-copy">
+                <span class="dev-console-shell__loading-bar dev-console-shell__loading-bar--title" aria-hidden="true"></span>
+                <span class="dev-console-shell__loading-bar dev-console-shell__loading-bar--desc" aria-hidden="true"></span>
+              </div>
+              <span class="dev-console-shell__loading-switch" aria-hidden="true"></span>
+            </div>
+            <div class="dev-console-shell__loading-row">
+              <span class="dev-console-shell__loading-icon" aria-hidden="true"></span>
+              <div class="dev-console-shell__loading-copy">
+                <span class="dev-console-shell__loading-bar dev-console-shell__loading-bar--title" aria-hidden="true"></span>
+                <span class="dev-console-shell__loading-bar dev-console-shell__loading-bar--desc" aria-hidden="true"></span>
+              </div>
+              <span class="dev-console-shell__loading-switch" aria-hidden="true"></span>
+            </div>
+          </div>
         </div>
       </main>
     </div>

@@ -193,6 +193,10 @@ code {
   corner-shape: superellipse(1.5);
 }
 
+.dev-console__group--loading {
+  gap: 0;
+}
+
 .dev-console__item {
   display: flex;
   align-items: center;
@@ -209,6 +213,10 @@ code {
 .dev-console__item.is-hidden .dev-console__item-desc,
 .dev-console__item.is-hidden .dev-console__icon[data-kind="post"] {
   opacity: 0.62;
+}
+
+.dev-console__item.is-loading {
+  pointer-events: none;
 }
 
 .dev-console__icon {
@@ -233,6 +241,76 @@ code {
   width: 22px;
   height: 22px;
   fill: currentColor;
+}
+
+.dev-console__loading-hint {
+  margin: 0;
+  padding: 0.35rem 0.2rem 0.8rem;
+  color: var(--console-muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.dev-console__loading-icon,
+.dev-console__loading-bar,
+.dev-console__loading-switch {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dev-console__loading-icon::after,
+.dev-console__loading-bar::after,
+.dev-console__loading-switch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(255, 255, 255, 0.24) 50%,
+    rgba(255, 255, 255, 0.12) 55%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 220% 100%;
+  animation: dev-console-skeleton-wave 1.55s linear infinite;
+}
+
+.dev-console__loading-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.dev-console__loading-bar {
+  display: block;
+  height: 0.82rem;
+  border-radius: 999px;
+}
+
+.dev-console__loading-bar--title {
+  width: min(11rem, 68%);
+}
+
+.dev-console__loading-bar--desc {
+  width: min(15rem, 92%);
+  margin-top: 0.4rem;
+  opacity: 0.8;
+}
+
+.dev-console__loading-text {
+  margin: 0.4rem 0 0;
+  color: var(--console-muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.dev-console__loading-switch {
+  width: 54px;
+  height: 32px;
+  border-radius: 999px;
 }
 
 .dev-console__copy {
@@ -343,6 +421,24 @@ code {
   padding: 1rem 0.25rem;
   color: var(--console-muted);
   font-size: 0.9rem;
+}
+
+@keyframes dev-console-skeleton-wave {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dev-console__loading-icon::after,
+  .dev-console__loading-bar::after,
+  .dev-console__loading-switch::after {
+    animation: none;
+  }
 }
 
 @media (max-width: 720px) {
