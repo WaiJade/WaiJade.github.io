@@ -6,7 +6,13 @@ type Props = {
 };
 
 function getThemeUrl(themePath: string, siteUrl: string) {
-  return new URL(themePath, siteUrl).toString();
+  const hostname = window.location.hostname;
+  const baseUrl =
+    hostname === "localhost" || hostname === "127.0.0.1"
+      ? window.location.origin
+      : siteUrl;
+
+  return new URL(themePath, baseUrl).toString();
 }
 
 function getResolvedTheme(config: GiscusConfig) {
