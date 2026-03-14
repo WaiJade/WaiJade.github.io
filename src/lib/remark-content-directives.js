@@ -29,9 +29,27 @@ const CALLOUTS = {
   },
 };
 
+const COLLAPSIBLE_BLOCKS = {
+  ai: {
+    defaultTitle: "AI 总结",
+    className: ["details", "ai-container", "custom-block"],
+    summaryClassName: ["custom-block-title"],
+  },
+  details: {
+    defaultTitle: "展开查看更多",
+    className: ["details", "article-details"],
+    summaryClassName: ["article-details__summary"],
+  },
+};
+
 function getStringAttribute(node, key) {
   const value = node?.attributes?.[key];
   return typeof value === "string" ? value.trim() : "";
+}
+
+function getBooleanAttribute(node, key) {
+  const value = node?.attributes?.[key];
+  return value === true || value === "" || value === "true";
 }
 
 function mergeClassNames(...values) {
@@ -63,10 +81,14 @@ function setDirectiveData(node, tagName, properties) {
   };
 }
 
-function buildCalloutChildren(node, callout, title) {
+function getDirectiveBodyChildren(node) {
   const bodyRoot = { type: "root", children: node.children ?? [] };
   const bodyHast = toHast(bodyRoot, { allowDangerousHtml: true });
-  const bodyChildren = Array.isArray(bodyHast?.children) ? bodyHast.children : [];
+  return Array.isArray(bodyHast?.children) ? bodyHast.children : [];
+}
+
+function buildCalloutChildren(node, callout, title) {
+  const bodyChildren = getDirectiveBodyChildren(node);
 
   return [
     {
@@ -125,6 +147,38 @@ function buildCalloutChildren(node, callout, title) {
       children: bodyChildren,
     },
   ];
+}
+
+function buildCollapsibleChildren(node, title, summaryClassName) {
+  return [
+    {
+      type: "element",
+      tagName: "summary",
+      properties: {
+        className: summaryClassName,
+      },
+      children: [{ type: "text", value: title }],
+    },
+    ...getDirectiveBodyChildren(node),
+  ];
+}
+
+function applyCollapsibleDirective(node) {
+  const block = COLLAPSIBLE_BLOCKS[node.name];
+  if (!block) {
+    return false;
+  }
+
+  const title = getStringAttribute(node, "title") || block.defaultTitle;
+  const isOpen = getBooleanAttribute(node, "open");
+
+  setDirectiveData(node, "details", {
+    className: block.className,
+    ...(isOpen ? { open: true } : {}),
+  });
+  node.data.hChildren = buildCollapsibleChildren(node, title, block.summaryClassName);
+  node.children = [];
+  return true;
 }
 
 function applyCalloutDirective(node) {
@@ -188,6 +242,10 @@ export default function remarkContentDirectives() {
         node.type === "containerDirective" ||
         node.type === "leafDirective"
       ) {
+        if (applyCollapsibleDirective(node)) {
+          return;
+        }
+
         applyCalloutDirective(node);
       }
 
