@@ -261,42 +261,46 @@ export default function SiteSearch() {
         onClick={() => closeSearch()}
       />
 
-      <div className="search-page__main">
-        <div className="search-page__topbar">
+      <div
+        className={`search-page__main ${
+          hasQuery ? "search-page__main--stacked" : ""
+        }`}
+      >
+        <button
+          type="button"
+          className="topbar__icon-button search-page__close"
+          onClick={() => closeSearch()}
+          aria-label="关闭搜索"
+        >
+          <span className="topbar__icon-button__inner">
+            <XIcon
+              className="topbar__icon-button__icon"
+              aria-hidden="true"
+              weight="bold"
+            />
+          </span>
+        </button>
+
+        <div className="search-page__core">
           <div className="search-page__intro">
             <p className="search-page__eyebrow">SEARCH</p>
             <h2 className="search-page__title">搜索文章</h2>
           </div>
 
-          <button
-            type="button"
-            className="topbar__icon-button search-page__close"
-            onClick={() => closeSearch()}
-            aria-label="关闭搜索"
-          >
-            <span className="topbar__icon-button__inner">
-              <XIcon
-                className="topbar__icon-button__icon"
-                aria-hidden="true"
-                weight="bold"
-              />
-            </span>
-          </button>
+          <label className="search-page__field" htmlFor={inputId}>
+            <input
+              id={inputId}
+              ref={inputRef}
+              type="search"
+              inputMode="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="$ grep..."
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </label>
         </div>
-
-        <label className="search-page__field" htmlFor={inputId}>
-          <input
-            id={inputId}
-            ref={inputRef}
-            type="search"
-            inputMode="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="搜索标题、摘要、标签或正文片段"
-            autoComplete="off"
-            spellCheck={false}
-          />
-        </label>
 
         {hasQuery && (
           <div className="search-page__results" aria-live="polite">
