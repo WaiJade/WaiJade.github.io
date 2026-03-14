@@ -3,6 +3,7 @@ import {
   XIcon,
 } from "@phosphor-icons/react";
 import {
+  type ReactNode,
   useDeferredValue,
   useEffect,
   useId,
@@ -39,6 +40,48 @@ function loadSearchIndex() {
 
 function normalizeSearchValue(value: string) {
   return value.normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightMatches(text: string, tokens: string[]): ReactNode {
+  const uniqueTokens = [...new Set(tokens)].filter(Boolean);
+
+  if (!uniqueTokens.length) {
+    return text;
+  }
+
+  const pattern = new RegExp(
+    `(${uniqueTokens
+      .slice()
+      .sort((left, right) => right.length - left.length)
+      .map(escapeRegExp)
+      .join("|")})`,
+    "gi",
+  );
+  const parts = text.split(pattern);
+
+  if (parts.length <= 1) {
+    return text;
+  }
+
+  return parts
+    .filter((part) => part.length > 0)
+    .map((part, index) => {
+      const normalizedPart = normalizeSearchValue(part);
+
+      if (uniqueTokens.some((token) => token === normalizedPart)) {
+        return (
+          <mark key={`${part}-${index}`} className="search-highlight">
+            {part}
+          </mark>
+        );
+      }
+
+      return <span key={`${part}-${index}`}>{part}</span>;
+    });
 }
 
 function isEditableTarget(target: EventTarget | null) {
@@ -327,14 +370,16 @@ export default function SiteSearch() {
                   onClick={() => closeSearch(false)}
                 >
                   <div className="search-page__result-head">
-                    <h3>{item.title}</h3>
-                    <span>{item.pubDate}</span>
+                    <h3>{highlightMatches(item.title, tokens)}</h3>
+                    <span className="search-page__result-date">{item.pubDate}</span>
                   </div>
 
                   {item.tags.length > 0 && (
                     <div className="search-page__result-tags">
                       {item.tags.slice(0, 4).map((tag) => (
-                        <span key={`${item.url}-${tag}`}>{tag}</span>
+                        <span key={`${item.url}-${tag}`}>
+                          {highlightMatches(tag, tokens)}
+                        </span>
                       ))}
                     </div>
                   )}
