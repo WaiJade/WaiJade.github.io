@@ -1,320 +1,191 @@
 ---
-import { site } from "../config/site";
-
-const pageTitle = `${site.title} / OFFLINE`;
-const description = "当前网络不可用。你之前访问过的页面仍可能可以离线打开。";
+import { ArrowLeftIcon, ArrowClockwiseIcon } from "@phosphor-icons/react";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow" />
-    <meta name="theme-color" content="#050816" />
-    <meta name="description" content={description} />
-    <title>{pageTitle}</title>
-    <style>
-      :root {
-        color-scheme: dark;
-        --background: #050816;
-        --background-soft: rgba(14, 18, 34, 0.92);
-        --foreground: #f5f7ff;
-        --muted: rgba(245, 247, 255, 0.7);
-        --border: rgba(255, 255, 255, 0.1);
-        --accent: #8fa7ff;
-        --accent-strong: #d4deff;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html,
-      body {
-        margin: 0;
-        min-height: 100%;
-        background: var(--background);
-        color: var(--foreground);
-        font-family:
-          "MiSans", "MiSans Chinese", MiSans, "SF Pro Display", "Segoe UI", sans-serif;
-      }
-
-      body {
-        min-height: 100vh;
-        overflow: clip;
-      }
-
-      .offline-bg,
-      .offline-grid,
-      .offline-glow,
-      .offline-vignette {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-      }
-
-      .offline-grid {
-        background-image:
-          linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-        background-size: 40px 40px;
-        opacity: 0.42;
-      }
-
-      .offline-glow::before,
-      .offline-glow::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-      }
-
-      .offline-glow::before {
-        background:
-          radial-gradient(62% 44% at 50% 100%, rgba(143, 167, 255, 0.28), transparent 72%),
-          radial-gradient(40% 30% at 50% 8%, rgba(70, 95, 188, 0.16), transparent 70%);
-      }
-
-      .offline-glow::after {
-        background: linear-gradient(
-          to top,
-          rgba(2, 4, 10, 0.94),
-          rgba(2, 4, 10, 0.18) 55%,
-          rgba(2, 4, 10, 0.9)
-        );
-      }
-
-      .offline-vignette {
-        background: radial-gradient(circle at 50% 45%, transparent 36%, rgba(0, 0, 0, 0.56) 100%);
-      }
-
-      .offline-shell {
-        position: relative;
-        z-index: 1;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: min(1120px, calc(100vw - 2rem));
-        margin: 0 auto;
-        padding-top: clamp(7rem, 12vh, 8.5rem);
-        padding-bottom: clamp(3rem, 8vh, 5rem);
-      }
-
-      .offline-content {
-        position: relative;
-        z-index: 1;
-        display: grid;
-        gap: clamp(2rem, 4vw, 3rem);
-        width: min(100%, 62rem);
-      }
-
-      .offline-glow-card {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-      }
-
-      .offline-glow-card::before {
-        content: "";
-        position: absolute;
-        top: clamp(-12rem, -10vw, -4rem);
-        left: 50%;
-        width: min(88rem, 130vw);
-        height: min(38rem, 62vw);
-        transform: translateX(-50%);
-        background:
-          radial-gradient(
-            50% 56% at 50% 34%,
-            rgba(255, 255, 255, 0.24) 0%,
-            rgba(255, 255, 255, 0.12) 34%,
-            rgba(255, 255, 255, 0.04) 54%,
-            transparent 78%
-          );
-        filter: blur(24px);
-        opacity: 0.9;
-      }
-
-      .offline-title-group {
-        display: grid;
-        gap: 0.75rem;
-        align-items: start;
-      }
-
-      .offline-title {
-        margin: 0;
-        font-family: "MiSans", "MiSans Chinese", MiSans, "SF Pro Display", "Segoe UI", sans-serif;
-        font-size: clamp(4.8rem, 11vw, 7.2rem);
-        line-height: 0.92;
-        letter-spacing: -0.06em;
-        font-weight: 880;
-      }
-
-      .offline-subtitle {
-        margin: 0;
-        max-width: 13ch;
-        font-family: "NSourceSong", "Songti SC", "STSong", serif;
-        font-size: clamp(2rem, 4vw, 3.1rem);
-        line-height: 1.02;
-        color: transparent;
-        background-image: linear-gradient(
-          180deg,
-          rgba(255, 255, 255, 0.98) 0%,
-          color-mix(in srgb, var(--foreground) 56%, transparent) 100%
-        );
-        -webkit-background-clip: text;
-        background-clip: text;
-      }
-
-      .offline-copy-group {
-        display: grid;
-        gap: 0.9rem;
-        max-width: 44rem;
-      }
-
-      .offline-copy,
-      .offline-note {
-        margin: 0;
-        color: var(--muted);
-        font-size: 1rem;
-        line-height: 1.85;
-      }
-
-      .offline-note {
-        color: rgba(212, 222, 255, 0.84);
-      }
-
-      .offline-actions {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.8rem;
-      }
-
-      .offline-button {
-        appearance: none;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.55rem;
-        min-height: 3.5rem;
-        padding: 0 1.25rem;
-        border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
-        border-radius: 999px;
-        background: color-mix(in srgb, var(--foreground) 8%, transparent);
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
-        color: var(--foreground);
-        font: inherit;
-        font-size: 1rem;
-        font-weight: 400;
-        cursor: pointer;
-        text-decoration: none;
-        letter-spacing: 0.01em;
-        transition:
-          transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-          background-color 0.22s ease,
-          border-color 0.22s ease,
-          box-shadow 0.22s ease;
-      }
-
-      .offline-button:hover {
-        background: color-mix(in srgb, var(--foreground) 12%, transparent);
-        border-color: color-mix(in srgb, var(--foreground) 16%, transparent);
-        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
-      }
-
-      .offline-button:active {
-        transform: scale(0.98);
-      }
-
-      .offline-button:focus-visible {
-        outline: 2px solid color-mix(in srgb, var(--foreground) 55%, transparent);
-        outline-offset: 2px;
-      }
-
-      .offline-button--icon {
-        width: 3.5rem;
-        padding: 0;
-      }
-
-      .offline-button--primary {
-        background: color-mix(in srgb, var(--accent) 22%, transparent);
-        border-color: color-mix(in srgb, var(--accent) 26%, transparent);
-      }
-
-      .offline-status {
-        margin: 0;
-        color: var(--accent-strong);
-        font-size: 0.95rem;
-        line-height: 1.7;
-      }
-
-      @media (max-width: 720px) {
-        .offline-shell {
-          align-items: flex-start;
-          padding-top: 7.5rem;
-        }
-
-        .offline-content {
-          gap: 2rem;
-        }
-
-        .offline-title-group {
-          gap: 0.65rem;
-        }
-
-        .offline-subtitle {
-          max-width: 11ch;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="offline-bg" aria-hidden="true">
-      <div class="offline-grid"></div>
-      <div class="offline-glow"></div>
-      <div class="offline-vignette"></div>
+<BaseLayout title="OFFLINE" showFooter={false} noIndex={true}>
+  <section class="error-404 shell" aria-labelledby="error-offline-title">
+    <div class="error-404__glow" aria-hidden="true" />
+    <div class="error-404__content">
+      <div class="error-404__title-group">
+        <h1 id="error-offline-title">OFFLINE</h1>
+        <p>当前网络不可用，已访问过的页面可能仍可离线打开。</p>
+      </div>
+      <div class="error-404__actions">
+        <button
+          type="button"
+          class="error-404__action error-404__action--icon"
+          onclick="window.history.back()"
+          aria-label="返回上一页"
+        >
+          <ArrowLeftIcon weight="bold" size={22} />
+        </button>
+        <button
+          type="button"
+          class="error-404__action error-404__action--home"
+          onclick="window.location.reload()"
+        >
+          <ArrowClockwiseIcon weight="bold" size={22} />
+          <span>重新连接</span>
+        </button>
+      </div>
     </div>
+  </section>
+</BaseLayout>
 
-    <main class="offline-shell">
-      <section class="offline-content" aria-labelledby="offline-title">
-        <div class="offline-glow-card" aria-hidden="true"></div>
-        <div class="offline-title-group">
-          <h1 id="offline-title" class="offline-title">OFFLINE</h1>
-          <p class="offline-subtitle">当前网络不可用，但已访问页面可能仍可离线打开。</p>
-        </div>
-        <div class="offline-copy-group">
-          <p class="offline-copy">
-            站点已经切换到离线页。首页、归档页和你之前打开过的文章，可能已经被本地缓存保留；未访问过的页面在断网状态下无法即时加载。
-          </p>
-          <p class="offline-note" id="offline-status" aria-live="polite">
-            当前状态：离线
-          </p>
-        </div>
-        <div class="offline-actions">
-          <button class="offline-button offline-button--icon" type="button" onclick="window.history.back()" aria-label="返回上一页">
-            ←
-          </button>
-          <button class="offline-button offline-button--primary" type="button" onclick="window.location.reload()">
-            重新连接
-          </button>
-          <a class="offline-button" href="/">回到首页</a>
-          <a class="offline-button" href="/archives/">查看归档</a>
-        </div>
-      </section>
-    </main>
+<style>
+  .error-404 {
+    position: relative;
+    min-height: calc(100svh - 5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: clamp(7rem, 12vh, 8.5rem);
+    padding-bottom: clamp(3rem, 8vh, 5rem);
+    overflow: clip;
+  }
 
-    <script is:inline>
-      const statusElement = document.getElementById("offline-status");
+  .error-404__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
 
-      function updateStatus() {
-        if (!statusElement) return;
-        statusElement.textContent = navigator.onLine ? "当前状态：网络已恢复，可尝试重新连接" : "当前状态：离线";
-      }
+  .error-404__glow::before {
+    content: "";
+    position: absolute;
+    top: clamp(-12rem, -10vw, -4rem);
+    left: 50%;
+    width: min(88rem, 130vw);
+    height: min(38rem, 62vw);
+    transform: translateX(-50%);
+    background:
+      radial-gradient(
+        50% 56% at 50% 34%,
+        rgba(255, 255, 255, 0.24) 0%,
+        rgba(255, 255, 255, 0.12) 34%,
+        rgba(255, 255, 255, 0.04) 54%,
+        transparent 78%
+      );
+    filter: blur(24px);
+    opacity: 0.9;
+  }
 
-      updateStatus();
-      window.addEventListener("online", updateStatus);
-      window.addEventListener("offline", updateStatus);
-    </script>
-  </body>
-</html>
+  .error-404__content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    width: min(100%, 62rem);
+  }
+
+  .error-404__title-group {
+    display: grid;
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .error-404__title-group h1 {
+    margin: 0;
+    font-family: var(--font-family-sans);
+    font-size: clamp(5.75rem, 12vw, 8rem);
+    font-weight: 880;
+    line-height: 0.92;
+    letter-spacing: -0.06em;
+    color: var(--foreground);
+  }
+
+  .error-404__title-group p {
+    margin: 0;
+    max-width: 24ch;
+    font-family: var(--font-family-display);
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.02;
+    color: transparent;
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      color-mix(in srgb, var(--foreground) 56%, transparent) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .error-404__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .error-404__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 3.5rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+    background: color-mix(in srgb, var(--foreground) 8%, transparent);
+    color: var(--foreground);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    transition:
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.22s ease,
+      border-color 0.22s ease,
+      box-shadow 0.22s ease;
+  }
+
+  .error-404__action:hover {
+    background: color-mix(in srgb, var(--foreground) 12%, transparent);
+    border-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+    text-decoration: none;
+  }
+
+  .error-404__action:active {
+    transform: scale(0.98);
+  }
+
+  .error-404__action:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--foreground) 55%, transparent);
+    outline-offset: 2px;
+  }
+
+  .error-404__action--icon {
+    width: 3.5rem;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .error-404__action--home {
+    padding: 0 1.25rem;
+    font-size: 1rem;
+    font-weight: 560;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .error-404 {
+      align-items: flex-start;
+      padding-top: 7.5rem;
+    }
+
+    .error-404__content {
+      gap: 2rem;
+    }
+
+    .error-404__title-group {
+      gap: 0.65rem;
+    }
+
+    .error-404__title-group p {
+      max-width: 14ch;
+    }
+
+    .error-404__actions {
+      gap: 0.7rem;
+    }
+  }
+</style>
