@@ -230,8 +230,8 @@
 }
 
 .article-comments {
-  width: min(100%, 920px);
-  margin: 4.5rem auto 0;
+  width: min(100%, 980px);
+  margin: 5rem auto 0;
   display: grid;
   gap: 1.2rem;
 }
@@ -260,13 +260,85 @@
   letter-spacing: -0.04em;
 }
 
+.article-comments__shell {
+  position: relative;
+  min-width: 0;
+}
+
+.article-comments__shell::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 2rem;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 18%, transparent), transparent 42%),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--foreground) 10%, transparent),
+      transparent 38%,
+      color-mix(in srgb, var(--accent) 18%, transparent)
+    );
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.article-comments__surface {
+  position: relative;
+  min-height: 18rem;
+  border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+  border-radius: 2rem;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--card) 100%, transparent),
+      color-mix(in srgb, var(--card) 76%, transparent)
+    );
+  box-shadow: 0 28px 90px rgba(3, 7, 18, 0.24);
+  backdrop-filter: blur(24px);
+  overflow: hidden;
+}
+
+.article-comments__surface::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 7rem;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 22%, transparent), transparent 42%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--foreground) 5%, transparent),
+      transparent
+    );
+  opacity: 0.9;
+  pointer-events: none;
+}
+
 .article-comments__embed {
-  min-height: 14rem;
+  position: relative;
+  z-index: 1;
+  min-height: 18rem;
+  padding: clamp(1rem, 2vw, 1.35rem);
 }
 
 .article-comments__embed .giscus,
 .article-comments__embed .giscus-frame {
   width: 100%;
+}
+
+@media (max-width: 720px) {
+  .article-comments {
+    margin-top: 4rem;
+  }
+
+  .article-comments__surface,
+  .article-comments__shell::before {
+    border-radius: 1.6rem;
+  }
+
+  .article-comments__embed {
+    padding: 0.8rem;
+  }
 }
 
 .article-toc-sheet:focus-visible {

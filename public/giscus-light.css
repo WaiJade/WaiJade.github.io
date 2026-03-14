@@ -1,26 +1,23 @@
 :root,
 main {
   color-scheme: light;
-  --color-canvas-default: transparent;
-  --color-canvas-subtle: transparent;
-  --color-canvas-overlay: rgba(255, 255, 255, 0.96);
-  --color-canvas-inset: transparent;
+  --color-canvas-default: rgba(255, 255, 255, 0.92);
+  --color-canvas-subtle: rgba(250, 252, 255, 0.94);
+  --color-canvas-overlay: rgba(255, 255, 255, 0.98);
+  --color-canvas-inset: rgba(16, 23, 45, 0.02);
   --color-border-default: rgba(16, 23, 45, 0.12);
   --color-border-muted: rgba(16, 23, 45, 0.08);
   --color-border-subtle: rgba(16, 23, 45, 0.05);
-  --color-border-primary: rgba(70, 95, 188, 0.34);
-  --color-input-border: rgba(16, 23, 45, 0.12);
-  --color-shadow-small: 0 8px 18px rgba(31, 40, 84, 0.06);
-  --color-shadow-medium: 0 14px 28px rgba(31, 40, 84, 0.08);
-  --color-shadow-large: 0 22px 44px rgba(31, 40, 84, 0.1);
+  --color-border-primary: rgba(70, 95, 188, 0.28);
+  --color-input-border: rgba(16, 23, 45, 0.14);
   --color-neutral-muted: rgba(16, 23, 45, 0.08);
   --color-neutral-subtle: rgba(16, 23, 45, 0.04);
   --color-neutral-emphasis-plus: #10172d;
-  --color-neutral-emphasis: rgba(16, 23, 45, 0.78);
+  --color-neutral-emphasis: rgba(16, 23, 45, 0.82);
   --color-accent-fg: #465fbc;
-  --color-accent-emphasis: #465fbc;
+  --color-accent-emphasis: #31448d;
   --color-accent-muted: rgba(70, 95, 188, 0.2);
-  --color-accent-subtle: rgba(70, 95, 188, 0.1);
+  --color-accent-subtle: rgba(70, 95, 188, 0.08);
   --color-success-fg: #1f7a4f;
   --color-success-emphasis: #1f7a4f;
   --color-attention-fg: #997020;
@@ -29,20 +26,20 @@ main {
   --color-danger-emphasis: #c24f63;
   --color-fg-default: #10172d;
   --color-fg-muted: rgba(16, 23, 45, 0.66);
-  --color-fg-subtle: rgba(16, 23, 45, 0.5);
+  --color-fg-subtle: rgba(16, 23, 45, 0.46);
   --color-fg-on-emphasis: #ffffff;
   --color-btn-text: #10172d;
   --color-btn-bg: rgba(16, 23, 45, 0.04);
   --color-btn-border: rgba(16, 23, 45, 0.1);
   --color-btn-shadow: 0 0 transparent;
   --color-btn-inset-shadow: 0 0 transparent;
-  --color-btn-hover-bg: rgba(16, 23, 45, 0.06);
+  --color-btn-hover-bg: rgba(16, 23, 45, 0.07);
   --color-btn-hover-border: rgba(16, 23, 45, 0.16);
   --color-btn-active-bg: rgba(16, 23, 45, 0.05);
   --color-btn-active-border: rgba(16, 23, 45, 0.12);
   --color-btn-selected-bg: rgba(70, 95, 188, 0.1);
   --color-btn-focus-bg: rgba(16, 23, 45, 0.04);
-  --color-btn-focus-border: rgba(70, 95, 188, 0.3);
+  --color-btn-focus-border: rgba(70, 95, 188, 0.28);
   --color-btn-primary-text: #ffffff;
   --color-btn-primary-bg: #465fbc;
   --color-btn-primary-border: #465fbc;
@@ -57,15 +54,15 @@ main {
   --color-segmented-control-button-selected-bg: rgba(16, 23, 45, 0.04);
   --color-primer-fg-disabled: rgba(16, 23, 45, 0.32);
   --color-primer-border-contrast: rgba(16, 23, 45, 0.08);
-  --color-primer-border-active: rgba(70, 95, 188, 0.34);
+  --color-primer-border-active: rgba(70, 95, 188, 0.28);
   --color-primer-shadow-inset: 0 0 transparent;
-  --color-box-border-info: rgba(70, 95, 188, 0.22);
+  --color-box-border-info: rgba(70, 95, 188, 0.2);
   --color-header-text: #10172d;
   --color-header-bg: transparent;
-  --color-header-border: rgba(16, 23, 45, 0.1);
+  --color-header-border: rgba(16, 23, 45, 0.08);
   --color-header-logo: #10172d;
   --color-avatar-bg: rgba(16, 23, 45, 0.04);
-  --color-avatar-border: rgba(16, 23, 45, 0.1);
+  --color-avatar-border: rgba(16, 23, 45, 0.08);
   --color-avatar-stack-fade: rgba(16, 23, 45, 0.18);
   --color-avatar-stack-fade-more: rgba(16, 23, 45, 0.28);
   --color-timeline-badge-bg: rgba(16, 23, 45, 0.04);
@@ -80,6 +77,12 @@ main {
 
 main {
   font-family: "MiSans", "MiSans Chinese", MiSans, "Segoe UI", sans-serif;
+  background: transparent !important;
+}
+
+.gsc-main {
+  display: grid;
+  gap: 1rem;
 }
 
 .gsc-main,
@@ -91,21 +94,66 @@ main {
 .gsc-timeline,
 .gsc-header,
 .gsc-reactions,
-.gsc-reactions-button,
-.gsc-reply-box {
+.gsc-reply-box,
+.gsc-comments {
   background: transparent !important;
+  box-shadow: none !important;
 }
 
 .gsc-comment-box,
 .gsc-reply-box,
 .gsc-timeline {
   border: 1px solid var(--color-border-default) !important;
-  border-radius: 1.35rem !important;
-  box-shadow: none !important;
-  backdrop-filter: blur(18px);
+  border-radius: 1.4rem !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.94),
+      rgba(248, 250, 255, 0.88)
+    ) !important;
+  box-shadow: 0 20px 44px rgba(31, 40, 84, 0.08) !important;
+  overflow: hidden !important;
 }
 
-.gsc-comment-box-tabs,
+.gsc-comment-box-tabs {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 1rem 1rem 0 !important;
+  padding: 0.26rem !important;
+  border: 1px solid var(--color-border-subtle) !important;
+  border-radius: 999px !important;
+  background: rgba(16, 23, 45, 0.03) !important;
+}
+
+.gsc-comment-box-tabs button,
+.tabnav-tab,
+.btn,
+button {
+  border-radius: 999px !important;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.18s ease !important;
+}
+
+.gsc-comment-box-tabs button {
+  min-height: 2.15rem;
+  padding: 0 0.9rem !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--color-fg-muted) !important;
+  font-weight: 600 !important;
+}
+
+.gsc-comment-box-tabs button[aria-selected="true"],
+.gsc-comment-box-tabs button.selected {
+  background: rgba(70, 95, 188, 0.1) !important;
+  color: var(--color-fg-default) !important;
+  box-shadow: inset 0 0 0 1px rgba(70, 95, 188, 0.2);
+}
+
 .gsc-comment-box-main,
 .gsc-comment-box-textarea,
 .gsc-reply-box textarea,
@@ -116,14 +164,144 @@ main {
   background: transparent !important;
 }
 
-.gsc-comment {
+textarea,
+.form-control,
+.gsc-comment-box-textarea {
+  min-height: 10rem !important;
   border: 1px solid rgba(16, 23, 45, 0.08) !important;
-  border-radius: 1.2rem !important;
-  background: rgba(255, 255, 255, 0.78) !important;
+  border-radius: 1.15rem !important;
+  background: rgba(16, 23, 45, 0.025) !important;
+  color: var(--color-fg-default) !important;
+  font-family: "MiSans", "MiSans Chinese", MiSans, "Segoe UI", sans-serif !important;
+  font-size: 0.98rem !important;
+  line-height: 1.82 !important;
+  padding: 1rem 1.05rem !important;
+}
+
+textarea:focus,
+.form-control:focus,
+.gsc-comment-box-textarea:focus-within {
+  border-color: rgba(70, 95, 188, 0.28) !important;
+  box-shadow: 0 0 0 3px rgba(70, 95, 188, 0.1) !important;
+}
+
+.btn {
+  min-height: 2.35rem !important;
+  padding: 0 0.95rem !important;
+  border: 1px solid var(--color-btn-border) !important;
+  background: var(--color-btn-bg) !important;
+  color: var(--color-btn-text) !important;
   box-shadow: none !important;
 }
 
-.gsc-reactions {
-  border: 0 !important;
+.btn:hover {
+  background: var(--color-btn-hover-bg) !important;
+  border-color: var(--color-btn-hover-border) !important;
+}
+
+.btn-primary {
+  background: var(--color-btn-primary-bg) !important;
+  border-color: var(--color-btn-primary-border) !important;
+  color: var(--color-btn-primary-text) !important;
+}
+
+.btn-primary:hover {
+  background: var(--color-btn-primary-hover-bg) !important;
+  border-color: var(--color-btn-primary-hover-border) !important;
+}
+
+.gsc-comment {
+  margin-top: 0.9rem !important;
+  padding: 1rem 1.05rem !important;
+  border: 1px solid rgba(16, 23, 45, 0.08) !important;
+  border-radius: 1.2rem !important;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(246, 248, 255, 0.88)
+    ) !important;
   box-shadow: none !important;
+}
+
+.gsc-comment:first-child {
+  margin-top: 0 !important;
+}
+
+.gsc-comment-header,
+.gsc-comment-author {
+  align-items: center !important;
+}
+
+.gsc-comment-author-avatar img,
+.avatar-user {
+  border-radius: 50% !important;
+  box-shadow: 0 0 0 1px rgba(16, 23, 45, 0.08);
+}
+
+.gsc-comment-meta,
+.gsc-comment-meta a,
+.gsc-comment-meta time {
+  color: var(--color-fg-muted) !important;
+}
+
+.gsc-comment-content {
+  padding-top: 0.7rem !important;
+}
+
+.markdown-body {
+  background: transparent !important;
+  color: var(--color-fg-default) !important;
+  font-family: "MiSans", "MiSans Chinese", MiSans, "Segoe UI", sans-serif !important;
+  font-size: 0.97rem !important;
+  line-height: 1.9 !important;
+}
+
+.markdown-body p,
+.markdown-body li {
+  color: var(--color-fg-default) !important;
+}
+
+.markdown-body a,
+.Link--primary {
+  color: var(--color-accent-fg) !important;
+  text-decoration: none !important;
+}
+
+.markdown-body a:hover,
+.Link--primary:hover {
+  color: var(--color-accent-emphasis) !important;
+}
+
+.markdown-body blockquote {
+  margin: 1rem 0 !important;
+  padding: 0.85rem 1rem !important;
+  border-left: 2px solid var(--color-accent-fg) !important;
+  border-radius: 0 1rem 1rem 0 !important;
+  background: rgba(70, 95, 188, 0.08) !important;
+  color: var(--color-fg-muted) !important;
+}
+
+.markdown-body code {
+  padding: 0.15rem 0.4rem !important;
+  border-radius: 0.5rem !important;
+  background: rgba(16, 23, 45, 0.06) !important;
+}
+
+.markdown-body pre {
+  border: 1px solid rgba(16, 23, 45, 0.08) !important;
+  border-radius: 1rem !important;
+  background: rgba(16, 23, 45, 0.04) !important;
+}
+
+.gsc-reactions {
+  margin-top: 0.25rem !important;
+  border: 0 !important;
+}
+
+.gsc-reactions-button,
+.social-reaction-summary-item {
+  border: 1px solid rgba(16, 23, 45, 0.08) !important;
+  border-radius: 999px !important;
+  background: rgba(16, 23, 45, 0.03) !important;
 }

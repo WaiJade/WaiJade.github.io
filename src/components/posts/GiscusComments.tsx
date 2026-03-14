@@ -114,7 +114,11 @@ export default function GiscusComments({ config }: Props) {
           评论
         </h2>
       </div>
-      <div className="article-comments__embed" ref={containerRef} />
+      <div className="article-comments__shell">
+        <div className="article-comments__surface">
+          <div className="article-comments__embed" ref={containerRef} />
+        </div>
+      </div>
     </section>
   );
 }
