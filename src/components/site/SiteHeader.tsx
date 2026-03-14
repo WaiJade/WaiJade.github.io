@@ -117,7 +117,7 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
           </ul>
         </nav>
 
-        <SiteSearch />
+        {site.features.showSearch && <SiteSearch />}
 
         <div className="topbar__mobile-menu" aria-label="移动端导航">
           <MobileNav

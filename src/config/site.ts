@@ -8,7 +8,10 @@ export type SocialItem = {
   href: string;
 };
 
-const showNotes = false;
+import { siteControls } from "./site-controls";
+
+const features = siteControls.features;
+const isDev = import.meta.env.DEV;
 
 export const site = {
   title: "WaiJade's BLOG",
@@ -21,18 +24,16 @@ export const site = {
   },
   nav: [
     { label: "HOME", href: "/" },
-    ...(showNotes ? ([{ label: "NOTES", href: "/notes" }] satisfies NavItem[]) : []),
+    ...(features.showNotes ? ([{ label: "NOTES", href: "/notes" }] satisfies NavItem[]) : []),
     { label: "ARCHIVES", href: "/archives" },
     { label: "ABOUT", href: "/about" },
+    ...(isDev ? ([{ label: "CONSOLE", href: "/console" }] satisfies NavItem[]) : []),
   ] satisfies NavItem[],
   social: [
     { label: "GitHub", href: "https://github.com/CheongSzesuen" },
     { label: "BandBBS", href: "https://www.bandbbs.cn/members/344224/" },
   ] satisfies SocialItem[],
-  features: {
-    showToc: false,
-    showNotes,
-  },
+  features,
   theme: {
     defaultMode: "dark" as const,
   },

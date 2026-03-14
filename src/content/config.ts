@@ -36,8 +36,13 @@ const notes = defineCollection({
   }),
 });
 
+const postsHidden = defineCollection({
+  loader: async () => [],
+});
+
 export const collections = {
   posts,
+  "posts-hidden": postsHidden,
   pages,
   notes,
 };

@@ -8,6 +8,7 @@ import rehypeSlug from "rehype-slug";
 import remarkMath from "remark-math";
 import tailwindcss from "@tailwindcss/vite";
 import rehypeWritingTimeMeta from "./src/lib/rehype-writing-time-meta.js";
+import { createDevConsolePlugin } from "./scripts/dev-console.mjs";
 
 export default defineConfig({
   site: "https://blog.waijade.cn",
@@ -47,6 +48,6 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), createDevConsolePlugin()],
   },
 });

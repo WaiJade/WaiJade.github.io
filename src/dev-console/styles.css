@@ -1,0 +1,339 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    "MiSans",
+    "PingFang SC",
+    "Noto Sans SC",
+    system-ui,
+    sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(93, 136, 255, 0.22), transparent 40%),
+    linear-gradient(180deg, #07111f 0%, #030712 56%, #02050a 100%);
+  color: rgba(243, 247, 255, 0.96);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.dev-console {
+  width: min(1120px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 40px 0 72px;
+}
+
+.dev-console__header {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.dev-console__eyebrow {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(147, 197, 253, 0.72);
+}
+
+.dev-console__title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+.dev-console__text {
+  margin: 0;
+  max-width: 52rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(209, 219, 236, 0.78);
+}
+
+.dev-console__status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  background: rgba(9, 14, 27, 0.7);
+  font-size: 0.82rem;
+  color: rgba(226, 232, 240, 0.78);
+  backdrop-filter: blur(18px);
+}
+
+.dev-console__status[data-tone="error"] {
+  color: rgba(254, 202, 202, 0.96);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.dev-console__grid {
+  display: grid;
+  gap: 20px;
+}
+
+.dev-console__panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(3, 8, 18, 0.96)),
+    rgba(4, 10, 20, 0.86);
+  box-shadow:
+    0 28px 80px rgba(2, 6, 23, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(18px);
+}
+
+.dev-console__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(96, 165, 250, 0.44), transparent 70%);
+}
+
+.dev-console__panel-inner {
+  padding: 24px;
+}
+
+.dev-console__panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.dev-console__panel-title {
+  margin: 0;
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+}
+
+.dev-console__panel-text {
+  margin: 0;
+  font-size: 0.92rem;
+  color: rgba(209, 219, 236, 0.72);
+}
+
+.dev-console__feature-list {
+  display: grid;
+  gap: 12px;
+}
+
+.dev-console__feature-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.38);
+}
+
+.dev-console__feature-meta {
+  display: grid;
+  gap: 4px;
+}
+
+.dev-console__feature-name {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.dev-console__feature-desc {
+  margin: 0;
+  color: rgba(191, 201, 219, 0.76);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.dev-console__toggle {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  background: rgba(7, 12, 22, 0.9);
+  color: rgba(243, 247, 255, 0.92);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease,
+    background-color 160ms ease;
+}
+
+.dev-console__toggle:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(96, 165, 250, 0.44);
+}
+
+.dev-console__toggle:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.dev-console__toggle-track {
+  width: 42px;
+  height: 24px;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(51, 65, 85, 0.92);
+  transition: background-color 160ms ease;
+}
+
+.dev-console__toggle-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  transition: transform 160ms ease;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.36);
+}
+
+.dev-console__toggle[data-checked="true"] .dev-console__toggle-track {
+  background: linear-gradient(90deg, #60a5fa, #38bdf8);
+}
+
+.dev-console__toggle[data-checked="true"] .dev-console__toggle-thumb {
+  transform: translateX(18px);
+}
+
+.dev-console__toggle-label {
+  font-size: 0.88rem;
+  letter-spacing: 0.02em;
+}
+
+.dev-console__columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.dev-console__column {
+  display: grid;
+  gap: 16px;
+}
+
+.dev-console__post-list {
+  display: grid;
+  gap: 12px;
+}
+
+.dev-console__empty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  border-radius: 20px;
+  color: rgba(191, 201, 219, 0.72);
+  font-size: 0.92rem;
+}
+
+.dev-console__post-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 22px;
+  background: rgba(11, 18, 32, 0.62);
+}
+
+.dev-console__post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.dev-console__post-title {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.dev-console__post-meta {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  font-size: 0.82rem;
+  color: rgba(191, 201, 219, 0.72);
+}
+
+.dev-console__post-action {
+  width: fit-content;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  background: rgba(7, 12, 22, 0.92);
+  color: rgba(243, 247, 255, 0.92);
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.dev-console__post-action:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(96, 165, 250, 0.44);
+}
+
+.dev-console__post-action:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+@media (max-width: 900px) {
+  .dev-console__columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .dev-console {
+    width: min(100vw - 24px, 1120px);
+    padding-top: 24px;
+  }
+
+  .dev-console__panel-inner {
+    padding: 20px;
+  }
+
+  .dev-console__feature-item,
+  .dev-console__post-header {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .dev-console__toggle {
+    width: fit-content;
+  }
+}
