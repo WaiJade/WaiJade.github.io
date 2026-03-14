@@ -300,10 +300,14 @@
 }
 
 .content-writing-time,
+.article-content div[align="right"],
+.note-page__content div[align="right"],
+.article-content p[align="right"]:not(:has(a, sup)),
+.note-page__content p[align="right"]:not(:has(a, sup)),
 .article-content div[align="right"] > p,
 .note-page__content div[align="right"] > p,
-.article-content p[align="right"]:not(:has(a, sup)),
-.note-page__content p[align="right"]:not(:has(a, sup)) {
+.article-content div[align="right"] > p[align],
+.note-page__content div[align="right"] > p[align] {
   color: var(--accent);
   font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
   font-size: 0.78rem;
@@ -318,6 +322,23 @@
   width: fit-content;
   max-width: 100%;
   margin-left: auto;
+  text-align: right;
+}
+
+.article-content div[align="right"],
+.note-page__content div[align="right"],
+.article-content p[align="right"]:not(:has(a, sup)),
+.note-page__content p[align="right"]:not(:has(a, sup)) {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-left: auto;
+  text-align: right;
+}
+
+.article-content div[align="right"] > p,
+.note-page__content div[align="right"] > p {
+  margin: 0;
   text-align: right;
 }
 

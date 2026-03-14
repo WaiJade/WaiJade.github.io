@@ -81,12 +81,47 @@ function normalizeWhitespace(value: string) {
   return value.replace(/\s+/g, " ").trim();
 }
 
+function stripTags(value: string) {
+  return value.replace(/<br\s*\/?>/gi, " ").replace(/<[^>]+>/g, " ");
+}
+
+function isFormattedWritingTimeText(value: string) {
+  return /(?:\d{4}[./-]\d{1,2}[./-]\d{1,2}|\d{4}年\d{1,2}月(?:\d{1,2}日)?|\d{1,2}月\d{1,2}日|\d{1,2}:\d{2}(?::\d{2})?|子时|子夜|初稿|所见|作于|作之|改稿|修改|加\b)/.test(
+    value,
+  );
+}
+
+function stripFormattedWritingTimeBlocks(value: string) {
+  const rightAlignedPattern =
+    /<(p|div)\b([^>]*)\balign=(["'])right\3([^>]*)>([\s\S]*?)<\/\1>/gi;
+
+  return value
+    .replace(
+      /<p\b([^>]*)\bclass=(["'])[^"'<>]*content-writing-time[^"'<>]*\2([^>]*)>[\s\S]*?<\/p>/gi,
+      " ",
+    )
+    .replace(rightAlignedPattern, (matched, _tagName, beforeAlign, _quote, afterAlign, innerHtml) => {
+      const attrs = `${beforeAlign}${afterAlign}`;
+      if (/\bclass=(["'])[^"'<>]*content-writing-time[^"'<>]*\1/i.test(attrs)) {
+        return " ";
+      }
+
+      const plainText = normalizeWhitespace(stripTags(innerHtml));
+      if (!plainText || !isFormattedWritingTimeText(plainText)) {
+        return matched;
+      }
+
+      return " ";
+    });
+}
+
 export function getPostPlainText(
   post: Pick<PostEntry, "body" | "data">,
   maxLength?: number,
 ) {
+  const sanitizedBody = stripFormattedWritingTimeBlocks(post.body);
   const plainText = normalizeWhitespace(
-    post.body
+    sanitizedBody
       .replace(/<br\s*\/?>/gi, " ")
       .replace(/<\/?(center|div|p|span|sup|sub|blockquote|pre|code)[^>]*>/gi, " ")
       .replace(/<[^>]+>/g, " ")
