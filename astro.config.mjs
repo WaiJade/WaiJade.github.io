@@ -45,6 +45,18 @@ export default defineConfig({
     },
   },
   vite: {
+    server: {
+      headers: {
+        "Access-Control-Allow-Origin": "https://giscus.app",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+      },
+    },
+    preview: {
+      headers: {
+        "Access-Control-Allow-Origin": "https://giscus.app",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+      },
+    },
     plugins: [tailwindcss()],
   },
 });
