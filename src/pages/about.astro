@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import aboutSource from "../content/pages/about.mdx?raw";
 import { friendsLinks } from "../content/friends";
+import { site } from "../config/site";
 import "../styles/about.css";
 
 const aboutPage = (await getCollection("pages")).find((entry) => entry.id === "about.mdx");
@@ -27,6 +28,16 @@ if (!aboutParagraphs.length) {
       </div>
 
       <div class="about-page__body">
+        <div class="about-page__avatar-wrap">
+          <img
+            class="about-page__avatar"
+            src={site.brand.avatar}
+            alt={site.author}
+            loading="eager"
+            decoding="async"
+          />
+        </div>
+
         <div class="about-section__copy">
           {aboutPage.data.lead && <p class="about-section__lead" set:html={aboutPage.data.lead} />}
           {aboutParagraphs.map((paragraph) => <p class="about-section__text" set:html={paragraph} />)}
