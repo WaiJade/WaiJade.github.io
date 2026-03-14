@@ -104,6 +104,7 @@ const siteSchema = {
 
         const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
         const cleanupFlag = "waijade-sw-localhost-cleanup";
+        let hasReloadedForServiceWorker = false;
 
         async function clearLocalServiceWorkers() {
           const registrations = await navigator.serviceWorker.getRegistrations();
@@ -144,10 +145,48 @@ const siteSchema = {
           return;
         }
 
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (hasReloadedForServiceWorker) {
+            return;
+          }
+
+          hasReloadedForServiceWorker = true;
+          window.location.reload();
+        });
+
         window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/sw.js").catch((error) => {
-            console.warn("[sw] register failed", error);
-          });
+          navigator.serviceWorker
+            .register("/sw.js", { updateViaCache: "none" })
+            .then(async (registration) => {
+              const promoteWaitingWorker = (worker) => {
+                if (worker) {
+                  worker.postMessage({ type: "SKIP_WAITING" });
+                }
+              };
+
+              promoteWaitingWorker(registration.waiting);
+
+              registration.addEventListener("updatefound", () => {
+                const installingWorker = registration.installing;
+                if (!installingWorker) {
+                  return;
+                }
+
+                installingWorker.addEventListener("statechange", () => {
+                  if (
+                    installingWorker.state === "installed" &&
+                    navigator.serviceWorker.controller
+                  ) {
+                    promoteWaitingWorker(installingWorker);
+                  }
+                });
+              });
+
+              await registration.update();
+            })
+            .catch((error) => {
+              console.warn("[sw] register failed", error);
+            });
         });
       })();
     </script>

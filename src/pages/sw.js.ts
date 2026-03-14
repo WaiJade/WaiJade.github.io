@@ -1,7 +1,14 @@
 export const prerender = true;
 
+const buildVersion = (
+  process.env.CF_PAGES_COMMIT_SHA ||
+  process.env.VERCEL_GIT_COMMIT_SHA ||
+  process.env.GITHUB_SHA ||
+  new Date().toISOString()
+).replace(/[^a-zA-Z0-9]+/g, "-");
+
 const serviceWorkerSource = `
-const CACHE_VERSION = "waijade-blog-v1";
+const CACHE_VERSION = "waijade-blog-${buildVersion}";
 const PRECACHE = CACHE_VERSION + "-precache";
 const RUNTIME = CACHE_VERSION + "-runtime";
 const OFFLINE_URL = "/offline.html";
@@ -27,6 +34,12 @@ self.addEventListener("install", (event) => {
   );
 });
 
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") {
+    event.waitUntil(self.skipWaiting());
+  }
+});
+
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -35,7 +48,13 @@ self.addEventListener("activate", (event) => {
           .filter((key) => ![PRECACHE, RUNTIME].includes(key))
           .map((key) => caches.delete(key))
       )
-    ).then(() => self.clients.claim())
+    ).then(async () => {
+      if ("navigationPreload" in self.registration) {
+        await self.registration.navigationPreload.enable();
+      }
+
+      await self.clients.claim();
+    })
   );
 });
 
@@ -65,7 +84,8 @@ self.addEventListener("fetch", (event) => {
 
   if (isNavigationRequest(request)) {
     event.respondWith(
-      fetch(request)
+      Promise.resolve(event.preloadResponse)
+        .then((preloadResponse) => preloadResponse || fetch(request))
         .then((response) => {
           if (response.ok) {
             const responseClone = response.clone();
