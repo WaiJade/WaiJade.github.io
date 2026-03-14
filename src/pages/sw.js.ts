@@ -4,7 +4,7 @@ const serviceWorkerSource = `
 const CACHE_VERSION = "waijade-blog-v1";
 const PRECACHE = CACHE_VERSION + "-precache";
 const RUNTIME = CACHE_VERSION + "-runtime";
-const OFFLINE_URL = "/offline.html";
+const OFFLINE_URL = "/offline/";
 const PRECACHE_URLS = [
   "/",
   OFFLINE_URL,
