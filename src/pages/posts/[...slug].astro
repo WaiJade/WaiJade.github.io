@@ -2,7 +2,6 @@
 import type { PostEntry } from "../../lib/posts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FloatingToc from "../../components/posts/FloatingToc";
-import GiscusComments from "../../components/posts/GiscusComments";
 import { site } from "../../config/site";
 import {
   formatPostDate,
@@ -30,7 +29,6 @@ const posts = await getPublishedPosts();
 const currentIndex = posts.findIndex((entry) => entry.id === post.id);
 const newerPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
 const olderPost = currentIndex >= 0 ? posts[currentIndex + 1] : null;
-const commentsConfig = site.comments.enabled ? site.comments.giscus : null;
 const pageDescription = post.data.description || getPostExcerpt(post, 180, false);
 const summary = post.data.description?.trim();
 const { Content, headings } = await post.render();
@@ -108,8 +106,6 @@ const articleSchema = {
         <div class="post-pagination__item is-empty" />
       )}
     </nav>
-
-    {commentsConfig && <GiscusComments client:load config={commentsConfig} />}
 
     {hasToc && <FloatingToc client:load headings={tocHeadings} />}
   </article>

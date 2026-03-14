@@ -9,7 +9,7 @@ import remarkMath from "remark-math";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://waijade-blog.vercel.app",
+  site: "https://blog.waijade.cn",
   integrations: [react(), mdx(), sitemap()],
   markdown: {
     remarkPlugins: [remarkMath],
@@ -45,18 +45,6 @@ export default defineConfig({
     },
   },
   vite: {
-    server: {
-      headers: {
-        "Access-Control-Allow-Origin": "https://giscus.app",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-      },
-    },
-    preview: {
-      headers: {
-        "Access-Control-Allow-Origin": "https://giscus.app",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-      },
-    },
     plugins: [tailwindcss()],
   },
 });

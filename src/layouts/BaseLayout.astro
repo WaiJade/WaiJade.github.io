@@ -56,7 +56,7 @@ const siteSchema = {
     <meta name="robots" content={robotsContent} />
     {keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
     <meta name="theme-color" content="#050816" />
-    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content={site.title} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -84,6 +84,20 @@ const siteSchema = {
     )}
     {ogType === "article" && articleTags.map((tag) => <meta property="article:tag" content={tag} />)}
     <link rel="preconnect" href="https://astrobox-statics.waterflames.cn" crossorigin />
+    <link
+      rel="preload"
+      href="/fonts/NSourceSong_Headline.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="https://astrobox-statics.waterflames.cn/NSourceSong_Headline.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -96,100 +110,6 @@ const siteSchema = {
     />
     <title>{pageTitle}</title>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(siteSchema)} />
-    <script is:inline define:vars={{ shouldRegisterServiceWorker }}>
-      (() => {
-        if (!("serviceWorker" in navigator)) {
-          return;
-        }
-
-        const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-        const cleanupFlag = "waijade-sw-localhost-cleanup";
-        let hasReloadedForServiceWorker = false;
-
-        async function clearLocalServiceWorkers() {
-          const registrations = await navigator.serviceWorker.getRegistrations();
-          if (registrations.length === 0) {
-            return false;
-          }
-
-          await Promise.all(registrations.map((registration) => registration.unregister()));
-
-          if ("caches" in window) {
-            const cacheKeys = await caches.keys();
-            await Promise.all(cacheKeys.map((key) => caches.delete(key)));
-          }
-
-          return true;
-        }
-
-        if (isLocalhost) {
-          clearLocalServiceWorkers()
-            .then((didCleanup) => {
-              if (!didCleanup || sessionStorage.getItem(cleanupFlag) === "done") {
-                return;
-              }
-
-              sessionStorage.setItem(cleanupFlag, "done");
-              window.location.reload();
-            })
-            .catch((error) => {
-              console.warn("[sw] localhost cleanup failed", error);
-            });
-
-          return;
-        }
-
-        sessionStorage.removeItem(cleanupFlag);
-
-        if (!shouldRegisterServiceWorker) {
-          return;
-        }
-
-        navigator.serviceWorker.addEventListener("controllerchange", () => {
-          if (hasReloadedForServiceWorker) {
-            return;
-          }
-
-          hasReloadedForServiceWorker = true;
-          window.location.reload();
-        });
-
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("/sw.js", { updateViaCache: "none" })
-            .then(async (registration) => {
-              const promoteWaitingWorker = (worker) => {
-                if (worker) {
-                  worker.postMessage({ type: "SKIP_WAITING" });
-                }
-              };
-
-              promoteWaitingWorker(registration.waiting);
-
-              registration.addEventListener("updatefound", () => {
-                const installingWorker = registration.installing;
-                if (!installingWorker) {
-                  return;
-                }
-
-                installingWorker.addEventListener("statechange", () => {
-                  if (
-                    installingWorker.state === "installed" &&
-                    navigator.serviceWorker.controller
-                  ) {
-                    promoteWaitingWorker(installingWorker);
-                  }
-                });
-              });
-
-              await registration.update();
-            })
-            .catch((error) => {
-              console.warn("[sw] register failed", error);
-            });
-        });
-      })();
-    </script>
   </head>
   <body>
     <div class="page-shell">
@@ -205,5 +125,16 @@ const siteSchema = {
       {showFooter && <SiteFooter />}
     </div>
     <Analytics />
+    {shouldRegisterServiceWorker && (
+      <script is:inline>
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/sw.js").catch((error) => {
+              console.warn("[sw] register failed", error);
+            });
+          });
+        }
+      </script>
+    )}
   </body>
 </html>

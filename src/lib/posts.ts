@@ -47,7 +47,10 @@ export function getPostPathId(post: Pick<PostEntry, "id"> | string) {
 }
 
 export async function getPublishedPosts() {
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const posts = (await getCollection("posts")).filter(
+    (post): post is PostEntry => Boolean(post?.data) && !post.data.draft,
+  );
+
   return posts.sort(
     (left, right) => right.data.pubDate.getTime() - left.data.pubDate.getTime(),
   );

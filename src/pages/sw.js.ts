@@ -1,14 +1,7 @@
 export const prerender = true;
 
-const buildVersion = (
-  process.env.CF_PAGES_COMMIT_SHA ||
-  process.env.VERCEL_GIT_COMMIT_SHA ||
-  process.env.GITHUB_SHA ||
-  new Date().toISOString()
-).replace(/[^a-zA-Z0-9]+/g, "-");
-
 const serviceWorkerSource = `
-const CACHE_VERSION = "waijade-blog-${buildVersion}";
+const CACHE_VERSION = "waijade-blog-v1";
 const PRECACHE = CACHE_VERSION + "-precache";
 const RUNTIME = CACHE_VERSION + "-runtime";
 const OFFLINE_URL = "/offline.html";
@@ -34,12 +27,6 @@ self.addEventListener("install", (event) => {
   );
 });
 
-self.addEventListener("message", (event) => {
-  if (event.data?.type === "SKIP_WAITING") {
-    event.waitUntil(self.skipWaiting());
-  }
-});
-
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -48,13 +35,7 @@ self.addEventListener("activate", (event) => {
           .filter((key) => ![PRECACHE, RUNTIME].includes(key))
           .map((key) => caches.delete(key))
       )
-    ).then(async () => {
-      if ("navigationPreload" in self.registration) {
-        await self.registration.navigationPreload.enable();
-      }
-
-      await self.clients.claim();
-    })
+    ).then(() => self.clients.claim())
   );
 });
 
@@ -71,21 +52,9 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Avoid poisoning Astro/Vite local development assets if a localhost preview
-  // service worker leaks into a later dev session on the same port.
-  if (
-    url.pathname.startsWith("/src/") ||
-    url.pathname.startsWith("/node_modules/") ||
-    url.pathname.startsWith("/@") ||
-    url.pathname.startsWith("/__vite")
-  ) {
-    return;
-  }
-
   if (isNavigationRequest(request)) {
     event.respondWith(
-      Promise.resolve(event.preloadResponse)
-        .then((preloadResponse) => preloadResponse || fetch(request))
+      fetch(request)
         .then((response) => {
           if (response.ok) {
             const responseClone = response.clone();
