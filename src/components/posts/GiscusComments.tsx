@@ -55,6 +55,7 @@ export default function GiscusComments({ config }: Props) {
     script.setAttribute("data-input-position", config.inputPosition);
     script.setAttribute("data-theme", getResolvedTheme(config));
     script.setAttribute("data-lang", config.lang);
+    script.setAttribute("data-loading", config.loading);
 
     container.innerHTML = "";
     container.append(script);
@@ -64,6 +65,7 @@ export default function GiscusComments({ config }: Props) {
     config.emitMetadata,
     config.inputPosition,
     config.lang,
+    config.loading,
     config.mapping,
     config.reactionsEnabled,
     config.repo,

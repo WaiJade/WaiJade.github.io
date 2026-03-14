@@ -19,6 +19,7 @@ export type GiscusConfig = {
   emitMetadata: boolean;
   inputPosition: "top" | "bottom";
   lang: string;
+  loading: "lazy" | "eager";
   theme: {
     light: string;
     dark: string;
@@ -27,9 +28,9 @@ export type GiscusConfig = {
 
 const siteUrl = import.meta.env.PUBLIC_SITE_URL?.trim() || "https://blog.waijade.cn";
 const giscusRepo = import.meta.env.PUBLIC_GISCUS_REPO?.trim() || "CheongSzesuen/WaiJade.github.io";
-const giscusRepoId = import.meta.env.PUBLIC_GISCUS_REPO_ID?.trim() || "";
+const giscusRepoId = import.meta.env.PUBLIC_GISCUS_REPO_ID?.trim() || "R_kgDOI6Xr3g";
 const giscusCategory = import.meta.env.PUBLIC_GISCUS_CATEGORY?.trim() || "Comments";
-const giscusCategoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID?.trim() || "";
+const giscusCategoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID?.trim() || "DIC_kwDOI6Xr3s4C4XFZ";
 
 export const site = {
   title: "WaiJade's BLOG",
@@ -63,6 +64,7 @@ export const site = {
       emitMetadata: false,
       inputPosition: "top" as const,
       lang: "zh-CN",
+      loading: "lazy" as const,
       theme: {
         light: "/giscus-light.css",
         dark: "/giscus-dark.css",
