@@ -20,7 +20,6 @@ export const site = {
   nav: [
     { label: "HOME", href: "/" },
     { label: "ARCHIVES", href: "/archives" },
-    { label: "TAGS", href: "/tags" },
     { label: "ABOUT", href: "/about" },
   ] satisfies NavItem[],
   social: [
