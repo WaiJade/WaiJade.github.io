@@ -222,17 +222,19 @@ const siteSchema = {
     </script>
   </head>
   <body>
-    <div class="page-shell">
-      <div class="page__bg" aria-hidden="true">
-        <div class="hero__grid" />
-        <div class="hero__glow" />
-        <div class="hero__vignette" />
+    <div data-vaul-drawer-wrapper>
+      <div class="page-shell">
+        <div class="page__bg" aria-hidden="true">
+          <div class="hero__grid" />
+          <div class="hero__glow" />
+          <div class="hero__vignette" />
+        </div>
+        <SiteHeader client:load currentPath={Astro.url.pathname} />
+        <main class="site-main">
+          <slot />
+        </main>
+        {showFooter && <SiteFooter />}
       </div>
-      <SiteHeader client:load currentPath={Astro.url.pathname} />
-      <main class="site-main">
-        <slot />
-      </main>
-      {showFooter && <SiteFooter />}
     </div>
     <Analytics />
     <SpeedInsights />

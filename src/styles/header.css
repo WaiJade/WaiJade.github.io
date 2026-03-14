@@ -343,10 +343,10 @@ html:not(.dark) .topbar__brand img {
 }
 
 .topbar__icon-button--menu {
-  font-family: ui-monospace, "JetBrains Mono", monospace;
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  min-width: 3rem;
+  min-height: 3rem;
+  height: 3rem;
+  padding-inline: 0.95rem;
 }
 
 .mobile-nav__overlay {
@@ -376,16 +376,6 @@ html:not(.dark) .topbar__brand img {
   overflow: hidden;
   color: var(--foreground);
   outline: none;
-  opacity: 0;
-  transform: translateY(-1.5rem) scale(0.985);
-  transition:
-    opacity 0.26s ease,
-    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.mobile-nav__content[data-state="open"] {
-  opacity: 1;
-  transform: translateY(0) scale(1);
 }
 
 .mobile-nav__sr-title {
@@ -402,10 +392,9 @@ html:not(.dark) .topbar__brand img {
 
 .mobile-nav__trigger,
 .mobile-nav__close {
-  width: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  padding: 0;
+  min-width: 3rem;
+  min-height: 3rem;
+  padding-inline: 0.95rem;
 }
 
 .mobile-nav__close {
@@ -416,6 +405,45 @@ html:not(.dark) .topbar__brand img {
   background: color-mix(in srgb, var(--card) 82%, transparent);
   border-color: color-mix(in srgb, var(--foreground) 12%, transparent);
   box-shadow: 0 16px 36px rgba(3, 7, 18, 0.22);
+}
+
+.mobile-nav__toggle-icon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-nav__toggle-line {
+  position: absolute;
+  left: 0;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition: all 0.3s ease-out;
+}
+
+.mobile-nav__toggle-line--top {
+  top: 4px;
+  transform: none;
+}
+
+.mobile-nav__toggle-line--bottom {
+  bottom: 4px;
+  transform: none;
+}
+
+.mobile-nav__toggle-icon.is-open .mobile-nav__toggle-line--top {
+  top: 7px;
+  transform: rotate(45deg);
+}
+
+.mobile-nav__toggle-icon.is-open .mobile-nav__toggle-line--bottom {
+  bottom: 7px;
+  transform: rotate(-45deg);
 }
 
 .mobile-nav__inner {
@@ -459,15 +487,7 @@ html:not(.dark) .topbar__brand img {
   font-weight: 600;
   letter-spacing: -0.03em;
   user-select: none;
-  transition:
-    background 0.2s ease-out,
-    color 0.2s ease,
-    opacity 0.2s ease,
-    transform 0.15s ease;
-}
-
-.mobile-nav__link:hover {
-  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  transition: background 0.2s ease-out, opacity 0.2s ease, transform 0.15s ease;
 }
 
 .mobile-nav__link:active {
@@ -577,6 +597,7 @@ html:not(.dark) .topbar__brand img {
   .topbar__icon-button__inner,
   .mobile-nav__overlay,
   .mobile-nav__content,
+  .mobile-nav__toggle-line,
   .mobile-nav__slash,
   .mobile-nav__link,
   .search-page,

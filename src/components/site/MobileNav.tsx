@@ -1,6 +1,5 @@
-import * as Dialog from "@radix-ui/react-dialog";
-import { OptionIcon, XIcon } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { Drawer } from "vaul";
+import { useState } from "react";
 import type { NavItem } from "../../config/site";
 
 type MobileNavProps = {
@@ -8,60 +7,57 @@ type MobileNavProps = {
   nav: readonly NavItem[];
 };
 
+function MenuGlyph({ open }: { open: boolean }) {
+  return (
+    <span className={`mobile-nav__toggle-icon ${open ? "is-open" : ""}`} aria-hidden="true">
+      <span className="mobile-nav__toggle-line mobile-nav__toggle-line--top" />
+      <span className="mobile-nav__toggle-line mobile-nav__toggle-line--bottom" />
+    </span>
+  );
+}
+
 export default function MobileNav({ currentPath, nav }: MobileNavProps) {
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("mobile-nav-open", open);
-
-    return () => {
-      document.documentElement.classList.remove("mobile-nav-open");
-    };
-  }, [open]);
-
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>
+    <Drawer.Root
+      open={open}
+      onOpenChange={setOpen}
+      shouldScaleBackground
+      disablePreventScroll={false}
+      direction="top"
+    >
+      <Drawer.Trigger asChild>
         <button
           type="button"
           className="topbar__icon-button topbar__icon-button--menu mobile-nav__trigger"
           aria-label="打开菜单"
         >
           <span className="topbar__icon-button__inner">
-            <OptionIcon
-              size={18}
-              weight="bold"
-              className="topbar__icon-button__icon"
-              aria-hidden="true"
-            />
+            <MenuGlyph open={open} />
           </span>
         </button>
-      </Dialog.Trigger>
-      <Dialog.Portal>
-        <Dialog.Overlay className="mobile-nav__overlay" />
-        <Dialog.Content className="mobile-nav__content">
-          <Dialog.Title className="mobile-nav__sr-title">站点菜单</Dialog.Title>
-          <Dialog.Close asChild>
+      </Drawer.Trigger>
+      <Drawer.Portal>
+        <Drawer.Overlay className="mobile-nav__overlay" />
+        <Drawer.Content className="mobile-nav__content">
+          <Drawer.Title className="mobile-nav__sr-title">站点菜单</Drawer.Title>
+          <Drawer.Close asChild>
             <button
               type="button"
-              className="topbar__icon-button mobile-nav__close"
+              className="topbar__icon-button topbar__icon-button--menu mobile-nav__close"
               aria-label="关闭菜单"
             >
               <span className="topbar__icon-button__inner">
-                <XIcon
-                  size={18}
-                  weight="bold"
-                  className="topbar__icon-button__icon"
-                  aria-hidden="true"
-                />
+                <MenuGlyph open={true} />
               </span>
             </button>
-          </Dialog.Close>
+          </Drawer.Close>
 
           <div className="mobile-nav__inner">
             <nav className="mobile-nav__list" aria-label="移动端导航">
               {nav.map((item) => (
-                <Dialog.Close asChild key={item.href}>
+                <Drawer.Close asChild key={item.href}>
                   <a
                     href={item.href}
                     className={`mobile-nav__link ${
@@ -77,13 +73,13 @@ export default function MobileNav({ currentPath, nav }: MobileNavProps) {
                     />
                     <span className="mobile-nav__label">{item.label}</span>
                   </a>
-                </Dialog.Close>
+                </Drawer.Close>
               ))}
             </nav>
           </div>
           <div aria-hidden="true" className="mobile-nav__handle" />
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 }
