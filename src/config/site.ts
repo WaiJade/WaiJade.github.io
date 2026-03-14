@@ -8,10 +8,33 @@ export type SocialItem = {
   href: string;
 };
 
+export type GiscusConfig = {
+  repo: string;
+  repoId: string;
+  category: string;
+  categoryId: string;
+  mapping: "pathname";
+  strict: boolean;
+  reactionsEnabled: boolean;
+  emitMetadata: boolean;
+  inputPosition: "top" | "bottom";
+  lang: string;
+  theme: {
+    light: string;
+    dark: string;
+  };
+};
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL?.trim() || "https://blog.waijade.cn";
+const giscusRepo = import.meta.env.PUBLIC_GISCUS_REPO?.trim() || "CheongSzesuen/WaiJade.github.io";
+const giscusRepoId = import.meta.env.PUBLIC_GISCUS_REPO_ID?.trim() || "";
+const giscusCategory = import.meta.env.PUBLIC_GISCUS_CATEGORY?.trim() || "Comments";
+const giscusCategoryId = import.meta.env.PUBLIC_GISCUS_CATEGORY_ID?.trim() || "";
+
 export const site = {
   title: "WaiJade's BLOG",
   description: "一个基于 Astro、React、Tailwind、Radix UI 与 MDX 重构中的静态个人博客。",
-  url: "https://blog.waijade.cn",
+  url: siteUrl,
   author: "WaiJade",
   brand: {
     name: "WaiJade",
@@ -26,6 +49,26 @@ export const site = {
     { label: "GitHub", href: "https://github.com/CheongSzesuen" },
     { label: "BandBBS", href: "https://www.bandbbs.cn/members/344224/" },
   ] satisfies SocialItem[],
+  comments: {
+    provider: "giscus" as const,
+    enabled: Boolean(giscusRepoId && giscusCategoryId),
+    giscus: {
+      repo: giscusRepo,
+      repoId: giscusRepoId,
+      category: giscusCategory,
+      categoryId: giscusCategoryId,
+      mapping: "pathname" as const,
+      strict: true,
+      reactionsEnabled: false,
+      emitMetadata: false,
+      inputPosition: "top" as const,
+      lang: "zh-CN",
+      theme: {
+        light: "/giscus-light.css",
+        dark: "/giscus-dark.css",
+      },
+    } satisfies GiscusConfig,
+  },
   features: {
     showToc: false,
   },
