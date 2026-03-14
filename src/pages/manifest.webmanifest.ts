@@ -7,7 +7,7 @@ export async function GET() {
     id: "/",
     name: site.title,
     short_name: "WaiJade",
-    description: site.description,
+    description: "WaiJade's BLOG, Welcome!",
     start_url: "/",
     scope: "/",
     display: "standalone",
