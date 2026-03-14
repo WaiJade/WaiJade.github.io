@@ -20,26 +20,28 @@ if (!aboutParagraphs.length) {
 
 <BaseLayout title={aboutPage.data.title} description={aboutPage.data.description}>
   <section class="shell about-page">
-    <div class="about-page__intro archives-page__intro">
-      <h1 class="page-panel__title archives-page__title">关于</h1>
-    </div>
-
-    <div class="about-page__panel page-panel animate-fadeIn">
-      <p class="page-panel__eyebrow">ABOUT</p>
-      <div class="about-section__copy">
-        {aboutPage.data.lead && <p class="about-section__lead" set:html={aboutPage.data.lead} />}
-        {aboutParagraphs.map((paragraph) => <p class="about-section__text" set:html={paragraph} />)}
+    <section class="about-page__section animate-fadeIn">
+      <div class="about-page__intro archives-page__intro">
+        <p class="page-panel__eyebrow">ABOUT</p>
+        <h1 class="page-panel__title archives-page__title">关于</h1>
       </div>
-    </div>
+
+      <div class="about-page__body">
+        <div class="about-section__copy">
+          {aboutPage.data.lead && <p class="about-section__lead" set:html={aboutPage.data.lead} />}
+          {aboutParagraphs.map((paragraph) => <p class="about-section__text" set:html={paragraph} />)}
+        </div>
+      </div>
+    </section>
 
     {friendsLinks.length > 0 && (
-      <>
+      <section class="about-page__section about-page__friends-section animate-fadeIn">
         <div class="about-page__intro about-page__friends-intro archives-page__intro">
+          <p class="page-panel__eyebrow">FRIENDS</p>
           <h2 class="page-panel__title archives-page__title">友情链接</h2>
         </div>
 
-        <section class="about-page__friends page-panel">
-          <p class="page-panel__eyebrow">FRIENDS</p>
+        <div class="about-page__friends">
           <div class="friends-grid" aria-label="friends-links">
             {friendsLinks.map((friend) => (
               <a
@@ -66,8 +68,8 @@ if (!aboutParagraphs.length) {
               </a>
             ))}
           </div>
-        </section>
-      </>
+        </div>
+      </section>
     )}
   </section>
 </BaseLayout>

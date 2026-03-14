@@ -11,27 +11,31 @@
 }
 
 .about-page__intro {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  max-width: min(100%, 58rem);
+  margin-top: 0;
+  margin-bottom: 1.4rem;
 }
 
-.about-page__intro:first-of-type {
-  margin-top: 0;
+.about-page__section {
+  max-width: min(100%, 58rem);
+}
+
+.about-page__section + .about-page__section {
+  margin-top: 3.4rem;
 }
 
 .about-page__friends-intro {
-  margin-top: 3.2rem;
+  margin-bottom: 1.5rem;
 }
 
-.about-page__panel {
-  margin-top: 0;
-  max-width: min(100%, 58rem);
-  padding: clamp(1.6rem, 2.6vw, 2.4rem);
-}
-
+.about-page__body,
 .about-page__friends {
   margin-top: 0;
   max-width: min(100%, 58rem);
+}
+
+.about-page__body {
+  padding-top: 0.1rem;
 }
 
 .about-section__copy {
@@ -203,16 +207,12 @@
 }
 
 @media (max-width: 768px) {
-  .about-page__friends-intro {
-    margin-top: 2.6rem;
+  .about-page__section + .about-page__section {
+    margin-top: 2.8rem;
   }
 
-  .about-page__panel {
-    padding: 1.35rem;
-  }
-
-  .about-page__friends {
-    padding: 1.35rem;
+  .about-page__intro {
+    margin-bottom: 1.2rem;
   }
 
   .about-section__copy {
