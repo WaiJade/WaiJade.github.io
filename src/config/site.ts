@@ -9,6 +9,7 @@ export type SocialItem = {
 };
 
 export type GiscusConfig = {
+  siteUrl: string;
   repo: string;
   repoId: string;
   category: string;
@@ -26,7 +27,8 @@ export type GiscusConfig = {
   };
 };
 
-const siteUrl = import.meta.env.PUBLIC_SITE_URL?.trim() || "https://blog.waijade.cn";
+const siteUrl =
+  import.meta.env.PUBLIC_SITE_URL?.trim() || "https://waijade-blog.vercel.app";
 const giscusRepo = import.meta.env.PUBLIC_GISCUS_REPO?.trim() || "CheongSzesuen/WaiJade.github.io";
 const giscusRepoId = import.meta.env.PUBLIC_GISCUS_REPO_ID?.trim() || "R_kgDOI6Xr3g";
 const giscusCategory = import.meta.env.PUBLIC_GISCUS_CATEGORY?.trim() || "Comments";
@@ -54,6 +56,7 @@ export const site = {
     provider: "giscus" as const,
     enabled: Boolean(giscusRepoId && giscusCategoryId),
     giscus: {
+      siteUrl,
       repo: giscusRepo,
       repoId: giscusRepoId,
       category: giscusCategory,

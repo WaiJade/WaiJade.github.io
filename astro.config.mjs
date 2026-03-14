@@ -9,7 +9,7 @@ import remarkMath from "remark-math";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://blog.waijade.cn",
+  site: "https://waijade-blog.vercel.app",
   integrations: [react(), mdx(), sitemap()],
   markdown: {
     remarkPlugins: [remarkMath],

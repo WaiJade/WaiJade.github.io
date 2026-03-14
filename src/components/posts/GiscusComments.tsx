@@ -5,8 +5,8 @@ type Props = {
   config: GiscusConfig;
 };
 
-function getThemeUrl(themePath: string) {
-  return new URL(themePath, window.location.origin).toString();
+function getThemeUrl(themePath: string, siteUrl: string) {
+  return new URL(themePath, siteUrl).toString();
 }
 
 function getResolvedTheme(config: GiscusConfig) {
@@ -14,7 +14,7 @@ function getResolvedTheme(config: GiscusConfig) {
     ? config.theme.dark
     : config.theme.light;
 
-  return getThemeUrl(themePath);
+  return getThemeUrl(themePath, config.siteUrl);
 }
 
 function updateGiscusTheme(config: GiscusConfig) {
@@ -70,6 +70,7 @@ export default function GiscusComments({ config }: Props) {
     config.reactionsEnabled,
     config.repo,
     config.repoId,
+    config.siteUrl,
     config.strict,
     config.theme.dark,
     config.theme.light,

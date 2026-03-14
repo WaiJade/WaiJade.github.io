@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://blog.waijade.cn/sitemap-index.xml
+Sitemap: https://waijade-blog.vercel.app/sitemap-index.xml
