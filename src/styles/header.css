@@ -291,9 +291,9 @@ html:not(.dark) .topbar__brand img {
 }
 
 .topbar__icon-button--search {
-  width: 2.75rem;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
+  width: 3rem;
+  min-width: 3rem;
+  min-height: 3rem;
   padding: 0;
   border-radius: 999px;
   border-color: color-mix(in srgb, var(--accent) 26%, transparent);
@@ -321,6 +321,11 @@ html:not(.dark) .topbar__brand img {
 
 .topbar__icon-button--search:active {
   transform: scale(0.88);
+}
+
+.topbar__icon-button--search .topbar__icon-button__icon {
+  width: 1.4rem;
+  height: 1.4rem;
 }
 
 .topbar__icon-button__icon {

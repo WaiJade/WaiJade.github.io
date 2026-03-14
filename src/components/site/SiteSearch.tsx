@@ -1,6 +1,6 @@
 import {
-  ArrowDownIcon,
   MagnifyingGlassIcon,
+  XIcon,
 } from "@phosphor-icons/react";
 import {
   useDeferredValue,
@@ -106,17 +106,11 @@ function SearchButton({
   onClick: () => void;
   className: string;
 }) {
-  function handleClick() {
-    console.warn("[site-search] search button clicked");
-    onClick();
-  }
-
   return (
     <button
       type="button"
       className={className}
-      onClick={handleClick}
-      data-site-search-trigger="true"
+      onClick={onClick}
       aria-label="搜索文章"
       title="搜索文章（Ctrl + K）"
     >
@@ -145,16 +139,9 @@ export default function SiteSearch() {
   const inputId = useId();
   const normalizedQuery = normalizeSearchValue(deferredQuery);
   const tokens = normalizedQuery ? normalizedQuery.split(" ").filter(Boolean) : [];
+  const hasQuery = tokens.length > 0;
 
   function openSearch() {
-    console.warn("[site-search] openSearch invoked", {
-      hasPortalTarget: Boolean(portalTarget),
-      activeElement:
-        document.activeElement instanceof HTMLElement
-          ? document.activeElement.tagName
-          : null,
-    });
-
     if (document.activeElement instanceof HTMLElement) {
       lastActiveElementRef.current = document.activeElement;
     }
@@ -163,7 +150,6 @@ export default function SiteSearch() {
   }
 
   function closeSearch(restoreFocus = true) {
-    console.warn("[site-search] closeSearch invoked", { restoreFocus });
     setOpen(false);
     setQuery("");
 
@@ -184,10 +170,6 @@ export default function SiteSearch() {
         (event.metaKey || event.ctrlKey) &&
         event.key.toLowerCase() === "k"
       ) {
-        console.warn("[site-search] keyboard shortcut matched", {
-          key: event.key,
-          open,
-        });
         event.preventDefault();
 
         if (open) {
@@ -200,14 +182,12 @@ export default function SiteSearch() {
       }
 
       if (event.key === "Escape" && open) {
-        console.warn("[site-search] escape pressed while open");
         event.preventDefault();
         closeSearch();
         return;
       }
 
       if (event.key === "/" && !open && !isEditableTarget(event.target)) {
-        console.warn("[site-search] slash shortcut matched");
         event.preventDefault();
         openSearch();
       }
@@ -219,11 +199,9 @@ export default function SiteSearch() {
 
   useEffect(() => {
     setPortalTarget(document.body);
-    console.warn("[site-search] portal target ready");
   }, []);
 
   useEffect(() => {
-    console.warn("[site-search] open state changed", { open });
     document.documentElement.classList.toggle("search-open", open);
     document.body.classList.toggle("search-open", open);
 
@@ -238,27 +216,19 @@ export default function SiteSearch() {
       return;
     }
 
-    console.warn("[site-search] search layer entered open effect", { status });
-
     const frameId = window.requestAnimationFrame(() => {
-      console.warn("[site-search] focusing search input");
       inputRef.current?.focus();
     });
 
     if (status === "idle") {
-      console.warn("[site-search] loading search index");
       setStatus("loading");
 
       void loadSearchIndex()
         .then((searchItems) => {
-          console.warn("[site-search] search index loaded", {
-            count: searchItems.length,
-          });
           setItems(searchItems);
           setStatus("ready");
         })
         .catch(() => {
-          console.error("[site-search] search index load failed");
           setStatus("error");
         });
     }
@@ -266,62 +236,46 @@ export default function SiteSearch() {
     return () => window.cancelAnimationFrame(frameId);
   }, [open, status]);
 
-  let panelTitle = "最近文章";
-  let panelDescription = "输入标题、摘要、标签或正文片段来搜索。";
   let visibleItems: SearchIndexItem[] = [];
 
-  if (status === "ready") {
-    if (!tokens.length) {
-      visibleItems = items.slice(0, 12);
-    } else {
-      const scoredItems = items
-        .map((item) => ({
-          item,
-          score: scoreSearchItem(item, tokens, normalizedQuery),
-        }))
-        .filter((entry) => entry.score >= 0)
-        .sort((left, right) => right.score - left.score);
+  if (status === "ready" && hasQuery) {
+    const scoredItems = items
+      .map((item) => ({
+        item,
+        score: scoreSearchItem(item, tokens, normalizedQuery),
+      }))
+      .filter((entry) => entry.score >= 0)
+      .sort((left, right) => right.score - left.score);
 
-      visibleItems = scoredItems.slice(0, 16).map((entry) => entry.item);
-      panelTitle = `搜索结果 ${scoredItems.length}`;
-      panelDescription = `关键词：${query.trim()}`;
-    }
+    visibleItems = scoredItems.slice(0, 16).map((entry) => entry.item);
   }
-
-  useEffect(() => {
-    console.warn("[site-search] render state", {
-      open,
-      status,
-      hasPortalTarget: Boolean(portalTarget),
-      visibleItems: visibleItems.length,
-    });
-  }, [open, portalTarget, status, visibleItems.length]);
 
   const searchLayer = (
     <section
       className={`search-page ${open ? "search-page--active" : ""}`}
       aria-hidden={!open}
     >
-      <div className="search-page__veil" aria-hidden="true" />
+      <div
+        className="search-page__veil"
+        aria-hidden="true"
+        onClick={() => closeSearch()}
+      />
 
-      <div className="search-page__main shell">
+      <div className="search-page__main">
         <div className="search-page__topbar">
           <div className="search-page__intro">
             <p className="search-page__eyebrow">SEARCH</p>
             <h2 className="search-page__title">搜索文章</h2>
-            <p className="search-page__description">
-              这里不再是弹窗，而是像旧博客那样直接接管整页。支持标题、摘要、标签和正文片段搜索。
-            </p>
           </div>
 
           <button
             type="button"
-            className="topbar__icon-button topbar__icon-button--search search-page__close"
+            className="topbar__icon-button search-page__close"
             onClick={() => closeSearch()}
             aria-label="关闭搜索"
           >
             <span className="topbar__icon-button__inner">
-              <ArrowDownIcon
+              <XIcon
                 className="topbar__icon-button__icon"
                 aria-hidden="true"
                 weight="bold"
@@ -331,11 +285,6 @@ export default function SiteSearch() {
         </div>
 
         <label className="search-page__field" htmlFor={inputId}>
-          <MagnifyingGlassIcon
-            className="search-page__field-icon"
-            aria-hidden="true"
-            weight="bold"
-          />
           <input
             id={inputId}
             ref={inputRef}
@@ -343,66 +292,52 @@ export default function SiteSearch() {
             inputMode="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="$ grep 标题 / 标签 / 正文片段"
+            placeholder="搜索标题、摘要、标签或正文片段"
             autoComplete="off"
             spellCheck={false}
           />
         </label>
 
-        <div className="search-page__meta">
-          <div>
-            <strong>{panelTitle}</strong>
-            <span>{panelDescription}</span>
-          </div>
-          <p className="search-page__shortcut">Ctrl + K | / | ESC</p>
-        </div>
+        {hasQuery && (
+          <div className="search-page__results" aria-live="polite">
+            {status === "loading" && (
+              <p className="search-page__empty">正在载入搜索索引…</p>
+            )}
 
-        <div className="search-page__results" aria-live="polite">
-          {status === "loading" && (
-            <p className="search-page__empty">正在载入搜索索引…</p>
-          )}
+            {status === "error" && (
+              <p className="search-page__empty">搜索索引加载失败，请稍后重试。</p>
+            )}
 
-          {status === "error" && (
-            <p className="search-page__empty">
-              搜索索引加载失败，请稍后重试。
-            </p>
-          )}
+            {status === "ready" && !visibleItems.length && (
+              <p className="search-page__empty">
+                没找到匹配内容，试试更短的标题关键词、标签或正文片段。
+              </p>
+            )}
 
-          {status === "ready" && !visibleItems.length && (
-            <p className="search-page__empty">
-              没找到匹配内容，试试更短的标题关键词、标签或正文片段。
-            </p>
-          )}
-
-          {status === "ready" &&
-            visibleItems.map((item) => (
-              <a
-                key={item.url}
-                href={item.url}
-                className="search-page__result"
-                onClick={() => closeSearch(false)}
-              >
-                <div className="search-page__result-head">
-                  <h3>{item.title}</h3>
-                  <span>{item.pubDate}</span>
-                </div>
-
-                {(item.description || item.excerpt) && (
-                  <p className="search-page__result-excerpt">
-                    {item.description || item.excerpt}
-                  </p>
-                )}
-
-                {item.tags.length > 0 && (
-                  <div className="search-page__result-tags">
-                    {item.tags.slice(0, 4).map((tag) => (
-                      <span key={`${item.url}-${tag}`}>{tag}</span>
-                    ))}
+            {status === "ready" &&
+              visibleItems.map((item) => (
+                <a
+                  key={item.url}
+                  href={item.url}
+                  className="search-page__result"
+                  onClick={() => closeSearch(false)}
+                >
+                  <div className="search-page__result-head">
+                    <h3>{item.title}</h3>
+                    <span>{item.pubDate}</span>
                   </div>
-                )}
-              </a>
-            ))}
-        </div>
+
+                  {item.tags.length > 0 && (
+                    <div className="search-page__result-tags">
+                      {item.tags.slice(0, 4).map((tag) => (
+                        <span key={`${item.url}-${tag}`}>{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </a>
+              ))}
+          </div>
+        )}
       </div>
     </section>
   );

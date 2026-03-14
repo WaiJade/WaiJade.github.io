@@ -119,6 +119,19 @@ a {
   position: relative;
   min-height: 100vh;
   overflow: clip;
+  transform-origin: center top;
+  transition:
+    transform 0.48s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.48s ease,
+    opacity 0.32s ease;
+  will-change: transform, filter, opacity;
+}
+
+html.search-open .page-shell {
+  transform: scale(0.968) translateY(-1.25rem);
+  filter: blur(12px) saturate(0.82);
+  opacity: 0.42;
+  pointer-events: none;
 }
 
 .page__bg,
