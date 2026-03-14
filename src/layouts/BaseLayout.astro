@@ -2,6 +2,7 @@
 import Analytics from "@vercel/analytics/astro";
 import "katex/dist/katex.min.css";
 import { site } from "../config/site";
+import { buildMeta } from "../lib/build";
 import SiteFooter from "../components/site/SiteFooter.astro";
 import SiteHeader from "../components/site/SiteHeader";
 import "../styles/global.css";
@@ -33,6 +34,7 @@ const {
 } = Astro.props;
 const pageTitle = title ? `${site.title} / ${title}` : site.title;
 const shouldRegisterServiceWorker = import.meta.env.PROD;
+const serviceWorkerVersion = buildMeta.shellVersion;
 const canonicalUrl = new URL(Astro.url.pathname, site.url).toString();
 const ogImageUrl = new URL(ogImage, site.url).toString();
 const robotsContent = noIndex ? "noindex, nofollow" : "index, follow";
@@ -56,7 +58,7 @@ const siteSchema = {
     <meta name="robots" content={robotsContent} />
     {keywords.length > 0 && <meta name="keywords" content={keywords.join(", ")} />}
     <meta name="theme-color" content="#050816" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content={site.title} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/png" href="/favicon.png" />
@@ -114,6 +116,109 @@ const siteSchema = {
     />
     <title>{pageTitle}</title>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(siteSchema)} />
+    <script is:inline define:vars={{ shouldRegisterServiceWorker, serviceWorkerVersion }}>
+      (() => {
+        if (!("serviceWorker" in navigator)) {
+          return;
+        }
+
+        const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+        const cleanupFlag = "waijade-sw-localhost-cleanup";
+
+        async function clearLocalServiceWorkers() {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+
+          if (registrations.length === 0) {
+            return false;
+          }
+
+          await Promise.all(registrations.map((registration) => registration.unregister()));
+
+          if ("caches" in window) {
+            const cacheKeys = await caches.keys();
+            await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+          }
+
+          return true;
+        }
+
+        if (isLocalhost) {
+          clearLocalServiceWorkers()
+            .then((didCleanup) => {
+              if (!didCleanup || sessionStorage.getItem(cleanupFlag) === "done") {
+                return;
+              }
+
+              sessionStorage.setItem(cleanupFlag, "done");
+              window.location.reload();
+            })
+            .catch((error) => {
+              console.warn("[sw] localhost cleanup failed", error);
+            });
+
+          return;
+        }
+
+        sessionStorage.removeItem(cleanupFlag);
+
+        if (!shouldRegisterServiceWorker) {
+          return;
+        }
+
+        const swUrl = `/sw.js?v=${encodeURIComponent(serviceWorkerVersion)}`;
+        let isReloadingForSw = false;
+
+        window.addEventListener("load", async () => {
+          try {
+            const registration = await navigator.serviceWorker.register(swUrl, {
+              scope: "/",
+            });
+
+            const activateAndReload = () => {
+              if (registration.waiting) {
+                registration.waiting.postMessage({ type: "SKIP_WAITING" });
+              }
+            };
+
+            if (registration.waiting) {
+              activateAndReload();
+            }
+
+            registration.addEventListener("updatefound", () => {
+              const installingWorker = registration.installing;
+
+              if (!installingWorker) {
+                return;
+              }
+
+              installingWorker.addEventListener("statechange", () => {
+                if (
+                  installingWorker.state === "installed" &&
+                  navigator.serviceWorker.controller
+                ) {
+                  activateAndReload();
+                }
+              });
+            });
+
+            navigator.serviceWorker.addEventListener("controllerchange", () => {
+              if (isReloadingForSw) {
+                return;
+              }
+
+              isReloadingForSw = true;
+              window.location.reload();
+            });
+
+            window.setInterval(() => {
+              registration.update().catch(() => {});
+            }, 60 * 1000);
+          } catch (error) {
+            console.warn("[sw] register failed", error);
+          }
+        });
+      })();
+    </script>
   </head>
   <body>
     <div class="page-shell">
@@ -129,16 +234,5 @@ const siteSchema = {
       {showFooter && <SiteFooter />}
     </div>
     <Analytics />
-    {shouldRegisterServiceWorker && (
-      <script is:inline>
-        if ("serviceWorker" in navigator) {
-          window.addEventListener("load", () => {
-            navigator.serviceWorker.register("/sw.js").catch((error) => {
-              console.warn("[sw] register failed", error);
-            });
-          });
-        }
-      </script>
-    )}
   </body>
 </html>

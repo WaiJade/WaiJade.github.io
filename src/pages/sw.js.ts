@@ -1,9 +1,14 @@
 export const prerender = true;
 
+import { buildMeta } from "../lib/build";
+
+const shellVersion = buildMeta.shellVersion;
+
 const serviceWorkerSource = `
-const CACHE_VERSION = "waijade-blog-v1";
-const PRECACHE = CACHE_VERSION + "-precache";
-const RUNTIME = CACHE_VERSION + "-runtime";
+const SHELL_VERSION = "${shellVersion}";
+const PRECACHE = "waijade-blog-precache-" + SHELL_VERSION;
+const ASSETS = "waijade-blog-assets-" + SHELL_VERSION;
+const PAGES = "waijade-blog-pages";
 const OFFLINE_URL = "/offline.html";
 const PRECACHE_URLS = [
   "/",
@@ -23,8 +28,18 @@ function isNavigationRequest(request) {
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(PRECACHE).then((cache) => cache.addAll(PRECACHE_URLS)).then(() => self.skipWaiting())
+    caches.open(PRECACHE)
+      .then((cache) =>
+        cache.addAll(PRECACHE_URLS.map((url) => new Request(url, { cache: "reload" })))
+      )
+      .then(() => self.skipWaiting())
   );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data?.type === "SKIP_WAITING") {
+    event.waitUntil(self.skipWaiting());
+  }
 });
 
 self.addEventListener("activate", (event) => {
@@ -32,10 +47,19 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((keys) =>
       Promise.all(
         keys
-          .filter((key) => ![PRECACHE, RUNTIME].includes(key))
+          .filter((key) =>
+            key.startsWith("waijade-blog-precache-") || key.startsWith("waijade-blog-assets-")
+          )
+          .filter((key) => ![PRECACHE, ASSETS].includes(key))
           .map((key) => caches.delete(key))
       )
-    ).then(() => self.clients.claim())
+    ).then(async () => {
+      if ("navigationPreload" in self.registration) {
+        await self.registration.navigationPreload.enable();
+      }
+
+      await self.clients.claim();
+    })
   );
 });
 
@@ -52,14 +76,24 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (
+    url.pathname.startsWith("/src/") ||
+    url.pathname.startsWith("/node_modules/") ||
+    url.pathname.startsWith("/@") ||
+    url.pathname.startsWith("/__vite")
+  ) {
+    return;
+  }
+
   if (isNavigationRequest(request)) {
     event.respondWith(
-      fetch(request)
+      Promise.resolve(event.preloadResponse)
+        .then((preloadResponse) => preloadResponse || fetch(request))
         .then((response) => {
           if (response.ok) {
             const responseClone = response.clone();
             event.waitUntil(
-              caches.open(RUNTIME).then((cache) => cache.put(request, responseClone))
+              caches.open(PAGES).then((cache) => cache.put(request, responseClone))
             );
           }
 
@@ -75,23 +109,58 @@ self.addEventListener("fetch", (event) => {
 
   if (["style", "script", "worker", "image", "font", "manifest"].includes(request.destination)) {
     event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        const networkResponse = fetch(request)
-          .then((response) => {
-            if (response.ok) {
-              const responseClone = response.clone();
-              event.waitUntil(
-                caches.open(RUNTIME).then((cache) => cache.put(request, responseClone))
-              );
-            }
+      caches.open(ASSETS).then((cache) =>
+        cache.match(request).then((cachedResponse) => {
+          const networkResponse = fetch(request)
+            .then((response) => {
+              if (response.ok) {
+                const responseClone = response.clone();
+                event.waitUntil(cache.put(request, responseClone));
+              }
 
-            return response;
-          })
-          .catch(() => cachedResponse);
+              return response;
+            })
+            .catch(() => cachedResponse);
 
-        return cachedResponse || networkResponse;
-      })
+          if (cachedResponse) {
+            event.waitUntil(
+              fetch(request)
+                .then((response) => {
+                  if (response.ok) {
+                    return cache.put(request, response.clone());
+                  }
+
+                  return undefined;
+                })
+                .catch(() => undefined)
+            );
+
+            return cachedResponse;
+          }
+
+          return networkResponse;
+        })
+      )
     );
+    return;
+  }
+
+  if (request.destination === "" || url.pathname.endsWith(".json") || url.pathname.endsWith(".xml")) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response.ok) {
+            const responseClone = response.clone();
+            event.waitUntil(
+              caches.open(PAGES).then((cache) => cache.put(request, responseClone))
+            );
+          }
+
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
   }
 });
 `;
