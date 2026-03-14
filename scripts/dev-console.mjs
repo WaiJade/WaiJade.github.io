@@ -341,23 +341,13 @@ function getConsoleHtml() {
         font-weight: 400;
       }
 
-      .dev-console-shell__text {
-        margin: 1.5rem 0 0;
-        max-width: 44rem;
-        color: var(--console-muted);
-        font-size: 1rem;
-        line-height: 1.8;
-      }
-
       .dev-console-shell__card {
-        margin-top: 1.5rem;
+        margin-top: 2.25rem;
         padding: 20px 22px;
-        border: 1px solid var(--console-border);
-        border-radius: 28px;
+        border-radius: 24px;
         background: var(--console-card);
-        box-shadow: 0 24px 48px rgba(3, 7, 18, 0.18);
-        -webkit-backdrop-filter: blur(24px);
-        backdrop-filter: blur(24px);
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+        corner-shape: superellipse(1.5);
       }
 
       .dev-console-shell__loading {
@@ -369,6 +359,17 @@ function getConsoleHtml() {
         display: flex;
         align-items: center;
         gap: 12px;
+        position: relative;
+      }
+
+      .dev-console-shell__loading-row + .dev-console-shell__loading-row::before {
+        content: "";
+        position: absolute;
+        top: -7px;
+        left: 36px;
+        right: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
       }
 
       .dev-console-shell__loading-icon,
@@ -454,6 +455,10 @@ function getConsoleHtml() {
           width: min(100vw - 1.2rem, 880px);
           padding-top: 7rem;
         }
+
+        .dev-console-shell__loading-row + .dev-console-shell__loading-row::before {
+          left: 32px;
+        }
       }
     </style>
     <script>
@@ -508,9 +513,6 @@ function getConsoleHtml() {
       <main class="dev-console-shell">
         <p class="dev-console-shell__eyebrow">CONSOLE</p>
         <h1 class="dev-console-shell__title">控制台</h1>
-        <p class="dev-console-shell__text">
-          开发环境下可用的文章与功能控制面板。文章隐藏通过直接移动文件完成，生产构建不会继续解析被隐藏的正文文件。
-        </p>
         <div class="dev-console-shell__card">
           <div class="dev-console-shell__loading" role="status" aria-live="polite">
             <div class="dev-console-shell__loading-row">

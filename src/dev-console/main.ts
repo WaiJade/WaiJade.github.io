@@ -261,14 +261,12 @@ function render() {
   const isLoading = currentState === null;
   const allPosts = getSortedPosts(currentState);
   const dirty = hasPendingChanges();
+  const showProductionHint = !["localhost", "127.0.0.1"].includes(window.location.hostname);
 
   app.innerHTML = `<main class="dev-console">
     <header class="dev-console__intro">
       <p class="page-panel__eyebrow">CONSOLE</p>
       <h1 class="page-panel__title">控制台</h1>
-      <p class="page-panel__text">
-        开发环境下可用的文章与功能控制面板。文章隐藏通过直接移动文件完成，生产构建不会继续解析被隐藏的正文文件。
-      </p>
     </header>
 
     <div class="dev-console__sections">
@@ -286,6 +284,12 @@ function render() {
         ${isLoading ? renderLoadingGroup(5) : renderPostVisibilityList(allPosts)}
       </section>
     </div>
+
+    ${
+      showProductionHint
+        ? `<p class="dev-console__environment-note">这个页面只在本地开发环境可用。</p>`
+        : ""
+    }
 
     <div class="dev-console__floating-actions" data-visible="${String(!isLoading && dirty)}">
       <button
