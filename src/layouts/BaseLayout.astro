@@ -110,6 +110,61 @@ const siteSchema = {
     />
     <title>{pageTitle}</title>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(siteSchema)} />
+    <script is:inline define:vars={{ shouldRegisterServiceWorker }}>
+      (() => {
+        if (!("serviceWorker" in navigator)) {
+          return;
+        }
+
+        const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+        const cleanupFlag = "waijade-sw-localhost-cleanup";
+
+        async function clearLocalServiceWorkers() {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          if (registrations.length === 0) {
+            return false;
+          }
+
+          await Promise.all(registrations.map((registration) => registration.unregister()));
+
+          if ("caches" in window) {
+            const cacheKeys = await caches.keys();
+            await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+          }
+
+          return true;
+        }
+
+        if (isLocalhost) {
+          clearLocalServiceWorkers()
+            .then((didCleanup) => {
+              if (!didCleanup || sessionStorage.getItem(cleanupFlag) === "done") {
+                return;
+              }
+
+              sessionStorage.setItem(cleanupFlag, "done");
+              window.location.reload();
+            })
+            .catch((error) => {
+              console.warn("[sw] localhost cleanup failed", error);
+            });
+
+          return;
+        }
+
+        sessionStorage.removeItem(cleanupFlag);
+
+        if (!shouldRegisterServiceWorker) {
+          return;
+        }
+
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/sw.js").catch((error) => {
+            console.warn("[sw] register failed", error);
+          });
+        });
+      })();
+    </script>
   </head>
   <body>
     <div class="page-shell">
@@ -125,16 +180,5 @@ const siteSchema = {
       {showFooter && <SiteFooter />}
     </div>
     <Analytics />
-    {shouldRegisterServiceWorker && (
-      <script is:inline>
-        if ("serviceWorker" in navigator) {
-          window.addEventListener("load", () => {
-            navigator.serviceWorker.register("/sw.js").catch((error) => {
-              console.warn("[sw] register failed", error);
-            });
-          });
-        }
-      </script>
-    )}
   </body>
 </html>

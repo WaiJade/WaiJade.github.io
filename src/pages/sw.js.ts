@@ -52,6 +52,17 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Avoid poisoning Astro/Vite local development assets if a localhost preview
+  // service worker leaks into a later dev session on the same port.
+  if (
+    url.pathname.startsWith("/src/") ||
+    url.pathname.startsWith("/node_modules/") ||
+    url.pathname.startsWith("/@") ||
+    url.pathname.startsWith("/__vite")
+  ) {
+    return;
+  }
+
   if (isNavigationRequest(request)) {
     event.respondWith(
       fetch(request)
