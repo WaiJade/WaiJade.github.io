@@ -315,6 +315,9 @@
   letter-spacing: 0.08em;
   line-height: 1.8;
   opacity: 0.9;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 .content-writing-time {

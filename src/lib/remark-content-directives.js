@@ -1,5 +1,5 @@
 import { toHast } from "mdast-util-to-hast";
-import { visit } from "unist-util-visit";
+import { SKIP, visit } from "unist-util-visit";
 
 const CALLOUTS = {
   danger: {
@@ -233,11 +233,38 @@ function wrapTables(tree) {
   });
 }
 
+function getNodeSource(node, file) {
+  const value = typeof file?.value === "string" ? file.value : "";
+  const start = node?.position?.start?.offset;
+  const end = node?.position?.end?.offset;
+
+  if (!value || typeof start !== "number" || typeof end !== "number" || start >= end) {
+    return "";
+  }
+
+  return value.slice(start, end);
+}
+
+function restoreTextDirective(node, index, parent, file) {
+  if (!parent || typeof index !== "number") {
+    return;
+  }
+
+  const literal = getNodeSource(node, file) || `:${node.name ?? ""}`;
+
+  parent.children.splice(index, 1, {
+    type: "text",
+    value: literal,
+  });
+
+  return [SKIP, index];
+}
+
 export default function remarkContentDirectives() {
-  return function transform(tree) {
+  return function transform(tree, file) {
     wrapTables(tree);
 
-    visit(tree, (node) => {
+    visit(tree, (node, index, parent) => {
       if (
         node.type === "containerDirective" ||
         node.type === "leafDirective"
@@ -250,7 +277,12 @@ export default function remarkContentDirectives() {
       }
 
       if (node.type === "textDirective") {
-        applyHighlightDirective(node);
+        if (node.name === "highlight") {
+          applyHighlightDirective(node);
+          return;
+        }
+
+        return restoreTextDirective(node, index, parent, file);
       }
     });
   };
