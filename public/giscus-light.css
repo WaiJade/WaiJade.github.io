@@ -82,6 +82,14 @@ main {
   --ab-field-border: rgba(16, 23, 45, 0.1);
   --ab-field-placeholder: rgba(16, 23, 45, 0.34);
   --ab-toolbar-bg: rgba(16, 23, 45, 0.06);
+  --ab-tab-shell-bg: rgba(16, 23, 45, 0.025);
+  --ab-tab-shell-border: rgba(16, 23, 45, 0.08);
+  --ab-tab-active-bg: rgba(16, 23, 45, 0.08);
+  --ab-stripe-bg: repeating-linear-gradient(
+    -45deg,
+    rgba(16, 23, 45, 0.05) 0 8px,
+    rgba(16, 23, 45, 0.018) 8px 16px
+  );
 }
 
 html,
@@ -161,37 +169,41 @@ main {
 .tabnav-tabs {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 4px !important;
-  margin: 0 0 8px !important;
-  padding: 2px !important;
-  border: 0 !important;
+  gap: 2px !important;
+  margin: 0 0 10px !important;
+  padding: 3px !important;
+  border: 1px solid var(--ab-tab-shell-border) !important;
   border-radius: 999px !important;
-  background: rgba(16, 23, 45, 0.03) !important;
+  background: var(--ab-tab-shell-bg) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
 }
 
 .gsc-comment-box-tabs button,
 .tabnav-tab {
-  min-height: 28px !important;
-  padding: 0 12px !important;
+  min-height: 30px !important;
+  padding: 0 14px !important;
   border: 0 !important;
   border-radius: 999px !important;
   background: transparent !important;
   color: var(--color-fg-muted) !important;
   font-size: 13px !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
   box-shadow: none !important;
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
-    transform 0.18s ease !important;
+    transform 0.18s ease,
+    box-shadow 0.2s ease !important;
 }
 
 .gsc-comment-box-tabs button[aria-selected="true"],
 .gsc-comment-box-tabs button.selected,
 .tabnav-tab[aria-selected="true"],
 .tabnav-tab.selected {
-  background: var(--ab-toolbar-bg) !important;
+  background: var(--ab-tab-active-bg) !important;
   color: var(--color-fg-default) !important;
+  box-shadow: inset 0 0 0 1px rgba(16, 23, 45, 0.08) !important;
 }
 
 .gsc-comment-box-main,
@@ -295,6 +307,32 @@ textarea:focus,
   justify-content: space-between !important;
   gap: 8px !important;
   margin-top: 10px !important;
+}
+
+.gsc-comment-box-bottom > :first-child,
+.gsc-comment-box-buttons > :first-child,
+.form-actions > :first-child {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 30px !important;
+  max-width: calc(100% - 7rem) !important;
+  padding: 0 12px !important;
+  border: 1px solid rgba(16, 23, 45, 0.08) !important;
+  border-radius: 12px !important;
+  background: var(--ab-stripe-bg) !important;
+  color: var(--color-fg-muted) !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.gsc-comment-box-bottom > :first-child a,
+.gsc-comment-box-buttons > :first-child a,
+.form-actions > :first-child a {
+  color: inherit !important;
+  text-decoration: none !important;
 }
 
 .btn,
