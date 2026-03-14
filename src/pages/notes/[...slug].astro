@@ -1,0 +1,58 @@
+---
+import type { NoteEntry } from "../../lib/notes";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  formatNoteDate,
+  getNoteExcerpt,
+  getNotePathId,
+  getPublishedNotes,
+} from "../../lib/notes";
+import "../../styles/notes.css";
+
+export async function getStaticPaths() {
+  const notes = await getPublishedNotes();
+
+  return notes.map((note) => ({
+    params: { slug: getNotePathId(note) },
+    props: { note },
+  }));
+}
+
+type Props = {
+  note: NoteEntry;
+};
+
+const { note } = Astro.props;
+const pageDescription = note.data.description || getNoteExcerpt(note, 120, false);
+const { Content } = await note.render();
+---
+
+<BaseLayout
+  title={note.data.title}
+  description={pageDescription}
+  ogType="article"
+  keywords={note.data.tags}
+  publishedTime={note.data.pubDate.toISOString()}
+  updatedTime={(note.data.updatedDate ?? note.data.pubDate).toISOString()}
+  articleTags={note.data.tags}
+>
+  <article class="shell note-page">
+    <header class="note-page__intro">
+      <p class="page-panel__eyebrow">NOTE</p>
+      <h1 class="page-panel__title note-page__title">{note.data.title}</h1>
+      <p class="page-panel__text note-page__text">
+        更短的片段记录，不按长文结构展开。
+      </p>
+    </header>
+
+    <section class="note-page__panel">
+      <div class="note-page__meta">
+        <time datetime={note.data.pubDate.toISOString()}>{formatNoteDate(note.data.pubDate)}</time>
+        {note.data.tags.length > 0 && <span>{note.data.tags.join(" / ")}</span>}
+      </div>
+      <div class="note-page__content">
+        <Content />
+      </div>
+    </section>
+  </article>
+</BaseLayout>

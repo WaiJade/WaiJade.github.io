@@ -1,12 +1,16 @@
 import type { APIRoute } from "astro";
+import { getPublishedNotes } from "../lib/notes";
 import { getPublishedPosts } from "../lib/posts";
-import { createSearchIndexItem } from "../lib/search";
+import { createNoteSearchIndexItem, createSearchIndexItem } from "../lib/search";
 
 export const prerender = true;
 
 export const GET: APIRoute = async () => {
-  const posts = await getPublishedPosts();
-  const items = posts.map(createSearchIndexItem);
+  const [posts, notes] = await Promise.all([getPublishedPosts(), getPublishedNotes()]);
+  const items = [
+    ...posts.map(createSearchIndexItem),
+    ...notes.map(createNoteSearchIndexItem),
+  ];
 
   return new Response(JSON.stringify(items), {
     headers: {

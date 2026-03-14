@@ -19,6 +19,7 @@ export const site = {
   },
   nav: [
     { label: "HOME", href: "/" },
+    { label: "NOTES", href: "/notes" },
     { label: "ARCHIVES", href: "/archives" },
     { label: "ABOUT", href: "/about" },
   ] satisfies NavItem[],
