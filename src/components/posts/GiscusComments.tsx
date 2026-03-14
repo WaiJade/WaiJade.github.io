@@ -5,6 +5,8 @@ type Props = {
   config: GiscusConfig;
 };
 
+const GISCUS_ORIGIN = "https://giscus.app";
+
 function getThemeUrl(themePath: string, siteUrl: string) {
   const hostname = window.location.hostname;
   const baseUrl =
@@ -27,16 +29,33 @@ function updateGiscusTheme(config: GiscusConfig) {
   const iframe = document.querySelector<HTMLIFrameElement>("iframe.giscus-frame");
   if (!iframe?.contentWindow) return;
 
-  iframe.contentWindow.postMessage(
-    {
-      giscus: {
-        setConfig: {
-          theme: getResolvedTheme(config),
+  let targetOrigin: string;
+  try {
+    targetOrigin = new URL(iframe.src, window.location.href).origin;
+  } catch {
+    return;
+  }
+
+  // The iframe is inserted as about:blank first, which inherits the page origin.
+  // Only send config once it has navigated to the real giscus origin.
+  if (targetOrigin !== GISCUS_ORIGIN) {
+    return;
+  }
+
+  try {
+    iframe.contentWindow.postMessage(
+      {
+        giscus: {
+          setConfig: {
+            theme: getResolvedTheme(config),
+          },
         },
       },
-    },
-    "https://giscus.app",
-  );
+      targetOrigin,
+    );
+  } catch (error) {
+    console.warn("[giscus] theme sync skipped", error);
+  }
 }
 
 export default function GiscusComments({ config }: Props) {
@@ -85,9 +104,27 @@ export default function GiscusComments({ config }: Props) {
   useEffect(() => {
     const root = document.documentElement;
     const container = containerRef.current;
+    let currentIframe: HTMLIFrameElement | null = null;
 
     const syncTheme = () => {
       updateGiscusTheme(config);
+    };
+
+    const bindIframeLoad = () => {
+      const nextIframe =
+        container?.querySelector<HTMLIFrameElement>("iframe.giscus-frame") ?? null;
+
+      if (currentIframe === nextIframe) return;
+
+      if (currentIframe) {
+        currentIframe.removeEventListener("load", syncTheme);
+      }
+
+      currentIframe = nextIframe;
+
+      if (currentIframe) {
+        currentIframe.addEventListener("load", syncTheme);
+      }
     };
 
     const rootObserver = new MutationObserver((mutations) => {
@@ -98,6 +135,7 @@ export default function GiscusComments({ config }: Props) {
     rootObserver.observe(root, { attributes: true, attributeFilter: ["class"] });
 
     const mountObserver = new MutationObserver(() => {
+      bindIframeLoad();
       syncTheme();
     });
 
@@ -105,9 +143,11 @@ export default function GiscusComments({ config }: Props) {
       mountObserver.observe(container, { childList: true, subtree: true });
     }
 
+    bindIframeLoad();
     syncTheme();
 
     return () => {
+      currentIframe?.removeEventListener("load", syncTheme);
       rootObserver.disconnect();
       mountObserver.disconnect();
     };
