@@ -199,19 +199,14 @@ function renderFeatureList() {
     .join("");
 }
 
-function renderLoadingGroup(kind: "feature" | "post", count: number) {
+function renderLoadingGroup(count: number) {
   return `<div class="dev-console__group dev-console__group--loading" role="status" aria-live="polite">
-    <p class="dev-console__loading-hint">正在加载…</p>
     ${Array.from({ length: count }, () => {
       return `<div class="dev-console__item is-loading">
         <span class="dev-console__loading-icon" aria-hidden="true"></span>
         <div class="dev-console__copy">
           <span class="dev-console__loading-bar dev-console__loading-bar--title" aria-hidden="true"></span>
-          ${
-            kind === "post"
-              ? `<p class="dev-console__loading-text">正在加载…</p>`
-              : `<span class="dev-console__loading-bar dev-console__loading-bar--desc" aria-hidden="true"></span>`
-          }
+          <span class="dev-console__loading-bar dev-console__loading-bar--desc" aria-hidden="true"></span>
         </div>
         <div class="dev-console__actions">
           <span class="dev-console__loading-switch" aria-hidden="true"></span>
@@ -270,9 +265,9 @@ function render() {
   app.innerHTML = `<main class="dev-console">
     <header class="dev-console__intro">
       <p class="page-panel__eyebrow">CONSOLE</p>
-      <h1 class="page-panel__title">本地控制台</h1>
+      <h1 class="page-panel__title">控制台</h1>
       <p class="page-panel__text">
-        本地开发下可用的文章与功能控制面板。文章隐藏通过直接移动文件完成，生产构建不会继续解析被隐藏的正文文件。
+        开发环境下可用的文章与功能控制面板。文章隐藏通过直接移动文件完成，生产构建不会继续解析被隐藏的正文文件。
       </p>
     </header>
 
@@ -281,14 +276,14 @@ function render() {
         <p class="dev-console__section-title">网站功能</p>
         ${
           isLoading
-            ? renderLoadingGroup("feature", featureConfig.length)
+            ? renderLoadingGroup(featureConfig.length)
             : `<div class="dev-console__group">${renderFeatureList()}</div>`
         }
       </section>
 
       <section class="dev-console__section">
-        <p class="dev-console__section-title">文章显示${isLoading ? " · 正在加载" : ` · ${String(allPosts.length)}`}</p>
-        ${isLoading ? renderLoadingGroup("post", 5) : renderPostVisibilityList(allPosts)}
+        <p class="dev-console__section-title">文章显示${isLoading ? "" : ` · ${String(allPosts.length)}`}</p>
+        ${isLoading ? renderLoadingGroup(5) : renderPostVisibilityList(allPosts)}
       </section>
     </div>
 

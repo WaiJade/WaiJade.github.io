@@ -254,6 +254,9 @@ function getConsoleHtml() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WaiJade's BLOG / CONSOLE</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="shortcut icon" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="preconnect" href="https://astrobox-statics.waterflames.cn" crossorigin />
     <link
       rel="preload"
@@ -360,13 +363,6 @@ function getConsoleHtml() {
       .dev-console-shell__loading {
         display: grid;
         gap: 14px;
-      }
-
-      .dev-console-shell__loading-text {
-        margin: 0;
-        color: var(--console-muted);
-        font-size: 0.9rem;
-        line-height: 1.6;
       }
 
       .dev-console-shell__loading-row {
@@ -510,14 +506,13 @@ function getConsoleHtml() {
   <body>
     <div id="app">
       <main class="dev-console-shell">
-        <p class="dev-console-shell__eyebrow">Local Dev Console</p>
-        <h1 class="dev-console-shell__title">本地控制台</h1>
+        <p class="dev-console-shell__eyebrow">CONSOLE</p>
+        <h1 class="dev-console-shell__title">控制台</h1>
         <p class="dev-console-shell__text">
-          正在加载控制台内容。如果这里长期为空，先看浏览器控制台里的模块或缓存报错。
+          开发环境下可用的文章与功能控制面板。文章隐藏通过直接移动文件完成，生产构建不会继续解析被隐藏的正文文件。
         </p>
         <div class="dev-console-shell__card">
           <div class="dev-console-shell__loading" role="status" aria-live="polite">
-            <p class="dev-console-shell__loading-text">正在加载文章与功能开关…</p>
             <div class="dev-console-shell__loading-row">
               <span class="dev-console-shell__loading-icon" aria-hidden="true"></span>
               <div class="dev-console-shell__loading-copy">

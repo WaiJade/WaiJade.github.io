@@ -243,14 +243,6 @@ code {
   fill: currentColor;
 }
 
-.dev-console__loading-hint {
-  margin: 0;
-  padding: 0.35rem 0.2rem 0.8rem;
-  color: var(--console-muted);
-  font-size: 0.84rem;
-  line-height: 1.5;
-}
-
 .dev-console__loading-icon,
 .dev-console__loading-bar,
 .dev-console__loading-switch {
@@ -298,13 +290,6 @@ code {
   width: min(15rem, 92%);
   margin-top: 0.4rem;
   opacity: 0.8;
-}
-
-.dev-console__loading-text {
-  margin: 0.4rem 0 0;
-  color: var(--console-muted);
-  font-size: 0.86rem;
-  line-height: 1.55;
 }
 
 .dev-console__loading-switch {
