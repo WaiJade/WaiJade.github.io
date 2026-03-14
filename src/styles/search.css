@@ -62,6 +62,8 @@ body.search-open {
 }
 
 .search-page__main {
+  --search-column-width: 46rem;
+  --search-column-offset: 23rem;
   position: relative;
   z-index: 1;
   width: 100vw;
@@ -116,7 +118,7 @@ body.search-open {
   flex: 0 0 auto;
   min-height: auto;
   align-content: start;
-  padding-top: clamp(7.4rem, 14vh, 9.2rem);
+  padding-top: clamp(9.2rem, 17vh, 11.1rem);
 }
 
 .search-page__core {
@@ -132,7 +134,8 @@ body.search-open {
 .search-page__intro {
   position: absolute;
   top: clamp(1.35rem, 2.6vw, 2.2rem);
-  left: 0;
+  left: calc(50% - var(--search-column-offset));
+  transform: translateX(-50%);
   width: auto;
   min-width: 0;
 }
@@ -195,19 +198,21 @@ body.search-open {
 .search-page__field {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: min(100%, 46rem);
+  justify-content: flex-start;
+  gap: 0.72rem;
+  width: min(100%, var(--search-column-width));
   min-height: auto;
   padding: 0;
   border-bottom: 0;
 }
 
 .search-page__main--stacked .search-page__field {
-  width: min(100%, 46rem);
+  width: min(100%, var(--search-column-width));
 }
 
 .search-page__field input {
-  width: 100%;
+  flex: 1 1 auto;
+  width: auto;
   min-width: 0;
   padding: 0;
   border: 0;
@@ -225,9 +230,21 @@ body.search-open {
   color: color-mix(in srgb, var(--foreground) 34%, transparent);
 }
 
+.search-page__field-prefix {
+  flex: 0 0 auto;
+  color: color-mix(in srgb, var(--foreground) 72%, transparent);
+  font-family: "Ubuntu Mono", "JetBrains Mono", "Fira Code", monospace;
+  font-size: clamp(1.35rem, 3vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  user-select: none;
+}
+
 .search-page__results {
   flex: 1 1 auto;
-  width: min(100%, 46rem);
+  width: min(100%, var(--search-column-width));
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
@@ -361,6 +378,8 @@ body.search-open {
   }
 
   .search-page__main {
+    --search-column-width: 34rem;
+    --search-column-offset: 17rem;
     width: 100vw;
     min-height: 100dvh;
     max-height: 100dvh;
@@ -377,7 +396,7 @@ body.search-open {
 
   .search-page__main--stacked .search-page__core {
     min-height: auto;
-    padding-top: clamp(6.4rem, 12vh, 7.6rem);
+    padding-top: clamp(7.9rem, 14vh, 9rem);
   }
 
   .search-page__title {
@@ -393,7 +412,7 @@ body.search-open {
   }
 
   .search-page__field {
-    width: min(100%, 34rem);
+    width: min(100%, var(--search-column-width));
     min-height: auto;
   }
 
@@ -401,9 +420,18 @@ body.search-open {
     font-size: clamp(1.18rem, 6.4vw, 1.82rem);
   }
 
+  .search-page__field-prefix {
+    font-size: clamp(1.18rem, 6.4vw, 1.82rem);
+  }
+
   .search-page__results {
-    width: min(100%, 34rem);
+    width: min(100%, var(--search-column-width));
     margin-top: 0.55rem;
+  }
+
+  .search-page__intro {
+    left: 0;
+    transform: none;
   }
 
   .search-page__result {

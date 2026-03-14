@@ -330,7 +330,17 @@ export default function SiteSearch() {
             <h2 className="search-page__title">搜索文章</h2>
           </div>
 
-          <label className="search-page__field" htmlFor={inputId}>
+          <label
+            className={`search-page__field ${
+              hasQuery ? "search-page__field--prefixed" : ""
+            }`}
+            htmlFor={inputId}
+          >
+            {hasQuery && (
+              <span className="search-page__field-prefix" aria-hidden="true">
+                $ grep
+              </span>
+            )}
             <input
               id={inputId}
               ref={inputRef}
@@ -338,7 +348,7 @@ export default function SiteSearch() {
               inputMode="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="$ grep..."
+              placeholder={hasQuery ? "" : "$ grep..."}
               autoComplete="off"
               spellCheck={false}
             />
