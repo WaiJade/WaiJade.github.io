@@ -1,14 +1,186 @@
 ---
+import { ArrowLeftIcon, HouseIcon } from "@phosphor-icons/react";
 import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="NOT FOUND">
-  <section class="shell page-panel">
-    <p class="page-panel__eyebrow">404</p>
-    <h1 class="page-panel__title">页面不存在</h1>
-    <p class="page-panel__text">
-      旧模板页面已被移除，新的站点结构正在重建中。请从导航返回首页或等待后续内容迁移完成。
-    </p>
-    <a class="button-primary" href="/">返回首页</a>
+<BaseLayout title="NOT FOUND" showFooter={false}>
+  <section class="error-404 shell" aria-labelledby="error-404-title">
+    <div class="error-404__glow" aria-hidden="true" />
+    <div class="error-404__content">
+      <div class="error-404__title-group">
+        <h1 id="error-404-title">404</h1>
+        <p>你要找的页面似乎走丢了。</p>
+      </div>
+      <div class="error-404__actions">
+        <button
+          type="button"
+          class="error-404__action error-404__action--icon"
+          onclick="window.history.back()"
+          aria-label="返回上一页"
+        >
+          <ArrowLeftIcon weight="bold" size={22} />
+        </button>
+        <a class="error-404__action error-404__action--home" href="/">
+          <HouseIcon weight="fill" size={22} />
+          <span>回到主页</span>
+        </a>
+      </div>
+    </div>
   </section>
 </BaseLayout>
+
+<style>
+  .error-404 {
+    position: relative;
+    min-height: calc(100svh - 5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: clamp(7rem, 12vh, 8.5rem);
+    padding-bottom: clamp(3rem, 8vh, 5rem);
+    overflow: clip;
+  }
+
+  .error-404__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .error-404__glow::before {
+    content: "";
+    position: absolute;
+    top: clamp(-12rem, -10vw, -4rem);
+    left: 50%;
+    width: min(88rem, 130vw);
+    height: min(38rem, 62vw);
+    transform: translateX(-50%);
+    background:
+      radial-gradient(
+        50% 56% at 50% 34%,
+        rgba(255, 255, 255, 0.24) 0%,
+        rgba(255, 255, 255, 0.12) 34%,
+        rgba(255, 255, 255, 0.04) 54%,
+        transparent 78%
+      );
+    filter: blur(24px);
+    opacity: 0.9;
+  }
+
+  .error-404__content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    width: min(100%, 62rem);
+  }
+
+  .error-404__title-group {
+    display: grid;
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .error-404__title-group h1 {
+    margin: 0;
+    font-family: var(--font-family-sans);
+    font-size: clamp(5.75rem, 12vw, 8rem);
+    font-weight: 880;
+    line-height: 0.92;
+    letter-spacing: -0.06em;
+    color: var(--foreground);
+  }
+
+  .error-404__title-group p {
+    margin: 0;
+    max-width: 24ch;
+    font-family: var(--font-family-display);
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.02;
+    color: transparent;
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98) 0%,
+      color-mix(in srgb, var(--foreground) 56%, transparent) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .error-404__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .error-404__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 3.5rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+    background: color-mix(in srgb, var(--foreground) 8%, transparent);
+    color: var(--foreground);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    transition:
+      transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.22s ease,
+      border-color 0.22s ease,
+      box-shadow 0.22s ease;
+  }
+
+  .error-404__action:hover {
+    background: color-mix(in srgb, var(--foreground) 12%, transparent);
+    border-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+    text-decoration: none;
+  }
+
+  .error-404__action:active {
+    transform: scale(0.98);
+  }
+
+  .error-404__action:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--foreground) 55%, transparent);
+    outline-offset: 2px;
+  }
+
+  .error-404__action--icon {
+    width: 3.5rem;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .error-404__action--home {
+    padding: 0 1.25rem;
+    font-size: 1rem;
+    font-weight: 560;
+    letter-spacing: 0.01em;
+  }
+
+  @media (max-width: 768px) {
+    .error-404 {
+      align-items: flex-start;
+      padding-top: 7.5rem;
+    }
+
+    .error-404__content {
+      gap: 2rem;
+    }
+
+    .error-404__title-group {
+      gap: 0.65rem;
+    }
+
+    .error-404__title-group p {
+      max-width: 14ch;
+    }
+
+    .error-404__actions {
+      gap: 0.7rem;
+    }
+  }
+</style>

@@ -8,9 +8,10 @@ import "../styles/global.css";
 type Props = {
   title?: string;
   description?: string;
+  showFooter?: boolean;
 };
 
-const { title, description = site.description } = Astro.props;
+const { title, description = site.description, showFooter = true } = Astro.props;
 const pageTitle = title ? `${site.title} / ${title}` : site.title;
 const shouldRegisterServiceWorker = import.meta.env.PROD;
 ---
@@ -68,7 +69,7 @@ const shouldRegisterServiceWorker = import.meta.env.PROD;
       <main class="site-main">
         <slot />
       </main>
-      <SiteFooter />
+      {showFooter && <SiteFooter />}
     </div>
     <Analytics />
     {shouldRegisterServiceWorker && (
