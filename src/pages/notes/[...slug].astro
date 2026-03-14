@@ -1,5 +1,6 @@
 ---
 import type { NoteEntry } from "../../lib/notes";
+import { site } from "../../config/site";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
   formatNoteDate,
@@ -10,6 +11,10 @@ import {
 import "../../styles/notes.css";
 
 export async function getStaticPaths() {
+  if (!site.features.showNotes) {
+    return [];
+  }
+
   const notes = await getPublishedNotes();
 
   return notes.map((note) => ({

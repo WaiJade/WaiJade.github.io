@@ -8,6 +8,8 @@ export type SocialItem = {
   href: string;
 };
 
+const showNotes = false;
+
 export const site = {
   title: "WaiJade's BLOG",
   description: "一个基于 Astro、React、Tailwind、Radix UI 与 MDX 重构中的静态个人博客。",
@@ -19,7 +21,7 @@ export const site = {
   },
   nav: [
     { label: "HOME", href: "/" },
-    { label: "NOTES", href: "/notes" },
+    ...(showNotes ? ([{ label: "NOTES", href: "/notes" }] satisfies NavItem[]) : []),
     { label: "ARCHIVES", href: "/archives" },
     { label: "ABOUT", href: "/about" },
   ] satisfies NavItem[],
@@ -29,6 +31,7 @@ export const site = {
   ] satisfies SocialItem[],
   features: {
     showToc: false,
+    showNotes,
   },
   theme: {
     defaultMode: "dark" as const,

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../config/site";
 import {
   formatNoteDate,
   getNoteExcerpt,
@@ -8,45 +9,66 @@ import {
 } from "../../lib/notes";
 import "../../styles/notes.css";
 
-const notes = await getPublishedNotes();
+const notesEnabled = site.features.showNotes;
+const notes = notesEnabled ? await getPublishedNotes() : [];
+
+if (!notesEnabled) {
+  Astro.response.status = 404;
+}
 ---
 
-<BaseLayout title="NOTES" description="更短、更即时的片段记录。">
-  <section class="shell notes-page">
-    <div class="notes-page__intro">
-      <p class="page-panel__eyebrow">NOTES</p>
-      <h1 class="page-panel__title notes-page__title">短记</h1>
-      <p class="page-panel__text notes-page__text">
-        这里放更短的句子、念头和即时记录，不按长文写作节奏展开。
-      </p>
-    </div>
-
-    {notes.length > 0 ? (
-      <div class="notes-list">
-        {notes.map((note) => (
-          <article class="note-card">
-            <div class="note-card__header">
-              <p class="note-card__eyebrow">Note</p>
-              <time class="note-card__date" datetime={note.data.pubDate.toISOString()}>
-                {formatNoteDate(note.data.pubDate)}
-              </time>
-            </div>
-            <h2 class="note-card__title">
-              <a href={getNoteUrl(note)}>{note.data.title}</a>
-            </h2>
-            <p class="note-card__excerpt">{getNoteExcerpt(note, 120, false)}</p>
-            {note.data.tags.length > 0 && (
-              <div class="note-card__tags" aria-label="短记标签">
-                {note.data.tags.map((tag) => (
-                  <span class="note-card__tag">{tag}</span>
-                ))}
-              </div>
-            )}
-          </article>
-        ))}
+<BaseLayout
+  title={notesEnabled ? "NOTES" : "NOT FOUND"}
+  description={notesEnabled ? "更短、更即时的片段记录。" : "短记功能当前未启用。"}
+  noIndex={!notesEnabled}
+>
+  {notesEnabled ? (
+    <section class="shell notes-page">
+      <div class="notes-page__intro">
+        <p class="page-panel__eyebrow">NOTES</p>
+        <h1 class="page-panel__title notes-page__title">短记</h1>
+        <p class="page-panel__text notes-page__text">
+          这里放更短的句子、念头和即时记录，不按长文写作节奏展开。
+        </p>
       </div>
-    ) : (
-      <p class="notes-page__empty">还没有公开短记。后续直接在 `src/content/notes/` 下新增文件即可。</p>
-    )}
-  </section>
+
+      {notes.length > 0 ? (
+        <div class="notes-list">
+          {notes.map((note) => (
+            <article class="note-card">
+              <div class="note-card__header">
+                <p class="note-card__eyebrow">Note</p>
+                <time class="note-card__date" datetime={note.data.pubDate.toISOString()}>
+                  {formatNoteDate(note.data.pubDate)}
+                </time>
+              </div>
+              <h2 class="note-card__title">
+                <a href={getNoteUrl(note)}>{note.data.title}</a>
+              </h2>
+              <p class="note-card__excerpt">{getNoteExcerpt(note, 120, false)}</p>
+              {note.data.tags.length > 0 && (
+                <div class="note-card__tags" aria-label="短记标签">
+                  {note.data.tags.map((tag) => (
+                    <span class="note-card__tag">{tag}</span>
+                  ))}
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="notes-page__empty">还没有公开短记。后续直接在 `src/content/notes/` 下新增文件即可。</p>
+      )}
+    </section>
+  ) : (
+    <section class="shell notes-page">
+      <div class="notes-page__intro">
+        <p class="page-panel__eyebrow">NOTES</p>
+        <h1 class="page-panel__title notes-page__title">未启用</h1>
+        <p class="page-panel__text notes-page__text">
+          短记入口当前已关闭。
+        </p>
+      </div>
+    </section>
+  )}
 </BaseLayout>
