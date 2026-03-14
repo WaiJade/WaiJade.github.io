@@ -181,10 +181,15 @@ const footerName = site.brand.name;
   }
 
   @media (max-width: 768px) {
+    .astro-footer {
+      min-height: clamp(17rem, 42svh, 22rem);
+    }
+
     .astro-footer__content {
       width: 100%;
-      padding: 26px 0.75rem 76px;
-      gap: 14px;
+      justify-content: flex-end;
+      padding: 12px 0.75rem 40px;
+      gap: 10px;
     }
 
     .astro-footer__wordmark {
