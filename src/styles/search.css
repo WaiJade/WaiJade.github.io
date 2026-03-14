@@ -118,7 +118,7 @@ body.search-open {
   flex: 0 0 auto;
   min-height: auto;
   align-content: start;
-  padding-top: clamp(9.2rem, 17vh, 11.1rem);
+  padding-top: clamp(8.6rem, 15.8vh, 10.5rem);
 }
 
 .search-page__core {
@@ -396,7 +396,7 @@ body.search-open {
 
   .search-page__main--stacked .search-page__core {
     min-height: auto;
-    padding-top: clamp(7.9rem, 14vh, 9rem);
+    padding-top: clamp(7.2rem, 12.8vh, 8.3rem);
   }
 
   .search-page__title {
