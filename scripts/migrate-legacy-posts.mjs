@@ -106,7 +106,7 @@ const files = readdirSync(sourceDir)
 
 for (const fileName of files) {
   const sourceFile = path.join(sourceDir, fileName);
-  const targetFile = path.join(targetDir, fileName);
+  const targetFile = path.join(targetDir, fileName.replace(/\.md$/i, ".mdx"));
   const raw = readFileSync(sourceFile, "utf8");
   const { frontmatter, body } = splitFrontmatter(raw);
   const parsed = parseFrontmatter(frontmatter);

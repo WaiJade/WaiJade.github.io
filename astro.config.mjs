@@ -7,6 +7,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import remarkMath from "remark-math";
 import tailwindcss from "@tailwindcss/vite";
+import rehypeWritingTimeMeta from "./src/lib/rehype-writing-time-meta.js";
 
 export default defineConfig({
   site: "https://blog.waijade.cn",
@@ -14,6 +15,7 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [
+      rehypeWritingTimeMeta,
       rehypeKatex,
       rehypeSlug,
       [

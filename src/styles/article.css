@@ -299,6 +299,20 @@
   line-height: 1.92;
 }
 
+.content-writing-time,
+.article-content div[align="right"] > p,
+.note-page__content div[align="right"] > p,
+.article-content p[align="right"]:not(:has(a, sup)),
+.note-page__content p[align="right"]:not(:has(a, sup)) {
+  color: var(--accent);
+  font-family: "JetBrains Mono", "Fira Code", "Source Code Pro", monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+  opacity: 0.9;
+}
+
 .article-content p,
 .article-content center,
 .article-content div[align],
