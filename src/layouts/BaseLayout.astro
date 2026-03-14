@@ -49,6 +49,36 @@ const pageTitle = title ? `${site.title} / ${title}` : site.title;
       href="https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,500,600:Chinese_Simplify,Latin&display=swap"
     />
     <title>{pageTitle}</title>
+    <script is:inline>
+      if (!window.__siteSearchDomDebugAttached) {
+        window.__siteSearchDomDebugAttached = true;
+
+        document.addEventListener(
+          "click",
+          (event) => {
+            const target =
+              event.target instanceof Element
+                ? event.target.closest("[data-site-search-trigger]")
+                : null;
+
+            if (target) {
+              console.warn("[site-search-dom] native trigger click observed");
+            }
+          },
+          true,
+        );
+
+        document.addEventListener(
+          "keydown",
+          (event) => {
+            if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+              console.warn("[site-search-dom] native ctrl/cmd+k observed");
+            }
+          },
+          true,
+        );
+      }
+    </script>
   </head>
   <body>
     <div class="page-shell">

@@ -106,11 +106,17 @@ function SearchButton({
   onClick: () => void;
   className: string;
 }) {
+  function handleClick() {
+    console.warn("[site-search] search button clicked");
+    onClick();
+  }
+
   return (
     <button
       type="button"
       className={className}
-      onClick={onClick}
+      onClick={handleClick}
+      data-site-search-trigger="true"
       aria-label="搜索文章"
       title="搜索文章（Ctrl + K）"
     >
@@ -141,6 +147,14 @@ export default function SiteSearch() {
   const tokens = normalizedQuery ? normalizedQuery.split(" ").filter(Boolean) : [];
 
   function openSearch() {
+    console.warn("[site-search] openSearch invoked", {
+      hasPortalTarget: Boolean(portalTarget),
+      activeElement:
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement.tagName
+          : null,
+    });
+
     if (document.activeElement instanceof HTMLElement) {
       lastActiveElementRef.current = document.activeElement;
     }
@@ -149,6 +163,7 @@ export default function SiteSearch() {
   }
 
   function closeSearch(restoreFocus = true) {
+    console.warn("[site-search] closeSearch invoked", { restoreFocus });
     setOpen(false);
     setQuery("");
 
@@ -169,6 +184,10 @@ export default function SiteSearch() {
         (event.metaKey || event.ctrlKey) &&
         event.key.toLowerCase() === "k"
       ) {
+        console.warn("[site-search] keyboard shortcut matched", {
+          key: event.key,
+          open,
+        });
         event.preventDefault();
 
         if (open) {
@@ -181,12 +200,14 @@ export default function SiteSearch() {
       }
 
       if (event.key === "Escape" && open) {
+        console.warn("[site-search] escape pressed while open");
         event.preventDefault();
         closeSearch();
         return;
       }
 
       if (event.key === "/" && !open && !isEditableTarget(event.target)) {
+        console.warn("[site-search] slash shortcut matched");
         event.preventDefault();
         openSearch();
       }
@@ -198,9 +219,11 @@ export default function SiteSearch() {
 
   useEffect(() => {
     setPortalTarget(document.body);
+    console.warn("[site-search] portal target ready");
   }, []);
 
   useEffect(() => {
+    console.warn("[site-search] open state changed", { open });
     document.documentElement.classList.toggle("search-open", open);
     document.body.classList.toggle("search-open", open);
 
@@ -215,19 +238,27 @@ export default function SiteSearch() {
       return;
     }
 
+    console.warn("[site-search] search layer entered open effect", { status });
+
     const frameId = window.requestAnimationFrame(() => {
+      console.warn("[site-search] focusing search input");
       inputRef.current?.focus();
     });
 
     if (status === "idle") {
+      console.warn("[site-search] loading search index");
       setStatus("loading");
 
       void loadSearchIndex()
         .then((searchItems) => {
+          console.warn("[site-search] search index loaded", {
+            count: searchItems.length,
+          });
           setItems(searchItems);
           setStatus("ready");
         })
         .catch(() => {
+          console.error("[site-search] search index load failed");
           setStatus("error");
         });
     }
@@ -256,6 +287,15 @@ export default function SiteSearch() {
       panelDescription = `关键词：${query.trim()}`;
     }
   }
+
+  useEffect(() => {
+    console.warn("[site-search] render state", {
+      open,
+      status,
+      hasPortalTarget: Boolean(portalTarget),
+      visibleItems: visibleItems.length,
+    });
+  }, [open, portalTarget, status, visibleItems.length]);
 
   const searchLayer = (
     <section
