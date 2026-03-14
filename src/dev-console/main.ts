@@ -59,8 +59,6 @@ let currentState: ConsoleState | null = null;
 let busyKey: string | null = null;
 let draftFeatures: FeatureFlags | null = null;
 let draftPostVisibility: Record<string, boolean> = {};
-let toolbarMessage = "切换开关后点击“应用更改”，页面只会刷新一次。";
-let toolbarTone: "default" | "error" = "default";
 
 const iconPaths: Record<IconName, string> = {
   note: "M88,96a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H96A8,8,0,0,1,88,96Zm8,40h64a8,8,0,0,0,0-16H96a8,8,0,0,0,0,16Zm32,16H96a8,8,0,0,0,0,16h32a8,8,0,0,0,0-16ZM224,48V156.69A15.86,15.86,0,0,1,219.31,168L168,219.31A15.86,15.86,0,0,1,156.69,224H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32H208A16,16,0,0,1,224,48ZM48,208H152V160a8,8,0,0,1,8-8h48V48H48Zm120-40v28.7L196.69,168Z",
@@ -153,7 +151,12 @@ async function readJson<T>(input: RequestInfo, init?: RequestInit) {
 
   if (!response.ok) {
     const payload = (await response.json().catch(() => null)) as { message?: string } | null;
-    throw new Error(payload?.message || "控制台请求失败");
+    throw new Error(
+      payload?.message ||
+        (response.status === 404
+          ? "控制台开发接口未加载，请重启一次 npm run dev。"
+          : "控制台请求失败"),
+    );
   }
 
   return (await response.json()) as T;
@@ -165,8 +168,7 @@ function renderFeatureList() {
   return featureConfig
     .map((feature) => {
       const checked = pendingFeatures?.[feature.key] ?? false;
-      const currentBusyKey = `feature:${feature.key}`;
-      const disabled = !currentState || busyKey === currentBusyKey;
+      const disabled = !currentState || busyKey === "apply";
 
       return `<div class="dev-console__item">
         <span class="dev-console__icon" data-kind="feature">${renderIcon(
@@ -178,19 +180,19 @@ function renderFeatureList() {
           <p class="dev-console__item-desc">${escapeHtml(feature.description)}</p>
         </div>
         <div class="dev-console__actions">
-          <button
-            type="button"
-            class="dev-console__toggle"
-            data-action="toggle-feature"
-            data-feature-key="${feature.key}"
-            data-checked="${String(checked)}"
-            aria-label="${escapeHtml(feature.label)} ${checked ? "已开启" : "已关闭"}"
-            ${disabled ? "disabled" : ""}
-          >
-            <span class="dev-console__toggle-track" aria-hidden="true">
-              <span class="dev-console__toggle-thumb"></span>
+          <label class="dev-console__switch" aria-label="${escapeHtml(feature.label)} ${checked ? "已开启" : "已关闭"}">
+            <input
+              type="checkbox"
+              class="dev-console__switch-input"
+              data-action="toggle-feature"
+              data-feature-key="${feature.key}"
+              ${checked ? "checked" : ""}
+              ${disabled ? "disabled" : ""}
+            />
+            <span class="dev-console__switch-track" aria-hidden="true">
+              <span class="dev-console__switch-thumb"></span>
             </span>
-          </button>
+          </label>
         </div>
       </div>`;
     })
@@ -205,7 +207,7 @@ function renderPostVisibilityList(posts: PostItem[]) {
   return `<div class="dev-console__group">${posts
     .map((post) => {
       const visible = isPostVisible(post.fileName, post.visibility === "active");
-      const disabled = busyKey === `post:${post.fileName}`;
+      const disabled = busyKey === "apply";
 
       return `<article class="dev-console__item ${visible ? "" : "is-hidden"}">
         <span class="dev-console__icon" data-kind="post">${renderIcon(
@@ -219,23 +221,19 @@ function renderPostVisibilityList(posts: PostItem[]) {
           )}</p>
         </div>
         <div class="dev-console__actions">
-          <button
-            type="button"
-            class="dev-console__toggle"
-            data-action="toggle-post-visibility"
-            data-file-name="${escapeHtml(post.fileName)}"
-            data-checked="${String(visible)}"
-            aria-label="${escapeHtml(post.title)} ${visible ? "显示中" : "已隐藏"}"
-            ${disabled ? "disabled" : ""}
-          >
-            <span class="dev-console__toggle-track" aria-hidden="true">
-              <span class="dev-console__toggle-thumb"></span>
+          <label class="dev-console__switch" aria-label="${escapeHtml(post.title)} ${visible ? "显示中" : "已隐藏"}">
+            <input
+              type="checkbox"
+              class="dev-console__switch-input"
+              data-action="toggle-post-visibility"
+              data-file-name="${escapeHtml(post.fileName)}"
+              ${visible ? "checked" : ""}
+              ${disabled ? "disabled" : ""}
+            />
+            <span class="dev-console__switch-track" aria-hidden="true">
+              <span class="dev-console__switch-thumb"></span>
             </span>
-          </button>
-          <span class="dev-console__action-label">
-            ${renderIcon(visible ? "eye" : "eyeSlash", "dev-console__action-icon")}
-            <span>${visible ? "显示" : "隐藏"}</span>
-          </span>
+          </label>
         </div>
       </article>`;
     })
@@ -255,28 +253,6 @@ function render() {
       </p>
     </header>
 
-    <div class="dev-console__toolbar" data-tone="${toolbarTone}">
-      <p class="dev-console__toolbar-text">${escapeHtml(toolbarMessage)}</p>
-      <div class="dev-console__toolbar-actions">
-        <button
-          type="button"
-          class="dev-console__toolbar-button dev-console__toolbar-button--secondary"
-          data-action="reset-draft"
-          ${!dirty || busyKey === "apply" ? "disabled" : ""}
-        >
-          撤销未应用
-        </button>
-        <button
-          type="button"
-          class="dev-console__toolbar-button dev-console__toolbar-button--primary"
-          data-action="apply-draft"
-          ${!dirty || busyKey === "apply" ? "disabled" : ""}
-        >
-          应用更改
-        </button>
-      </div>
-    </div>
-
     <div class="dev-console__sections">
       <section class="dev-console__section">
         <p class="dev-console__section-title">网站功能</p>
@@ -290,6 +266,25 @@ function render() {
         ${renderPostVisibilityList(allPosts)}
       </section>
     </div>
+
+    <div class="dev-console__floating-actions" data-visible="${String(dirty)}">
+      <button
+        type="button"
+        class="dev-console__floating-button dev-console__floating-button--secondary"
+        data-action="reset-draft"
+        ${!dirty || busyKey === "apply" ? "disabled" : ""}
+      >
+        撤销
+      </button>
+      <button
+        type="button"
+        class="dev-console__floating-button dev-console__floating-button--primary"
+        data-action="apply-draft"
+        ${!dirty || busyKey === "apply" ? "disabled" : ""}
+      >
+        ${busyKey === "apply" ? "保存中" : "保存"}
+      </button>
+    </div>
   </main>`;
 }
 
@@ -299,32 +294,27 @@ async function refreshState() {
   draftPostVisibility = Object.fromEntries(
     getSortedPosts(currentState).map((post) => [post.fileName, post.visibility === "active"]),
   );
-  toolbarMessage = "切换开关后点击“应用更改”，页面只会刷新一次。";
-  toolbarTone = "default";
   render();
 }
 
-function handleToggleFeature(featureKey: keyof FeatureFlags) {
+function handleToggleFeature(featureKey: keyof FeatureFlags, checked: boolean) {
   if (!currentState) {
     return;
   }
 
   draftFeatures = {
     ...(getPendingFeatures() ?? currentState.features),
-    [featureKey]: !(getPendingFeatures()?.[featureKey] ?? currentState.features[featureKey]),
+    [featureKey]: checked,
   };
-  toolbarMessage = "有未应用的功能更改。";
-  toolbarTone = "default";
   render();
 }
 
-function handleTogglePostVisibility(fileName: string) {
+function handleTogglePostVisibility(fileName: string, visible: boolean) {
   if (!currentState) {
     return;
   }
 
   const currentPost = getSortedPosts(currentState).find((post) => post.fileName === fileName);
-  const currentVisibility = isPostVisible(fileName, currentPost?.visibility === "active");
 
   if (!currentPost) {
     return;
@@ -332,10 +322,8 @@ function handleTogglePostVisibility(fileName: string) {
 
   draftPostVisibility = {
     ...draftPostVisibility,
-    [fileName]: !currentVisibility,
+    [fileName]: visible,
   };
-  toolbarMessage = "有未应用的文章显示更改。";
-  toolbarTone = "default";
   render();
 }
 
@@ -348,8 +336,6 @@ function handleResetDraft() {
   draftPostVisibility = Object.fromEntries(
     getSortedPosts(currentState).map((post) => [post.fileName, post.visibility === "active"]),
   );
-  toolbarMessage = "未应用的更改已撤销。";
-  toolbarTone = "default";
   render();
 }
 
@@ -359,8 +345,6 @@ async function handleApplyDraft() {
   }
 
   busyKey = "apply";
-  toolbarMessage = "正在应用更改，完成后会刷新一次页面。";
-  toolbarTone = "default";
   render();
 
   try {
@@ -376,16 +360,15 @@ async function handleApplyDraft() {
     });
   } catch (error) {
     busyKey = null;
-    toolbarMessage = error instanceof Error ? error.message : "应用更改失败。";
-    toolbarTone = "error";
+    console.error(error);
     render();
   }
 }
 
-app.addEventListener("click", (event) => {
-  const target = event.target instanceof HTMLElement ? event.target.closest("button") : null;
+app.addEventListener("change", (event) => {
+  const target = event.target;
 
-  if (!(target instanceof HTMLButtonElement)) {
+  if (!(target instanceof HTMLInputElement)) {
     return;
   }
 
@@ -395,7 +378,7 @@ app.addEventListener("click", (event) => {
     const featureKey = target.dataset.featureKey as keyof FeatureFlags | undefined;
 
     if (featureKey) {
-      handleToggleFeature(featureKey);
+      handleToggleFeature(featureKey, target.checked);
     }
 
     return;
@@ -405,11 +388,19 @@ app.addEventListener("click", (event) => {
     const fileName = target.dataset.fileName;
 
     if (fileName) {
-      handleTogglePostVisibility(fileName);
+      handleTogglePostVisibility(fileName, target.checked);
     }
+  }
+});
 
+app.addEventListener("click", (event) => {
+  const target = event.target instanceof HTMLElement ? event.target.closest("button") : null;
+
+  if (!(target instanceof HTMLButtonElement)) {
     return;
   }
+
+  const action = target.dataset.action;
 
   if (action === "reset-draft") {
     handleResetDraft();

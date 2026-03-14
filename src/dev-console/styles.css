@@ -57,7 +57,7 @@ code {
 .dev-console {
   width: min(880px, calc(100vw - 2rem));
   margin: 0 auto;
-  padding: 8.5rem 0 4rem;
+  padding: 8.5rem 0 8rem;
 }
 
 .dev-console__intro {
@@ -97,43 +97,38 @@ code {
   margin-top: 3rem;
 }
 
-.dev-console__toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding: 1rem 1.2rem;
-  border: 1px solid var(--console-border);
-  border-radius: 24px;
-  background: rgba(71, 71, 75, 0.22);
-  box-shadow: var(--console-shadow);
-  -webkit-backdrop-filter: blur(32px);
-  backdrop-filter: blur(32px);
-}
-
-.dev-console__toolbar[data-tone="error"] {
-  border-color: rgba(255, 124, 124, 0.22);
-  background: rgba(112, 38, 38, 0.24);
-}
-
-.dev-console__toolbar-text {
-  margin: 0;
-  color: var(--console-muted);
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.dev-console__toolbar-actions {
+.dev-console__floating-actions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex-shrink: 0;
+  position: fixed;
+  right: max(1rem, calc(env(safe-area-inset-right) + 1rem));
+  bottom: max(1rem, calc(env(safe-area-inset-bottom) + 1rem));
+  z-index: 50;
+  padding: 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(38, 38, 42, 0.8);
+  box-shadow: 0 24px 64px rgba(4, 8, 20, 0.32);
+  -webkit-backdrop-filter: blur(32px);
+  backdrop-filter: blur(32px);
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+  pointer-events: none;
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
 }
 
-.dev-console__toolbar-button {
-  min-height: 42px;
-  padding: 0 1rem;
+.dev-console__floating-actions[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.dev-console__floating-button {
+  min-height: 44px;
+  padding: 0 1.1rem;
   border-radius: 999px;
   border: 1px solid transparent;
   background: transparent;
@@ -148,25 +143,25 @@ code {
     border-color 0.2s ease;
 }
 
-.dev-console__toolbar-button:hover:not(:disabled) {
+.dev-console__floating-button:hover:not(:disabled) {
   opacity: 0.9;
 }
 
-.dev-console__toolbar-button:active:not(:disabled) {
+.dev-console__floating-button:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-.dev-console__toolbar-button:disabled {
+.dev-console__floating-button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
 }
 
-.dev-console__toolbar-button--secondary {
+.dev-console__floating-button--secondary {
   border-color: rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.05);
 }
 
-.dev-console__toolbar-button--primary {
+.dev-console__floating-button--primary {
   background: var(--console-accent);
   color: #ffffff;
 }
@@ -212,8 +207,7 @@ code {
 
 .dev-console__item.is-hidden .dev-console__item-title,
 .dev-console__item.is-hidden .dev-console__item-desc,
-.dev-console__item.is-hidden .dev-console__icon[data-kind="post"],
-.dev-console__item.is-hidden .dev-console__action-label {
+.dev-console__item.is-hidden .dev-console__icon[data-kind="post"] {
   opacity: 0.62;
 }
 
@@ -268,75 +262,80 @@ code {
   min-width: 0;
 }
 
-.dev-console__toggle {
+.dev-console__switch {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 34px;
-  padding: 0;
-  border: none;
-  border-radius: 999px;
-  background: transparent;
   cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    opacity 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
 }
 
-.dev-console__toggle:hover:not(:disabled) {
-  opacity: 0.92;
+.dev-console__switch-input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+  clip: rect(0 0 0 0);
 }
 
-.dev-console__toggle:active:not(:disabled) {
-  transform: scale(0.975);
-}
-
-.dev-console__toggle:disabled,
-.dev-console__action-link:disabled {
-  cursor: wait;
-  opacity: 0.7;
-}
-
-.dev-console__toggle-track {
-  width: 48px;
-  height: 28px;
+.dev-console__switch-track {
+  display: inline-flex;
+  align-items: center;
+  width: 54px;
+  height: 32px;
   padding: 2px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.22);
-  transition: background-color 0.2s ease;
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 6px 18px rgba(0, 0, 0, 0.1);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
 }
 
-.dev-console__toggle-thumb {
-  width: 24px;
-  height: 24px;
+.dev-console__switch-thumb {
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 4px 10px rgba(3, 7, 18, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 251, 0.92));
+  box-shadow:
+    0 6px 18px rgba(3, 7, 18, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
   transition: transform 0.2s ease;
 }
 
-.dev-console__toggle[data-checked="true"] .dev-console__toggle-track {
-  background: #1781ff;
+.dev-console__switch:hover .dev-console__switch-track {
+  transform: scale(0.98);
 }
 
-.dev-console__toggle[data-checked="true"] .dev-console__toggle-thumb {
-  transform: translateX(20px);
+.dev-console__switch-input:focus-visible + .dev-console__switch-track {
+  outline: 2px solid rgba(0, 136, 255, 0.46);
+  outline-offset: 3px;
 }
 
-.dev-console__action-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  color: var(--console-accent-blue);
-  font-size: 0.88rem;
-  font-weight: 560;
+.dev-console__switch-input:checked + .dev-console__switch-track {
+  background: #0088ff;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 0 0 1px rgba(0, 136, 255, 0.18);
 }
 
-.dev-console__action-icon {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
+.dev-console__switch-input:checked + .dev-console__switch-track .dev-console__switch-thumb {
+  transform: translateX(22px);
+}
+
+.dev-console__switch-input:disabled + .dev-console__switch-track {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .dev-console__empty {
@@ -360,15 +359,6 @@ code {
     align-items: flex-start;
   }
 
-  .dev-console__toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .dev-console__toolbar-actions {
-    justify-content: flex-start;
-  }
-
   .dev-console__actions {
     flex-shrink: 0;
   }
@@ -384,5 +374,16 @@ code {
   .dev-console__actions {
     grid-column: 2;
     justify-content: flex-start;
+  }
+
+  .dev-console__floating-actions {
+    left: 0.75rem;
+    right: 0.75rem;
+    justify-content: space-between;
+  }
+
+  .dev-console__floating-button {
+    flex: 1;
+    justify-content: center;
   }
 }
