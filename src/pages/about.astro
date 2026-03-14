@@ -1,30 +1,128 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import aboutSource from "../content/pages/about.mdx?raw";
+import aboutEnSource from "../content/pages/about.en.mdx?raw";
+import aboutZhSource from "../content/pages/about.zh.mdx?raw";
 import { friendsLinks } from "../content/friends";
 import { site } from "../config/site";
 import "../styles/about.css";
 
-const aboutPage = (await getCollection("pages")).find((entry) => entry.id === "about.mdx");
-const aboutBody = aboutSource.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
-const aboutParagraphs = Array.from(aboutBody.matchAll(/<p>([\s\S]*?)<\/p>/g), (match) => match[1].trim()).filter(Boolean);
+type Locale = "zh" | "en";
 
-if (!aboutPage) {
-  throw new Error("缺少 src/content/pages/about.mdx");
+type AboutContent = {
+  title: string;
+  description: string;
+  lead?: string;
+  paragraphs: string[];
+};
+
+const locales = ["zh", "en"] as const satisfies readonly Locale[];
+const frontmatterPattern = /^\s*---\s*\n([\s\S]*?)\n\s*---\s*\n?/;
+const frontmatterLinePattern = /^([a-zA-Z][\w-]*):\s*(.*)$/;
+const paragraphPattern = /<p>([\s\S]*?)<\/p>/g;
+
+function parseFrontmatter(raw: string) {
+  const matched = raw.match(frontmatterPattern);
+  if (!matched) {
+    throw new Error("about 内容缺少 frontmatter");
+  }
+
+  const fields = matched[1]
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .reduce<Record<string, string>>((result, line) => {
+      const fieldMatch = line.match(frontmatterLinePattern);
+      if (!fieldMatch) {
+        return result;
+      }
+
+      result[fieldMatch[1]] = fieldMatch[2].trim();
+      return result;
+    }, {});
+
+  return {
+    fields,
+    body: raw.slice(matched[0].length),
+  };
 }
 
-if (!aboutParagraphs.length) {
-  throw new Error("src/content/pages/about.mdx 缺少正文段落");
+function parseParagraphs(body: string) {
+  const paragraphs = Array.from(body.matchAll(paragraphPattern), (match) => match[1].trim()).filter(Boolean);
+
+  if (!paragraphs.length) {
+    throw new Error("about 内容缺少正文段落");
+  }
+
+  return paragraphs;
 }
+
+function parseAboutContent(raw: string): AboutContent {
+  const { fields, body } = parseFrontmatter(raw);
+  const title = fields.title;
+
+  if (!title) {
+    throw new Error("about 内容缺少 title");
+  }
+
+  return {
+    title,
+    description: fields.description ?? "",
+    lead: fields.lead,
+    paragraphs: parseParagraphs(body),
+  };
+}
+
+const aboutContentByLocale: Record<Locale, AboutContent> = {
+  zh: parseAboutContent(aboutZhSource),
+  en: parseAboutContent(aboutEnSource),
+};
+
+const localeLabels = {
+  zh: {
+    pageTitle: "关于",
+    friendsTitle: "友情链接",
+  },
+  en: {
+    pageTitle: "About",
+    friendsTitle: "Friends",
+  },
+} as const;
+
+const defaultLocale: Locale = "zh";
+const defaultContent = aboutContentByLocale[defaultLocale];
 ---
 
-<BaseLayout title="ABOUT" description={aboutPage.data.description}>
-  <section class="shell about-page">
+<BaseLayout title="ABOUT" description={defaultContent.description || site.description}>
+  <section class="shell about-page" data-about-root data-locale={defaultLocale}>
+    <script>
+      import { detectPreferredLocale } from "../lib/locale";
+
+      const applyAboutLocale = () => {
+        const locale = detectPreferredLocale();
+        document.querySelectorAll("[data-about-root]").forEach((element) => {
+          if (element instanceof HTMLElement) {
+            element.dataset.locale = locale;
+          }
+        });
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", applyAboutLocale, { once: true });
+      } else {
+        applyAboutLocale();
+      }
+    </script>
+
     <section class="about-page__section animate-fadeIn">
       <div class="about-page__intro archives-page__intro">
         <p class="page-panel__eyebrow">ABOUT</p>
-        <h1 class="page-panel__title archives-page__title">关于</h1>
+        <h1 class="page-panel__title archives-page__title">
+          {locales.map((locale) => (
+            <span class="about-page__locale-title" data-locale={locale}>
+              {localeLabels[locale].pageTitle}
+            </span>
+          ))}
+        </h1>
       </div>
 
       <div class="about-page__body">
@@ -38,9 +136,17 @@ if (!aboutParagraphs.length) {
           />
         </div>
 
-        <div class="about-section__copy">
-          {aboutPage.data.lead && <p class="about-section__lead" set:html={aboutPage.data.lead} />}
-          {aboutParagraphs.map((paragraph) => <p class="about-section__text" set:html={paragraph} />)}
+        <div class="about-page__content">
+          {locales.map((locale) => (
+            <div class="about-section__copy about-page__locale-panel" data-locale={locale}>
+              {aboutContentByLocale[locale].lead && (
+                <p class="about-section__lead" set:html={aboutContentByLocale[locale].lead} />
+              )}
+              {aboutContentByLocale[locale].paragraphs.map((paragraph) => (
+                <p class="about-section__text" set:html={paragraph} />
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -49,7 +155,13 @@ if (!aboutParagraphs.length) {
       <section class="about-page__section about-page__friends-section animate-fadeIn">
         <div class="about-page__intro about-page__friends-intro archives-page__intro">
           <p class="page-panel__eyebrow">FRIENDS</p>
-          <h2 class="page-panel__title archives-page__title">友情链接</h2>
+          <h2 class="page-panel__title archives-page__title">
+            {locales.map((locale) => (
+              <span class="about-page__locale-title" data-locale={locale}>
+                {localeLabels[locale].friendsTitle}
+              </span>
+            ))}
+          </h2>
         </div>
 
         <div class="about-page__friends">

@@ -43,6 +43,10 @@
   padding-top: 0.1rem;
 }
 
+.about-page__content {
+  min-width: 0;
+}
+
 .about-page__avatar-wrap {
   position: relative;
   width: 100%;
@@ -72,6 +76,27 @@
   flex-direction: column;
   gap: 0.65rem;
   min-width: 0;
+}
+
+.about-page__locale-title,
+.about-page__locale-panel {
+  display: none;
+}
+
+.about-page[data-locale="zh"] .about-page__locale-title[data-locale="zh"] {
+  display: inline;
+}
+
+.about-page[data-locale="en"] .about-page__locale-title[data-locale="en"] {
+  display: inline;
+}
+
+.about-page[data-locale="zh"] .about-page__locale-panel[data-locale="zh"] {
+  display: flex;
+}
+
+.about-page[data-locale="en"] .about-page__locale-panel[data-locale="en"] {
+  display: flex;
 }
 
 .about-section__lead,
