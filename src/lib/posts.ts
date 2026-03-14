@@ -115,13 +115,21 @@ function stripFormattedWritingTimeBlocks(value: string) {
     });
 }
 
+function stripDirectiveMarkers(value: string) {
+  return value
+    .replace(/^:::[a-zA-Z][\w-]*(?:\[[^\]]*\])?(?:\{[^}]*})?\s*$/gm, " ")
+    .replace(/^:::\s*$/gm, " ")
+    .replace(/^::[a-zA-Z][\w-]*(?:\[([^\]]*)\])?(?:\{[^}]*})?\s*$/gm, "$1 ")
+    .replace(/:([a-zA-Z][\w-]*)\[([^\]]+)](?:\{[^}]*})?/g, "$2");
+}
+
 export function getPostPlainText(
   post: Pick<PostEntry, "body" | "data">,
   maxLength?: number,
 ) {
   const sanitizedBody = stripFormattedWritingTimeBlocks(post.body);
   const plainText = normalizeWhitespace(
-    sanitizedBody
+    stripDirectiveMarkers(sanitizedBody)
       .replace(/<br\s*\/?>/gi, " ")
       .replace(/<\/?(center|div|p|span|sup|sub|blockquote|pre|code)[^>]*>/gi, " ")
       .replace(/<[^>]+>/g, " ")

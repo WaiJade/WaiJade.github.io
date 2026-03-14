@@ -5,8 +5,10 @@ import sitemap from "@astrojs/sitemap";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
+import remarkDirective from "remark-directive";
 import remarkMath from "remark-math";
 import tailwindcss from "@tailwindcss/vite";
+import remarkContentDirectives from "./src/lib/remark-content-directives.js";
 import rehypeWritingTimeMeta from "./src/lib/rehype-writing-time-meta.js";
 import { createDevConsolePlugin } from "./scripts/dev-console.mjs";
 
@@ -14,7 +16,7 @@ export default defineConfig({
   site: "https://blog.waijade.cn",
   integrations: [react(), mdx(), sitemap()],
   markdown: {
-    remarkPlugins: [remarkMath],
+    remarkPlugins: [remarkMath, remarkDirective, remarkContentDirectives],
     rehypePlugins: [
       rehypeWritingTimeMeta,
       rehypeKatex,

@@ -578,6 +578,75 @@
   margin-bottom: 0;
 }
 
+.article-content .article-directive,
+.note-page__content .article-directive {
+  --article-callout-accent: var(--accent);
+  margin: 1rem 0 1.2rem;
+  padding: 1rem 1.05rem 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--article-callout-accent) 24%, transparent);
+  border-radius: 1.15rem;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--article-callout-accent) 16%, transparent),
+      color-mix(in srgb, var(--article-callout-accent) 8%, transparent)
+    ),
+    color-mix(in srgb, var(--foreground) 3%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 14%, transparent),
+    0 14px 34px rgba(3, 7, 18, 0.08);
+}
+
+.article-content .article-directive--danger,
+.note-page__content .article-directive--danger {
+  --article-callout-accent: #d66b7a;
+}
+
+.article-content .article-directive--success,
+.note-page__content .article-directive--success {
+  --article-callout-accent: #5ea87a;
+}
+
+.article-content .article-directive--info,
+.note-page__content .article-directive--info {
+  --article-callout-accent: #5f8fe8;
+}
+
+.article-content .article-directive--note,
+.note-page__content .article-directive--note {
+  --article-callout-accent: #c79348;
+}
+
+.article-content .article-directive--tip,
+.note-page__content .article-directive--tip {
+  --article-callout-accent: #4aa7a1;
+}
+
+.article-content .article-directive__title,
+.note-page__content .article-directive__title {
+  margin: 0 0 0.55rem;
+  color: color-mix(in srgb, var(--article-callout-accent) 76%, var(--foreground) 24%);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+}
+
+.article-content .article-directive > :last-child,
+.note-page__content .article-directive > :last-child {
+  margin-bottom: 0;
+}
+
+.article-content mark.article-mark,
+.note-page__content mark.article-mark {
+  --article-mark-accent: color-mix(in srgb, var(--accent) 74%, white 26%);
+  padding: 0.08rem 0.3rem;
+  border-radius: 0.42rem;
+  background: color-mix(in srgb, var(--article-mark-accent) 22%, transparent);
+  box-decoration-break: clone;
+  color: inherit;
+}
+
 .article-content table {
   width: 100%;
   border-collapse: collapse;
