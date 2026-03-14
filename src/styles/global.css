@@ -163,10 +163,10 @@ a {
     transform 0.48s cubic-bezier(0.22, 1, 0.36, 1),
     filter 0.48s ease,
     opacity 0.32s ease;
-  will-change: transform, filter, opacity;
 }
 
 html.search-open .page-shell {
+  will-change: transform, filter, opacity;
   transform: scale(0.968) translateY(-1.25rem);
   filter: blur(12px) saturate(0.82);
   opacity: 0.42;

@@ -11,29 +11,74 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isElevated, setIsElevated] = useState(false);
   const lastScrollY = useRef(0);
+  const directionAnchorY = useRef(0);
+  const scrollDirection = useRef<"up" | "down">("up");
+  const isTicking = useRef(false);
   const normalizedCurrentPath =
     currentPath !== "/" && currentPath.endsWith("/")
       ? currentPath.slice(0, -1)
       : currentPath;
 
   useEffect(() => {
-    function handleScroll() {
-      const currentScrollY = window.scrollY;
+    const topRevealOffset = 24;
+    const elevationOffset = 48;
+    const hideTriggerOffset = 96;
+    const hideTravelThreshold = 18;
+
+    function updateHeader() {
+      const currentScrollY = Math.max(window.scrollY, 0);
       const delta = currentScrollY - lastScrollY.current;
+      const nextElevated = currentScrollY > elevationOffset;
 
-      setIsElevated(currentScrollY > 48);
+      setIsElevated((prev) => (prev === nextElevated ? prev : nextElevated));
 
-      if (currentScrollY <= 24) {
+      if (currentScrollY <= topRevealOffset) {
         setIsVisible(true);
-      } else if (Math.abs(delta) > 4) {
-        setIsVisible(delta < 0);
+        scrollDirection.current = "up";
+        directionAnchorY.current = currentScrollY;
+        lastScrollY.current = currentScrollY;
+        isTicking.current = false;
+        return;
+      }
+
+      if (Math.abs(delta) < 1) {
+        lastScrollY.current = currentScrollY;
+        isTicking.current = false;
+        return;
+      }
+
+      const nextDirection = delta > 0 ? "down" : "up";
+
+      if (nextDirection !== scrollDirection.current) {
+        scrollDirection.current = nextDirection;
+        directionAnchorY.current = currentScrollY;
+      }
+
+      if (nextDirection === "up") {
+        setIsVisible(true);
+        directionAnchorY.current = currentScrollY;
+      } else if (
+        currentScrollY > hideTriggerOffset &&
+        currentScrollY - directionAnchorY.current >= hideTravelThreshold
+      ) {
+        setIsVisible(false);
+        directionAnchorY.current = currentScrollY;
       }
 
       lastScrollY.current = currentScrollY;
+      isTicking.current = false;
+    }
+
+    function handleScroll() {
+      if (isTicking.current) return;
+
+      isTicking.current = true;
+      window.requestAnimationFrame(updateHeader);
     }
 
     lastScrollY.current = window.scrollY;
-    handleScroll();
+    directionAnchorY.current = window.scrollY;
+    updateHeader();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
