@@ -120,11 +120,7 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
         {site.features.showSearch && <SiteSearch />}
 
         <div className="topbar__mobile-menu" aria-label="移动端导航">
-          <MobileNav
-            currentPath={normalizedCurrentPath}
-            nav={site.nav}
-            social={site.social}
-          />
+          <MobileNav currentPath={normalizedCurrentPath} nav={site.nav} />
         </div>
       </div>
     </header>

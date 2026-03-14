@@ -1,0 +1,14 @@
+<svg width="8" height="12" viewBox="0 0 8 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.21289 12H0.291016L5.73047 0H7.65234L2.21289 12Z" id="slash" fill-opacity="0.5"/>
+<style>
+path#slash {
+    fill: #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+    path#slash {
+        fill: #FFFFFF;
+    }
+}
+</style>
+</svg>

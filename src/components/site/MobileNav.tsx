@@ -1,81 +1,87 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { useState } from "react";
-import type { NavItem, SocialItem } from "../../config/site";
+import { OptionIcon, XIcon } from "@phosphor-icons/react";
+import { useEffect, useState } from "react";
+import type { NavItem } from "../../config/site";
 
 type MobileNavProps = {
   currentPath: string;
   nav: readonly NavItem[];
-  social: readonly SocialItem[];
 };
 
-export default function MobileNav({
-  currentPath,
-  nav,
-  social,
-}: MobileNavProps) {
+export default function MobileNav({ currentPath, nav }: MobileNavProps) {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("mobile-nav-open", open);
+
+    return () => {
+      document.documentElement.classList.remove("mobile-nav-open");
+    };
+  }, [open]);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
         <button
           type="button"
-          className="topbar__icon-button topbar__icon-button--menu"
+          className="topbar__icon-button topbar__icon-button--menu mobile-nav__trigger"
           aria-label="打开菜单"
         >
-          MENU
+          <span className="topbar__icon-button__inner">
+            <OptionIcon
+              size={18}
+              weight="bold"
+              className="topbar__icon-button__icon"
+              aria-hidden="true"
+            />
+          </span>
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="mobile-nav__overlay" />
         <Dialog.Content className="mobile-nav__content">
-          <div className="mobile-nav__header">
-            <div>
-              <p className="mobile-nav__eyebrow">WAIJADE</p>
-              <Dialog.Title className="mobile-nav__title">BLOG NAV</Dialog.Title>
-            </div>
-            <Dialog.Close asChild>
-              <button
-                type="button"
-                className="topbar__icon-button topbar__icon-button--menu"
-                aria-label="关闭菜单"
-              >
-                CLOSE
-              </button>
-            </Dialog.Close>
-          </div>
+          <Dialog.Title className="mobile-nav__sr-title">站点菜单</Dialog.Title>
+          <Dialog.Close asChild>
+            <button
+              type="button"
+              className="topbar__icon-button mobile-nav__close"
+              aria-label="关闭菜单"
+            >
+              <span className="topbar__icon-button__inner">
+                <XIcon
+                  size={18}
+                  weight="bold"
+                  className="topbar__icon-button__icon"
+                  aria-hidden="true"
+                />
+              </span>
+            </button>
+          </Dialog.Close>
 
-          <nav className="mobile-nav__list" aria-label="移动端导航">
-            {nav.map((item, index) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className={`mobile-nav__link ${
-                  currentPath === item.href ? "is-active" : ""
-                }`}
-                onClick={() => setOpen(false)}
-              >
-                <span className="mobile-nav__index">
-                  {(index + 1).toString().padStart(2, "0")}
-                </span>
-                <span>{item.label}</span>
-              </a>
-            ))}
-          </nav>
-
-          <div className="mobile-nav__socials">
-            {social.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noreferrer"
-                className="mobile-nav__social-link"
-              >
-                {item.label}
-              </a>
-            ))}
+          <div className="mobile-nav__inner">
+            <nav className="mobile-nav__list" aria-label="移动端导航">
+              {nav.map((item) => (
+                <Dialog.Close asChild key={item.href}>
+                  <a
+                    href={item.href}
+                    className={`mobile-nav__link ${
+                      currentPath === item.href ? "is-active" : ""
+                    }`}
+                    aria-current={currentPath === item.href ? "page" : undefined}
+                  >
+                    <img
+                      src="/slash.svg"
+                      alt=""
+                      aria-hidden="true"
+                      className="mobile-nav__slash"
+                    />
+                    <span className="mobile-nav__label">{item.label}</span>
+                  </a>
+                </Dialog.Close>
+              ))}
+            </nav>
           </div>
+          <div aria-hidden="true" className="mobile-nav__handle" />
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
