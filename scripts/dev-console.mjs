@@ -225,10 +225,17 @@ function getConsoleHtml() {
       :root {
         color-scheme: dark;
         font-family: "MiSans", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+        --console-text: rgba(248, 250, 255, 0.94);
+        --console-text-soft: rgba(221, 229, 243, 0.72);
+        --console-glass:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.025) 100%),
+          rgba(16, 22, 37, 0.72);
+        --console-border: rgba(255, 255, 255, 0.1);
         background:
-          radial-gradient(circle at top, rgba(93, 136, 255, 0.22), transparent 40%),
-          linear-gradient(180deg, #07111f 0%, #030712 56%, #02050a 100%);
-        color: rgba(243, 247, 255, 0.96);
+          radial-gradient(circle at 16% 0%, rgba(58, 137, 255, 0.28), transparent 28%),
+          radial-gradient(circle at 84% 8%, rgba(123, 92, 255, 0.18), transparent 24%),
+          linear-gradient(180deg, #10182a 0%, #09101c 42%, #050915 100%);
+        color: var(--console-text);
       }
 
       * {
@@ -238,12 +245,39 @@ function getConsoleHtml() {
       body {
         min-height: 100vh;
         margin: 0;
+        overflow-x: hidden;
       }
 
       .dev-console-shell {
+        position: relative;
         width: min(1120px, calc(100vw - 32px));
         margin: 0 auto;
-        padding: 40px 0 72px;
+        padding: 40px 0 80px;
+      }
+
+      .dev-console-shell::before,
+      .dev-console-shell::after {
+        content: "";
+        position: fixed;
+        pointer-events: none;
+        z-index: -1;
+        filter: blur(56px);
+      }
+
+      .dev-console-shell::before {
+        top: 56px;
+        left: max(24px, calc(50vw - 620px));
+        width: 240px;
+        height: 240px;
+        background: rgba(74, 130, 255, 0.18);
+      }
+
+      .dev-console-shell::after {
+        top: 112px;
+        right: max(12px, calc(50vw - 610px));
+        width: 300px;
+        height: 300px;
+        background: rgba(102, 90, 255, 0.14);
       }
 
       .dev-console-shell__eyebrow {
@@ -251,30 +285,48 @@ function getConsoleHtml() {
         font-size: 0.78rem;
         letter-spacing: 0.26em;
         text-transform: uppercase;
-        color: rgba(147, 197, 253, 0.72);
+        color: rgba(139, 195, 255, 0.68);
       }
 
       .dev-console-shell__title {
         margin: 0;
-        font-size: clamp(2rem, 4vw, 3.8rem);
-        line-height: 0.95;
-        letter-spacing: -0.06em;
+        font-family: "NSourcesSong", "NSourceSong", "MiSans", serif;
+        font-size: clamp(2.1rem, 4vw, 3.9rem);
+        line-height: 0.98;
+        letter-spacing: 0.01em;
+        font-weight: 400;
       }
 
       .dev-console-shell__text {
         margin: 16px 0 0;
         max-width: 52rem;
         line-height: 1.7;
-        color: rgba(209, 219, 236, 0.78);
+        color: var(--console-text-soft);
       }
 
       .dev-console-shell__card {
         margin-top: 24px;
         padding: 20px 22px;
-        border: 1px solid rgba(148, 163, 184, 0.16);
-        border-radius: 24px;
-        background: rgba(15, 23, 42, 0.72);
-        backdrop-filter: blur(16px);
+        border: 1px solid var(--console-border);
+        border-radius: 28px;
+        background: var(--console-glass);
+        box-shadow:
+          0 24px 64px rgba(4, 9, 22, 0.28),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        -webkit-backdrop-filter: blur(28px);
+        backdrop-filter: blur(28px);
+      }
+
+      @media (max-width: 720px) {
+        .dev-console-shell {
+          width: min(100vw - 24px, 1120px);
+          padding-top: 24px;
+        }
+
+        .dev-console-shell::before,
+        .dev-console-shell::after {
+          display: none;
+        }
       }
     </style>
     <script>

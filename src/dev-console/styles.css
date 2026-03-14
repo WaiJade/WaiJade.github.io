@@ -1,5 +1,19 @@
 :root {
   color-scheme: dark;
+  --console-brand: #3f8cff;
+  --console-brand-strong: #6aa8ff;
+  --console-brand-soft: rgba(63, 140, 255, 0.18);
+  --console-text: rgba(248, 250, 255, 0.94);
+  --console-text-soft: rgba(221, 229, 243, 0.72);
+  --console-text-faint: rgba(185, 197, 216, 0.58);
+  --console-glass:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%),
+    rgba(24, 31, 51, 0.56);
+  --console-glass-strong:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.025) 100%),
+    rgba(16, 22, 37, 0.72);
+  --console-border: rgba(255, 255, 255, 0.1);
+  --console-border-soft: rgba(255, 255, 255, 0.06);
   font-family:
     "MiSans",
     "PingFang SC",
@@ -7,9 +21,11 @@
     system-ui,
     sans-serif;
   background:
-    radial-gradient(circle at top, rgba(93, 136, 255, 0.22), transparent 40%),
-    linear-gradient(180deg, #07111f 0%, #030712 56%, #02050a 100%);
-  color: rgba(243, 247, 255, 0.96);
+    radial-gradient(circle at 16% 0%, rgba(58, 137, 255, 0.28), transparent 28%),
+    radial-gradient(circle at 84% 8%, rgba(123, 92, 255, 0.18), transparent 24%),
+    radial-gradient(circle at 50% 120%, rgba(51, 132, 255, 0.14), transparent 32%),
+    linear-gradient(180deg, #10182a 0%, #09101c 42%, #050915 100%);
+  color: var(--console-text);
 }
 
 * {
@@ -25,6 +41,8 @@ body,
 
 body {
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
 button,
@@ -37,15 +55,42 @@ a {
 }
 
 .dev-console {
+  position: relative;
   width: min(1120px, calc(100vw - 32px));
   margin: 0 auto;
-  padding: 40px 0 72px;
+  padding: 40px 0 80px;
+}
+
+.dev-console::before,
+.dev-console::after {
+  content: "";
+  position: fixed;
+  inset: auto;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(56px);
+}
+
+.dev-console::before {
+  top: 56px;
+  left: max(24px, calc(50vw - 620px));
+  width: 240px;
+  height: 240px;
+  background: rgba(74, 130, 255, 0.18);
+}
+
+.dev-console::after {
+  top: 112px;
+  right: max(12px, calc(50vw - 610px));
+  width: 300px;
+  height: 300px;
+  background: rgba(102, 90, 255, 0.14);
 }
 
 .dev-console__header {
   display: grid;
-  gap: 14px;
-  margin-bottom: 28px;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 
 .dev-console__eyebrow {
@@ -53,14 +98,21 @@ a {
   font-size: 0.78rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(147, 197, 253, 0.72);
+  color: rgba(139, 195, 255, 0.68);
 }
 
 .dev-console__title {
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.8rem);
-  line-height: 0.95;
-  letter-spacing: -0.06em;
+  font-family:
+    "NSourcesSong",
+    "NSourceSong",
+    "MiSans",
+    serif;
+  font-size: clamp(2.1rem, 4vw, 3.9rem);
+  line-height: 0.98;
+  letter-spacing: 0.01em;
+  font-weight: 400;
+  text-wrap: balance;
 }
 
 .dev-console__text {
@@ -68,19 +120,23 @@ a {
   max-width: 52rem;
   font-size: 1rem;
   line-height: 1.7;
-  color: rgba(209, 219, 236, 0.78);
+  color: var(--console-text-soft);
 }
 
 .dev-console__status {
   display: inline-flex;
   align-items: center;
   width: fit-content;
-  padding: 0.5rem 0.85rem;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  padding: 0.52rem 0.92rem;
+  border: 1px solid var(--console-border);
   border-radius: 999px;
-  background: rgba(9, 14, 27, 0.7);
+  background: var(--console-glass);
   font-size: 0.82rem;
-  color: rgba(226, 232, 240, 0.78);
+  color: rgba(232, 238, 250, 0.82);
+  box-shadow:
+    0 10px 30px rgba(4, 7, 17, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
 }
 
@@ -91,21 +147,21 @@ a {
 
 .dev-console__grid {
   display: grid;
-  gap: 20px;
+  gap: 22px;
 }
 
 .dev-console__panel {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 30px;
-  background:
-    linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(3, 8, 18, 0.96)),
-    rgba(4, 10, 20, 0.86);
+  border: 1px solid var(--console-border);
+  border-radius: 28px;
+  background: var(--console-glass-strong);
   box-shadow:
-    0 28px 80px rgba(2, 6, 23, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(18px);
+    0 24px 64px rgba(4, 9, 22, 0.28),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(28px);
+  backdrop-filter: blur(28px);
 }
 
 .dev-console__panel::before {
@@ -114,11 +170,23 @@ a {
   inset: 0 auto auto 0;
   width: 100%;
   height: 1px;
-  background: linear-gradient(90deg, rgba(96, 165, 250, 0.44), transparent 70%);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.26), transparent 72%);
+}
+
+.dev-console__panel::after {
+  content: "";
+  position: absolute;
+  top: -84px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(76, 145, 255, 0.22) 0%, transparent 72%);
+  pointer-events: none;
 }
 
 .dev-console__panel-inner {
-  padding: 24px;
+  padding: 24px 24px 22px;
 }
 
 .dev-console__panel-header {
@@ -126,19 +194,20 @@ a {
   justify-content: space-between;
   align-items: flex-end;
   gap: 16px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .dev-console__panel-title {
   margin: 0;
-  font-size: 1.2rem;
-  letter-spacing: -0.03em;
+  font-size: 1.12rem;
+  font-weight: 540;
+  letter-spacing: -0.02em;
 }
 
 .dev-console__panel-text {
   margin: 0;
   font-size: 0.92rem;
-  color: rgba(209, 219, 236, 0.72);
+  color: var(--console-text-faint);
 }
 
 .dev-console__feature-list {
@@ -151,9 +220,12 @@ a {
   justify-content: space-between;
   gap: 16px;
   padding: 18px;
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  border: 1px solid var(--console-border-soft);
   border-radius: 22px;
-  background: rgba(15, 23, 42, 0.38);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.015) 100%),
+    rgba(18, 24, 39, 0.46);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
 .dev-console__feature-meta {
@@ -164,11 +236,12 @@ a {
 .dev-console__feature-name {
   margin: 0;
   font-size: 1rem;
+  font-weight: 520;
 }
 
 .dev-console__feature-desc {
   margin: 0;
-  color: rgba(191, 201, 219, 0.76);
+  color: var(--console-text-soft);
   font-size: 0.88rem;
   line-height: 1.55;
 }
@@ -179,20 +252,22 @@ a {
   align-items: center;
   gap: 10px;
   padding: 0.55rem 0.75rem;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
-  background: rgba(7, 12, 22, 0.9);
+  background: rgba(255, 255, 255, 0.035);
   color: rgba(243, 247, 255, 0.92);
   cursor: pointer;
   transition:
     border-color 160ms ease,
     transform 160ms ease,
-    background-color 160ms ease;
+    background-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .dev-console__toggle:hover:not(:disabled) {
   transform: translateY(-1px);
-  border-color: rgba(96, 165, 250, 0.44);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 24px rgba(9, 16, 31, 0.2);
 }
 
 .dev-console__toggle:disabled {
@@ -205,7 +280,7 @@ a {
   height: 24px;
   padding: 2px;
   border-radius: 999px;
-  background: rgba(51, 65, 85, 0.92);
+  background: rgba(93, 106, 130, 0.64);
   transition: background-color 160ms ease;
 }
 
@@ -219,7 +294,7 @@ a {
 }
 
 .dev-console__toggle[data-checked="true"] .dev-console__toggle-track {
-  background: linear-gradient(90deg, #60a5fa, #38bdf8);
+  background: linear-gradient(90deg, #4e92ff, #76bbff);
 }
 
 .dev-console__toggle[data-checked="true"] .dev-console__toggle-thumb {
@@ -234,7 +309,7 @@ a {
 .dev-console__columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 22px;
 }
 
 .dev-console__column {
@@ -250,19 +325,23 @@ a {
 .dev-console__empty {
   margin: 0;
   padding: 18px;
-  border: 1px dashed rgba(148, 163, 184, 0.22);
+  border: 1px dashed rgba(255, 255, 255, 0.14);
   border-radius: 20px;
-  color: rgba(191, 201, 219, 0.72);
+  color: var(--console-text-faint);
   font-size: 0.92rem;
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .dev-console__post-card {
   display: grid;
   gap: 12px;
   padding: 18px;
-  border: 1px solid rgba(148, 163, 184, 0.14);
+  border: 1px solid var(--console-border-soft);
   border-radius: 22px;
-  background: rgba(11, 18, 32, 0.62);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0.01) 100%),
+    rgba(12, 18, 30, 0.58);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
 .dev-console__post-header {
@@ -276,6 +355,7 @@ a {
   margin: 0;
   font-size: 1rem;
   line-height: 1.45;
+  font-weight: 520;
 }
 
 .dev-console__post-meta {
@@ -284,26 +364,29 @@ a {
   flex-wrap: wrap;
   gap: 8px 12px;
   font-size: 0.82rem;
-  color: rgba(191, 201, 219, 0.72);
+  color: var(--console-text-faint);
 }
 
 .dev-console__post-action {
   width: fit-content;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 999px;
-  background: rgba(7, 12, 22, 0.92);
-  color: rgba(243, 247, 255, 0.92);
+  padding: 0.58rem 0.96rem;
+  border: 1px solid color-mix(in srgb, var(--console-brand) 18%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--console-brand) 18%, transparent);
+  color: #d8e8ff;
   cursor: pointer;
   transition:
     transform 160ms ease,
     border-color 160ms ease,
-    background-color 160ms ease;
+    background-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .dev-console__post-action:hover:not(:disabled) {
   transform: translateY(-1px);
-  border-color: rgba(96, 165, 250, 0.44);
+  border-color: color-mix(in srgb, var(--console-brand-strong) 36%, transparent);
+  background: color-mix(in srgb, var(--console-brand) 24%, transparent);
+  box-shadow: 0 10px 24px rgba(25, 58, 127, 0.24);
 }
 
 .dev-console__post-action:disabled {
@@ -321,6 +404,11 @@ a {
   .dev-console {
     width: min(100vw - 24px, 1120px);
     padding-top: 24px;
+  }
+
+  .dev-console::before,
+  .dev-console::after {
+    display: none;
   }
 
   .dev-console__panel-inner {
