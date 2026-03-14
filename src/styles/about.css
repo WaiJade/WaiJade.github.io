@@ -130,13 +130,13 @@
   display: inline-flex;
   width: auto;
   min-width: max-content;
-  min-height: 2.3rem;
+  min-height: 2.05rem;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
   gap: 0.58rem;
-  margin: 0 0.3rem;
-  padding: 0.42rem 0.92rem;
+  margin: 0.16rem 0.3rem;
+  padding: 0.34rem 0.86rem;
   border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
   border-radius: 999px;
   background-color: color-mix(in srgb, var(--accent) 10%, transparent);
@@ -144,9 +144,8 @@
   font-size: 0.98em;
   font-weight: 500;
   text-decoration: none;
-  vertical-align: middle;
   white-space: nowrap;
-  line-height: 1.05;
+  line-height: 1.12;
   transition:
     border-color 0.3s ease,
     background-color 0.3s ease,
