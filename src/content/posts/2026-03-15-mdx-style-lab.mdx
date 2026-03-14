@@ -19,6 +19,10 @@ featured: false
 
 #### 四级标题
 
+##### 五级标题
+
+###### 六级标题
+
 ---
 
 ## 段落与行内样式
@@ -53,10 +57,14 @@ featured: false
 >
 > 第二段引用用来测试段落间距。
 
+> 这是另一组引用。
+>
+> > 这里是二级引用，用来测试嵌套层级。
+
 ## Callout 指令
 
-:::danger{title="怪怪的错误框" color="#5ea87a"}
-这里是一个故意覆盖颜色的 `danger` 指令，用来验证自定义标题和颜色变量是否正常生效。
+:::danger{title="错误提示"}
+这里是默认 `danger` 指令，应该呈现偏红色的强调框，而不是和 `success` 一样的绿色。
 :::
 
 :::success{title="成功提示"}
@@ -73,6 +81,10 @@ featured: false
 
 :::tip
 这里是提示块，可以放写作建议、快捷技巧或者延伸阅读。
+:::
+
+:::info{title="自定义颜色提示框" color="#57a98a"}
+这里专门保留一个自定义颜色示例，用来测试颜色覆盖逻辑是否正常。
 :::
 
 ## 表格
@@ -126,6 +138,16 @@ $$
 
 ![站点头像测试图](/avatar.png)
 
+## 原生 HTML 交互块
+
+按下 <kbd>Ctrl</kbd> + <kbd>K</kbd> 可以呼出站内搜索。
+
+<details>
+  <summary>展开查看更多说明</summary>
+
+  这里用来测试 `details / summary` 的展开样式，以及内部段落、链接和行内代码的间距。
+</details>
+
 ## 原生 HTML 对齐块
 
 <div align="center">
@@ -138,9 +160,17 @@ $$
 
 <p align="right">（2026年3月15日 23:40）</p>
 
+## 尾注
+
+这是一段带尾注的测试文本，用来检查脚注引用和底部脚注区样式。[^mdx-footnote]
+
+[^mdx-footnote]: 这是测试尾注内容，后面可以继续用它检查长文本、链接和换行。
+
 ## 混合内容
 
-最后再放一段混合内容，确认 `:highlight[高亮文字]`、`inline code`、[普通链接](/archives/) 和列表不会互相打架：
+最后再放一段混合内容，确认 :highlight[高亮文字]、`inline code`、[普通链接](/archives/) 和列表不会互相打架：
+
+如果要展示原始写法，可以写成 `:highlight[高亮文字]{color="var(--accent)"}`。
 
 - 第一项里包含 :highlight[重点词]{color="var(--accent)"}。
 - 第二项里包含 `const answer = 42`。
