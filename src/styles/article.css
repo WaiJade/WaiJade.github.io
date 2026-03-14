@@ -621,10 +621,31 @@
 .note-page__content .ai-container {
   border: 2px solid transparent;
   background-image:
-    linear-gradient(var(--background), var(--background)),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--background) 92%, rgba(255, 255, 255, 0.08)),
+      color-mix(in srgb, var(--background) 98%, rgba(0, 0, 0, 0.18))
+    ),
     linear-gradient(to right, #6365f1, #a855f7, #ec4899);
   background-origin: border-box;
   background-clip: padding-box, border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -16px 24px rgba(0, 0, 0, 0.16);
+}
+
+html:not(.dark) .article-content .ai-container,
+html:not(.dark) .note-page__content .ai-container {
+  background-image:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--background) 96%, white 4%),
+      color-mix(in srgb, var(--background) 92%, rgba(70, 95, 188, 0.08))
+    ),
+    linear-gradient(to right, #6365f1, #a855f7, #ec4899);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.54),
+    inset 0 -12px 20px rgba(70, 95, 188, 0.06);
 }
 
 .article-content .ai-container .custom-block-title,
@@ -635,13 +656,26 @@
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  gap: 8px;
+  min-height: 1.5rem;
+  line-height: 1.2;
+  list-style: none;
+}
+
+.article-content .ai-container .custom-block-title::-webkit-details-marker,
+.note-page__content .ai-container .custom-block-title::-webkit-details-marker {
+  display: none;
 }
 
 .article-content .ai-container .custom-block-title::before,
 .note-page__content .ai-container .custom-block-title::before {
   content: "✦";
-  margin-right: 8px;
   font-size: 1.2rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
   background: linear-gradient(to right, #6366f1, #ec4899);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
