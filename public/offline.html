@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#050816" />
+    <title>WaiJade's BLOG / OFFLINE</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --background: #050816;
+        --foreground: #f5f7ff;
+        --muted: rgba(245, 247, 255, 0.72);
+        --accent: #8fa7ff;
+        --border: rgba(255, 255, 255, 0.12);
+        --card: rgba(255, 255, 255, 0.08);
+        --grid-line: rgba(255, 255, 255, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family:
+          "MiSans", "MiSans Chinese", MiSans, "Inter", "Segoe UI", sans-serif;
+        color: var(--foreground);
+        background: var(--background);
+      }
+
+      .offline-shell {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+        padding: clamp(1.25rem, 4vw, 2rem);
+        display: grid;
+        place-items: center;
+      }
+
+      .offline-shell::before,
+      .offline-shell::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .offline-shell::before {
+        background-image:
+          linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: 0.2;
+      }
+
+      .offline-shell::after {
+        background:
+          radial-gradient(42% 30% at 50% 8%, rgba(143, 167, 255, 0.18), transparent 72%),
+          radial-gradient(58% 36% at 50% 100%, rgba(143, 167, 255, 0.12), transparent 74%);
+      }
+
+      .offline-panel {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 42rem);
+        padding: clamp(1.6rem, 3vw, 2.4rem);
+        border: 1px solid var(--border);
+        border-radius: 2rem;
+        background: color-mix(in srgb, var(--card) 100%, transparent);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 24px 80px rgba(3, 7, 18, 0.18);
+      }
+
+      .offline-eyebrow {
+        margin: 0 0 1rem;
+        color: var(--accent);
+        font-family: "JetBrains Mono", "Fira Code", monospace;
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+      }
+
+      .offline-title {
+        margin: 0;
+        font-family: "NSourceSong", serif;
+        font-size: clamp(2.4rem, 8vw, 4.8rem);
+        line-height: 0.94;
+        letter-spacing: -0.05em;
+        font-weight: 400;
+      }
+
+      .offline-text {
+        margin: 1.2rem 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.85;
+      }
+
+      .offline-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.85rem;
+        margin-top: 1.8rem;
+      }
+
+      .offline-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 3rem;
+        padding: 0.9rem 1.25rem;
+        border-radius: 999px;
+        border: 1px solid rgba(143, 167, 255, 0.18);
+        background: color-mix(in srgb, rgba(143, 167, 255, 0.2) 100%, transparent);
+        color: var(--foreground);
+        font-size: 0.98rem;
+        font-weight: 540;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .offline-action--secondary {
+        border-color: var(--border);
+        background: rgba(255, 255, 255, 0.06);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="offline-shell">
+      <section class="offline-panel">
+        <p class="offline-eyebrow">OFFLINE</p>
+        <h1 class="offline-title">当前处于离线状态</h1>
+        <p class="offline-text">
+          你访问的页面暂时无法从网络取得。如果这个页面之前已经打开过，返回后可能仍能从缓存中读取；
+          否则可以先回到首页，等网络恢复后再继续。
+        </p>
+        <div class="offline-actions">
+          <a class="offline-action" href="/">返回首页</a>
+          <button
+            class="offline-action offline-action--secondary"
+            type="button"
+            onclick="window.location.reload()"
+          >
+            重新加载
+          </button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
