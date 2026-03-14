@@ -19,29 +19,32 @@ type ConsoleState = {
   activePosts: PostItem[];
   hiddenPosts: PostItem[];
 };
-
-type StatusTone = "default" | "error";
+type IconName = "note" | "list" | "search" | "eye" | "eyeSlash";
 
 const featureConfig = [
   {
     key: "showNotes",
     label: "Notes",
     description: "控制导航、搜索和页面路由里的短记功能。",
+    icon: "note",
   },
   {
     key: "showToc",
     label: "TOC",
     description: "控制文章页右侧目录是否显示。",
+    icon: "list",
   },
   {
     key: "showSearch",
     label: "Search",
     description: "控制顶部搜索入口和 /search.json 输出。",
+    icon: "search",
   },
 ] as const satisfies Array<{
   key: keyof FeatureFlags;
   label: string;
   description: string;
+  icon: IconName;
 }>;
 
 const appElement = document.getElementById("app");
@@ -53,9 +56,21 @@ if (!(appElement instanceof HTMLElement)) {
 const app = appElement;
 
 let currentState: ConsoleState | null = null;
-let status = "正在读取本地控制状态…";
-let statusTone: StatusTone = "default";
 let busyKey: string | null = null;
+let draftFeatures: FeatureFlags | null = null;
+let draftPostVisibility: Record<string, boolean> = {};
+let toolbarMessage = "切换开关后点击“应用更改”，页面只会刷新一次。";
+let toolbarTone: "default" | "error" = "default";
+
+const iconPaths: Record<IconName, string> = {
+  note: "M88,96a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H96A8,8,0,0,1,88,96Zm8,40h64a8,8,0,0,0,0-16H96a8,8,0,0,0,0,16Zm32,16H96a8,8,0,0,0,0,16h32a8,8,0,0,0,0-16ZM224,48V156.69A15.86,15.86,0,0,1,219.31,168L168,219.31A15.86,15.86,0,0,1,156.69,224H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32H208A16,16,0,0,1,224,48ZM48,208H152V160a8,8,0,0,1,8-8h48V48H48Zm120-40v28.7L196.69,168Z",
+  list: "M80,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H88A8,8,0,0,1,80,64Zm136,56H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Zm0,64H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16ZM44,52A12,12,0,1,0,56,64,12,12,0,0,0,44,52Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,116Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,180Z",
+  search:
+    "M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z",
+  eye: "M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z",
+  eyeSlash:
+    "M53.92,34.62A8,8,0,1,0,42.08,45.38L61.32,66.55C25,88.84,9.38,123.2,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208a127.11,127.11,0,0,0,52.07-10.83l22,24.21a8,8,0,1,0,11.84-10.76Zm47.33,75.84,41.67,45.85a32,32,0,0,1-41.67-45.85ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.16,133.16,0,0,1,25,128c4.69-8.79,19.66-33.39,47.35-49.38l18,19.75a48,48,0,0,0,63.66,70l14.73,16.2A112,112,0,0,1,128,192Zm6-95.43a8,8,0,0,1,3-15.72,48.16,48.16,0,0,1,38.77,42.64,8,8,0,0,1-7.22,8.71,6.39,6.39,0,0,1-.75,0,8,8,0,0,1-8-7.26A32.09,32.09,0,0,0,134,96.57Zm113.28,34.69c-.42.94-10.55,23.37-33.36,43.8a8,8,0,1,1-10.67-11.92A132.77,132.77,0,0,0,231.05,128a133.15,133.15,0,0,0-23.12-30.77C185.67,75.19,158.78,64,128,64a118.37,118.37,0,0,0-19.36,1.57A8,8,0,1,1,106,49.79,134,134,0,0,1,128,48c34.88,0,66.57,13.26,91.66,38.35,18.83,18.83,27.3,37.62,27.65,38.41A8,8,0,0,1,247.31,131.26Z",
+};
 
 function escapeHtml(value: string) {
   return value
@@ -86,6 +101,53 @@ function formatPubDate(value: string | null) {
     .replace(/\//g, ".");
 }
 
+function renderIcon(name: IconName, className = "") {
+  const classes = className ? ` class="${className}"` : "";
+  return `<svg${classes} viewBox="0 0 256 256" aria-hidden="true"><path d="${iconPaths[name]}"></path></svg>`;
+}
+
+function getSortedPosts(state: ConsoleState | null) {
+  if (!state) {
+    return [];
+  }
+
+  return [...state.activePosts, ...state.hiddenPosts].sort((left, right) => {
+    const leftTime = left.pubDate ? Date.parse(left.pubDate) : 0;
+    const rightTime = right.pubDate ? Date.parse(right.pubDate) : 0;
+    return rightTime - leftTime || left.title.localeCompare(right.title, "zh-CN");
+  });
+}
+
+function getPendingFeatures() {
+  return draftFeatures ?? currentState?.features ?? null;
+}
+
+function isPostVisible(fileName: string, fallbackVisibility: boolean) {
+  return fileName in draftPostVisibility ? draftPostVisibility[fileName] : fallbackVisibility;
+}
+
+function hasPendingChanges() {
+  if (!currentState) {
+    return false;
+  }
+
+  const pendingFeatures = getPendingFeatures();
+
+  if (
+    pendingFeatures &&
+    (pendingFeatures.showNotes !== currentState.features.showNotes ||
+      pendingFeatures.showToc !== currentState.features.showToc ||
+      pendingFeatures.showSearch !== currentState.features.showSearch)
+  ) {
+    return true;
+  }
+
+  return getSortedPosts(currentState).some((post) => {
+    const visible = isPostVisible(post.fileName, post.visibility === "active");
+    return visible !== (post.visibility === "active");
+  });
+}
+
 async function readJson<T>(input: RequestInfo, init?: RequestInit) {
   const response = await fetch(input, init);
 
@@ -98,64 +160,82 @@ async function readJson<T>(input: RequestInfo, init?: RequestInit) {
 }
 
 function renderFeatureList() {
+  const pendingFeatures = getPendingFeatures();
+
   return featureConfig
     .map((feature) => {
-      const checked = currentState?.features[feature.key] ?? false;
+      const checked = pendingFeatures?.[feature.key] ?? false;
       const currentBusyKey = `feature:${feature.key}`;
       const disabled = !currentState || busyKey === currentBusyKey;
 
-      return `<div class="dev-console__feature-item">
-        <div class="dev-console__feature-meta">
-          <h3 class="dev-console__feature-name">${escapeHtml(feature.label)}</h3>
-          <p class="dev-console__feature-desc">${escapeHtml(feature.description)}</p>
+      return `<div class="dev-console__item">
+        <span class="dev-console__icon" data-kind="feature">${renderIcon(
+          feature.icon,
+          "dev-console__icon-svg",
+        )}</span>
+        <div class="dev-console__copy">
+          <h3 class="dev-console__item-title">${escapeHtml(feature.label)}</h3>
+          <p class="dev-console__item-desc">${escapeHtml(feature.description)}</p>
         </div>
-        <button
-          type="button"
-          class="dev-console__toggle"
-          data-action="toggle-feature"
-          data-feature-key="${feature.key}"
-          data-checked="${String(checked)}"
-          ${disabled ? "disabled" : ""}
-        >
-          <span class="dev-console__toggle-track" aria-hidden="true">
-            <span class="dev-console__toggle-thumb"></span>
-          </span>
-          <span class="dev-console__toggle-label">${checked ? "开启" : "关闭"}</span>
-        </button>
+        <div class="dev-console__actions">
+          <button
+            type="button"
+            class="dev-console__toggle"
+            data-action="toggle-feature"
+            data-feature-key="${feature.key}"
+            data-checked="${String(checked)}"
+            aria-label="${escapeHtml(feature.label)} ${checked ? "已开启" : "已关闭"}"
+            ${disabled ? "disabled" : ""}
+          >
+            <span class="dev-console__toggle-track" aria-hidden="true">
+              <span class="dev-console__toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
       </div>`;
     })
     .join("");
 }
 
-function renderPostList(posts: PostItem[], emptyText: string, action: "hide" | "show") {
+function renderPostVisibilityList(posts: PostItem[]) {
   if (posts.length === 0) {
-    return `<p class="dev-console__empty">${escapeHtml(emptyText)}</p>`;
+    return `<div class="dev-console__group"><p class="dev-console__empty">当前没有文章。</p></div>`;
   }
 
-  return `<div class="dev-console__post-list">${posts
+  return `<div class="dev-console__group">${posts
     .map((post) => {
-      const currentBusyKey = `post:${post.fileName}`;
-      const disabled = busyKey === currentBusyKey;
+      const visible = isPostVisible(post.fileName, post.visibility === "active");
+      const disabled = busyKey === `post:${post.fileName}`;
 
-      return `<article class="dev-console__post-card">
-        <div class="dev-console__post-header">
-          <div>
-            <h3 class="dev-console__post-title">${escapeHtml(post.title)}</h3>
-            <p class="dev-console__post-meta">
-              <span>${escapeHtml(formatPubDate(post.pubDate))}</span>
-              <span>${escapeHtml(post.fileName)}</span>
-            </p>
-          </div>
+      return `<article class="dev-console__item ${visible ? "" : "is-hidden"}">
+        <span class="dev-console__icon" data-kind="post">${renderIcon(
+          "note",
+          "dev-console__icon-svg",
+        )}</span>
+        <div class="dev-console__copy">
+          <h3 class="dev-console__item-title">${escapeHtml(post.title)}</h3>
+          <p class="dev-console__item-desc">${escapeHtml(formatPubDate(post.pubDate))} · ${escapeHtml(
+            post.fileName,
+          )}</p>
+        </div>
+        <div class="dev-console__actions">
           <button
             type="button"
-            class="dev-console__post-action"
-            data-action="toggle-post"
-            data-post-action="${action}"
+            class="dev-console__toggle"
+            data-action="toggle-post-visibility"
             data-file-name="${escapeHtml(post.fileName)}"
+            data-checked="${String(visible)}"
+            aria-label="${escapeHtml(post.title)} ${visible ? "显示中" : "已隐藏"}"
             ${disabled ? "disabled" : ""}
           >
-            ${action === "hide" ? "隐藏" : "恢复"}
+            <span class="dev-console__toggle-track" aria-hidden="true">
+              <span class="dev-console__toggle-thumb"></span>
+            </span>
           </button>
+          <span class="dev-console__action-label">
+            ${renderIcon(visible ? "eye" : "eyeSlash", "dev-console__action-icon")}
+            <span>${visible ? "显示" : "隐藏"}</span>
+          </span>
         </div>
       </article>`;
     })
@@ -163,125 +243,141 @@ function renderPostList(posts: PostItem[], emptyText: string, action: "hide" | "
 }
 
 function render() {
+  const allPosts = getSortedPosts(currentState);
+  const dirty = hasPendingChanges();
+
   app.innerHTML = `<main class="dev-console">
-    <header class="dev-console__header">
-      <p class="dev-console__eyebrow">Local Dev Console</p>
-      <h1 class="dev-console__title">本地控制台</h1>
-      <p class="dev-console__text">
-        这里只在 <code>npm run dev</code> 时存在。文章隐藏通过直接移动文件完成，生产构建不会继续解析被隐藏的正文文件。
+    <header class="dev-console__intro">
+      <p class="page-panel__eyebrow">CONSOLE</p>
+      <h1 class="page-panel__title">本地控制台</h1>
+      <p class="page-panel__text">
+        本地开发下可用的文章与功能控制面板。文章隐藏通过直接移动文件完成，生产构建不会继续解析被隐藏的正文文件。
       </p>
-      <div class="dev-console__status" data-tone="${statusTone}">${escapeHtml(status)}</div>
     </header>
 
-    <div class="dev-console__grid">
-      <section class="dev-console__panel">
-        <div class="dev-console__panel-inner">
-          <div class="dev-console__panel-header">
-            <div>
-              <h2 class="dev-console__panel-title">网站功能</h2>
-              <p class="dev-console__panel-text">这些开关会写回仓库里的站点控制配置。</p>
-            </div>
-          </div>
+    <div class="dev-console__toolbar" data-tone="${toolbarTone}">
+      <p class="dev-console__toolbar-text">${escapeHtml(toolbarMessage)}</p>
+      <div class="dev-console__toolbar-actions">
+        <button
+          type="button"
+          class="dev-console__toolbar-button dev-console__toolbar-button--secondary"
+          data-action="reset-draft"
+          ${!dirty || busyKey === "apply" ? "disabled" : ""}
+        >
+          撤销未应用
+        </button>
+        <button
+          type="button"
+          class="dev-console__toolbar-button dev-console__toolbar-button--primary"
+          data-action="apply-draft"
+          ${!dirty || busyKey === "apply" ? "disabled" : ""}
+        >
+          应用更改
+        </button>
+      </div>
+    </div>
 
-          <div class="dev-console__feature-list">${renderFeatureList()}</div>
+    <div class="dev-console__sections">
+      <section class="dev-console__section">
+        <p class="dev-console__section-title">网站功能</p>
+        <div class="dev-console__group">
+          ${renderFeatureList()}
         </div>
       </section>
 
-      <div class="dev-console__columns">
-        <section class="dev-console__panel">
-          <div class="dev-console__panel-inner dev-console__column">
-            <div class="dev-console__panel-header">
-              <div>
-                <h2 class="dev-console__panel-title">显示中</h2>
-                <p class="dev-console__panel-text">
-                  当前位于 <code>src/content/posts/</code> 的文章。
-                </p>
-              </div>
-            </div>
-
-            ${renderPostList(currentState?.activePosts ?? [], "当前没有公开文章。", "hide")}
-          </div>
-        </section>
-
-        <section class="dev-console__panel">
-          <div class="dev-console__panel-inner dev-console__column">
-            <div class="dev-console__panel-header">
-              <div>
-                <h2 class="dev-console__panel-title">已隐藏</h2>
-                <p class="dev-console__panel-text">
-                  当前位于 <code>src/content/posts-hidden/</code> 的文章。
-                </p>
-              </div>
-            </div>
-
-            ${renderPostList(currentState?.hiddenPosts ?? [], "当前没有被隐藏的文章。", "show")}
-          </div>
-        </section>
-      </div>
+      <section class="dev-console__section">
+        <p class="dev-console__section-title">文章显示 · ${String(allPosts.length)}</p>
+        ${renderPostVisibilityList(allPosts)}
+      </section>
     </div>
   </main>`;
 }
 
-async function refreshState(nextStatus?: string) {
+async function refreshState() {
   currentState = await readJson<ConsoleState>("/__console/state");
-  status = nextStatus || "控制项已更新。";
-  statusTone = "default";
+  draftFeatures = { ...currentState.features };
+  draftPostVisibility = Object.fromEntries(
+    getSortedPosts(currentState).map((post) => [post.fileName, post.visibility === "active"]),
+  );
+  toolbarMessage = "切换开关后点击“应用更改”，页面只会刷新一次。";
+  toolbarTone = "default";
   render();
 }
 
-async function handleToggleFeature(featureKey: keyof FeatureFlags) {
+function handleToggleFeature(featureKey: keyof FeatureFlags) {
   if (!currentState) {
     return;
   }
 
-  const nextFeatures = {
-    ...currentState.features,
-    [featureKey]: !currentState.features[featureKey],
+  draftFeatures = {
+    ...(getPendingFeatures() ?? currentState.features),
+    [featureKey]: !(getPendingFeatures()?.[featureKey] ?? currentState.features[featureKey]),
   };
-
-  busyKey = `feature:${featureKey}`;
-  status = "正在写入功能开关…";
-  statusTone = "default";
+  toolbarMessage = "有未应用的功能更改。";
+  toolbarTone = "default";
   render();
-
-  try {
-    await readJson<{ ok: boolean; features: FeatureFlags }>("/__console/features", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ features: nextFeatures }),
-    });
-    busyKey = null;
-    await refreshState("功能开关已更新。");
-  } catch (error) {
-    busyKey = null;
-    status = error instanceof Error ? error.message : "功能开关写入失败";
-    statusTone = "error";
-    render();
-  }
 }
 
-async function handleTogglePost(fileName: string, action: "hide" | "show") {
-  busyKey = `post:${fileName}`;
-  status = action === "hide" ? "正在隐藏文章…" : "正在恢复文章…";
-  statusTone = "default";
+function handleTogglePostVisibility(fileName: string) {
+  if (!currentState) {
+    return;
+  }
+
+  const currentPost = getSortedPosts(currentState).find((post) => post.fileName === fileName);
+  const currentVisibility = isPostVisible(fileName, currentPost?.visibility === "active");
+
+  if (!currentPost) {
+    return;
+  }
+
+  draftPostVisibility = {
+    ...draftPostVisibility,
+    [fileName]: !currentVisibility,
+  };
+  toolbarMessage = "有未应用的文章显示更改。";
+  toolbarTone = "default";
+  render();
+}
+
+function handleResetDraft() {
+  if (!currentState) {
+    return;
+  }
+
+  draftFeatures = { ...currentState.features };
+  draftPostVisibility = Object.fromEntries(
+    getSortedPosts(currentState).map((post) => [post.fileName, post.visibility === "active"]),
+  );
+  toolbarMessage = "未应用的更改已撤销。";
+  toolbarTone = "default";
+  render();
+}
+
+async function handleApplyDraft() {
+  if (!currentState || !draftFeatures) {
+    return;
+  }
+
+  busyKey = "apply";
+  toolbarMessage = "正在应用更改，完成后会刷新一次页面。";
+  toolbarTone = "default";
   render();
 
   try {
-    await readJson<{ ok: boolean }>("/__console/posts/toggle", {
+    await readJson<{ ok: boolean }>("/__console/apply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ fileName, action }),
+      body: JSON.stringify({
+        features: draftFeatures,
+        postVisibility: draftPostVisibility,
+      }),
     });
-    busyKey = null;
-    await refreshState(action === "hide" ? "文章已隐藏。" : "文章已恢复。");
   } catch (error) {
     busyKey = null;
-    status = error instanceof Error ? error.message : "文章状态更新失败";
-    statusTone = "error";
+    toolbarMessage = error instanceof Error ? error.message : "应用更改失败。";
+    toolbarTone = "error";
     render();
   }
 }
@@ -299,23 +395,31 @@ app.addEventListener("click", (event) => {
     const featureKey = target.dataset.featureKey as keyof FeatureFlags | undefined;
 
     if (featureKey) {
-      void handleToggleFeature(featureKey);
+      handleToggleFeature(featureKey);
     }
 
     return;
   }
 
-  if (action === "toggle-post") {
+  if (action === "toggle-post-visibility") {
     const fileName = target.dataset.fileName;
-    const postAction = target.dataset.postAction as "hide" | "show" | undefined;
 
-    if (fileName && postAction) {
-      void handleTogglePost(fileName, postAction);
+    if (fileName) {
+      handleTogglePostVisibility(fileName);
     }
+
+    return;
+  }
+
+  if (action === "reset-draft") {
+    handleResetDraft();
+    return;
+  }
+
+  if (action === "apply-draft") {
+    void handleApplyDraft();
   }
 });
 
 render();
-void refreshState(
-  "当前是本地开发控制台。这里的更改会直接写回仓库配置和文章文件位置。",
-);
+void refreshState();

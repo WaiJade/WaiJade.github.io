@@ -1,4 +1,4 @@
-import { mkdir, readFile, rename, readdir, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, rename, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -196,22 +196,55 @@ function sanitizeFileName(value) {
   return trimmed;
 }
 
-async function togglePostVisibility(payload) {
-  const action = payload?.action;
-  const fileName = sanitizeFileName(payload?.fileName);
+async function pathExists(filePath) {
+  try {
+    await access(filePath);
+    return true;
+  } catch (error) {
+    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+      return false;
+    }
 
-  if (action !== "hide" && action !== "show") {
-    throw new Error("文章操作无效");
+    throw error;
   }
+}
+
+async function applyConsoleState(payload) {
+  const nextControls = await writeSiteControls({ features: payload?.features });
+  const postVisibility =
+    payload?.postVisibility &&
+    typeof payload.postVisibility === "object" &&
+    !Array.isArray(payload.postVisibility)
+      ? payload.postVisibility
+      : {};
 
   await ensureHiddenPostsDir();
 
-  const sourceDir = action === "hide" ? activePostsDir : hiddenPostsDir;
-  const targetDir = action === "hide" ? hiddenPostsDir : activePostsDir;
-  const sourcePath = path.join(sourceDir, fileName);
-  const targetPath = path.join(targetDir, fileName);
+  for (const [rawFileName, rawVisible] of Object.entries(postVisibility)) {
+    const fileName = sanitizeFileName(rawFileName);
 
-  await rename(sourcePath, targetPath);
+    if (typeof rawVisible !== "boolean") {
+      throw new Error("文章显示状态无效");
+    }
+
+    const activePath = path.join(activePostsDir, fileName);
+    const hiddenPath = path.join(hiddenPostsDir, fileName);
+    const activeExists = await pathExists(activePath);
+    const hiddenExists = await pathExists(hiddenPath);
+
+    if (rawVisible) {
+      if (!activeExists && hiddenExists) {
+        await rename(hiddenPath, activePath);
+      }
+      continue;
+    }
+
+    if (activeExists && !hiddenExists) {
+      await rename(activePath, hiddenPath);
+    }
+  }
+
+  return nextControls;
 }
 
 function getConsoleHtml() {
@@ -221,21 +254,52 @@ function getConsoleHtml() {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WaiJade's BLOG / CONSOLE</title>
+    <link rel="preconnect" href="https://astrobox-statics.waterflames.cn" crossorigin />
+    <link
+      rel="preload"
+      href="/fonts/NSourceSong_Headline.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="https://astrobox-statics.waterflames.cn/NSourceSong_Headline.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800;900&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,500,600:Chinese_Simplify,Latin&display=swap"
+    />
     <style>
+      @font-face {
+        font-family: "NSourceSong";
+        src:
+          url("/fonts/NSourceSong_Headline.woff2") format("woff2"),
+          url("https://astrobox-statics.waterflames.cn/NSourceSong_Headline.woff2") format("woff2");
+        font-display: swap;
+      }
+
       :root {
         color-scheme: dark;
-        font-family: "MiSans", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
-        --console-text: rgba(248, 250, 255, 0.94);
-        --console-text-soft: rgba(221, 229, 243, 0.72);
-        --console-glass:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.025) 100%),
-          rgba(16, 22, 37, 0.72);
-        --console-border: rgba(255, 255, 255, 0.1);
-        background:
-          radial-gradient(circle at 16% 0%, rgba(58, 137, 255, 0.28), transparent 28%),
-          radial-gradient(circle at 84% 8%, rgba(123, 92, 255, 0.18), transparent 24%),
-          linear-gradient(180deg, #10182a 0%, #09101c 42%, #050915 100%);
-        color: var(--console-text);
+        --console-background: #191919;
+        --console-foreground: #ffffff;
+        --console-muted: rgba(255, 255, 255, 0.72);
+        --console-border: rgba(255, 255, 255, 0.06);
+        --console-card: rgba(71, 71, 75, 0.3);
+        --console-accent: #0088ff;
+        --font-family-sans: "MiSans", "MiSans Chinese", MiSans, "Inter", "SF Pro Display", "Segoe UI", sans-serif;
+        --font-family-display: "NSourceSong", serif;
+        background: var(--console-background);
+        color: var(--console-foreground);
       }
 
       * {
@@ -245,87 +309,58 @@ function getConsoleHtml() {
       body {
         min-height: 100vh;
         margin: 0;
-        overflow-x: hidden;
+        color: var(--console-foreground);
+        font-family: var(--font-family-sans);
       }
 
       .dev-console-shell {
-        position: relative;
-        width: min(1120px, calc(100vw - 32px));
+        width: min(880px, calc(100vw - 2rem));
         margin: 0 auto;
-        padding: 40px 0 80px;
-      }
-
-      .dev-console-shell::before,
-      .dev-console-shell::after {
-        content: "";
-        position: fixed;
-        pointer-events: none;
-        z-index: -1;
-        filter: blur(56px);
-      }
-
-      .dev-console-shell::before {
-        top: 56px;
-        left: max(24px, calc(50vw - 620px));
-        width: 240px;
-        height: 240px;
-        background: rgba(74, 130, 255, 0.18);
-      }
-
-      .dev-console-shell::after {
-        top: 112px;
-        right: max(12px, calc(50vw - 610px));
-        width: 300px;
-        height: 300px;
-        background: rgba(102, 90, 255, 0.14);
+        padding: 8.5rem 0 4rem;
       }
 
       .dev-console-shell__eyebrow {
-        margin: 0 0 12px;
+        margin: 0 0 1rem;
+        color: var(--console-accent);
+        font-family: ui-monospace, "JetBrains Mono", monospace;
         font-size: 0.78rem;
-        letter-spacing: 0.26em;
-        text-transform: uppercase;
-        color: rgba(139, 195, 255, 0.68);
+        font-weight: 800;
+        letter-spacing: 0.18em;
       }
 
       .dev-console-shell__title {
         margin: 0;
-        font-family: "NSourcesSong", "NSourceSong", "MiSans", serif;
-        font-size: clamp(2.1rem, 4vw, 3.9rem);
-        line-height: 0.98;
-        letter-spacing: 0.01em;
+        max-width: 12ch;
+        font-size: clamp(3rem, 7vw, 6rem);
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+        font-family: var(--font-family-display);
         font-weight: 400;
       }
 
       .dev-console-shell__text {
-        margin: 16px 0 0;
-        max-width: 52rem;
-        line-height: 1.7;
-        color: var(--console-text-soft);
+        margin: 1.5rem 0 0;
+        max-width: 44rem;
+        color: var(--console-muted);
+        font-size: 1rem;
+        line-height: 1.8;
       }
 
       .dev-console-shell__card {
-        margin-top: 24px;
+        margin-top: 1.5rem;
         padding: 20px 22px;
         border: 1px solid var(--console-border);
         border-radius: 28px;
-        background: var(--console-glass);
-        box-shadow:
-          0 24px 64px rgba(4, 9, 22, 0.28),
-          inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        -webkit-backdrop-filter: blur(28px);
-        backdrop-filter: blur(28px);
+        background: var(--console-card);
+        box-shadow: 0 24px 48px rgba(3, 7, 18, 0.18);
+        -webkit-backdrop-filter: blur(24px);
+        backdrop-filter: blur(24px);
       }
 
       @media (max-width: 720px) {
         .dev-console-shell {
-          width: min(100vw - 24px, 1120px);
-          padding-top: 24px;
-        }
-
-        .dev-console-shell::before,
-        .dev-console-shell::after {
-          display: none;
+          width: min(100vw - 1.2rem, 880px);
+          padding-top: 7rem;
         }
       }
     </style>
@@ -422,21 +457,12 @@ export function createDevConsolePlugin() {
             return;
           }
 
-          if (pathname === "/__console/features" && req.method === "POST") {
+          if (pathname === "/__console/apply" && req.method === "POST") {
             const payload = await readJsonBody(req);
-            const nextControls = await writeSiteControls({ features: payload?.features });
+            const nextControls = await applyConsoleState(payload);
 
             server.ws.send({ type: "full-reload" });
             sendJson(res, 200, { ok: true, features: nextControls.features });
-            return;
-          }
-
-          if (pathname === "/__console/posts/toggle" && req.method === "POST") {
-            const payload = await readJsonBody(req);
-            await togglePostVisibility(payload);
-
-            server.ws.send({ type: "full-reload" });
-            sendJson(res, 200, { ok: true });
             return;
           }
         } catch (error) {
