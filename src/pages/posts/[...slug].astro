@@ -34,6 +34,14 @@ const summary = post.data.description?.trim();
 const { Content, headings } = await post.render();
 const tocHeadings = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
 const hasToc = site.features.showToc && tocHeadings.length > 0;
+const hasPagination = Boolean(newerPost || olderPost);
+const paginationClassName = [
+  "post-pagination",
+  !newerPost && olderPost ? "post-pagination--single-right" : "",
+  newerPost && !olderPost ? "post-pagination--single-left" : "",
+]
+  .filter(Boolean)
+  .join(" ");
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -87,25 +95,23 @@ const articleSchema = {
       </section>
     </div>
 
-    <nav class="post-pagination" aria-label="文章翻页">
-      {newerPost ? (
-        <a class="post-pagination__item" href={getPostUrl(newerPost)}>
-          <span class="post-pagination__label">NEWER</span>
-          <strong>{newerPost.data.title}</strong>
-        </a>
-      ) : (
-        <div class="post-pagination__item is-empty" />
-      )}
+    {hasPagination && (
+      <nav class={paginationClassName} aria-label="文章翻页">
+        {newerPost && (
+          <a class="post-pagination__item" href={getPostUrl(newerPost)}>
+            <span class="post-pagination__label">NEWER</span>
+            <strong>{newerPost.data.title}</strong>
+          </a>
+        )}
 
-      {olderPost ? (
-        <a class="post-pagination__item post-pagination__item--align-end" href={getPostUrl(olderPost)}>
-          <span class="post-pagination__label">OLDER</span>
-          <strong>{olderPost.data.title}</strong>
-        </a>
-      ) : (
-        <div class="post-pagination__item is-empty" />
-      )}
-    </nav>
+        {olderPost && (
+          <a class="post-pagination__item post-pagination__item--align-end" href={getPostUrl(olderPost)}>
+            <span class="post-pagination__label">OLDER</span>
+            <strong>{olderPost.data.title}</strong>
+          </a>
+        )}
+      </nav>
+    )}
 
     {hasToc && <FloatingToc client:load headings={tocHeadings} />}
   </article>
