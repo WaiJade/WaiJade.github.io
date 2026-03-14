@@ -582,7 +582,7 @@
 .note-page__content .article-directive {
   --article-callout-accent: var(--accent);
   margin: 1rem 0 1.2rem;
-  padding: 1rem 1.05rem 1.05rem;
+  padding: 0.95rem 1rem 1rem;
   border: 1px solid color-mix(in srgb, var(--article-callout-accent) 24%, transparent);
   border-radius: 1.15rem;
   background:
@@ -595,6 +595,30 @@
   box-shadow:
     inset 0 1px 0 color-mix(in srgb, white 14%, transparent),
     0 14px 34px rgba(3, 7, 18, 0.08);
+}
+
+.article-content .article-directive__header,
+.note-page__content .article-directive__header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.article-content .article-directive__icon,
+.note-page__content .article-directive__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: 0 0 auto;
+  color: color-mix(in srgb, var(--article-callout-accent) 82%, var(--foreground) 18%);
+}
+
+.article-content .article-directive__icon svg,
+.note-page__content .article-directive__icon svg {
+  display: block;
 }
 
 .article-content .article-directive--danger,
@@ -624,7 +648,7 @@
 
 .article-content .article-directive__title,
 .note-page__content .article-directive__title {
-  margin: 0 0 0.55rem;
+  margin: 0;
   color: color-mix(in srgb, var(--article-callout-accent) 76%, var(--foreground) 24%);
   font-size: 0.92rem;
   font-weight: 700;
@@ -632,19 +656,38 @@
   line-height: 1.45;
 }
 
-.article-content .article-directive > :last-child,
-.note-page__content .article-directive > :last-child {
+.article-content .article-directive__body > :first-child,
+.note-page__content .article-directive__body > :first-child {
+  margin-top: 0;
+}
+
+.article-content .article-directive__body > :last-child,
+.note-page__content .article-directive__body > :last-child {
   margin-bottom: 0;
 }
 
-.article-content mark.article-mark,
-.note-page__content mark.article-mark {
+.article-content .article-mark,
+.note-page__content .article-mark {
   --article-mark-accent: color-mix(in srgb, var(--accent) 74%, white 26%);
   padding: 0.08rem 0.3rem;
   border-radius: 0.42rem;
   background: color-mix(in srgb, var(--article-mark-accent) 22%, transparent);
   box-decoration-break: clone;
   color: inherit;
+}
+
+.article-content .article-table-wrap,
+.note-page__content .article-table-wrap {
+  margin: 1rem 0 1.2rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 1rem;
+}
+
+.article-content .article-table-wrap table,
+.note-page__content .article-table-wrap table {
+  min-width: 100%;
+  margin: 0;
 }
 
 .article-content table {
