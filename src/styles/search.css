@@ -204,10 +204,12 @@ body.search-open {
   min-height: auto;
   padding: 0;
   border-bottom: 0;
+  transform: translateY(clamp(-2.4rem, -4.2vh, -1.2rem));
 }
 
 .search-page__main--stacked .search-page__field {
   width: min(100%, var(--search-column-width));
+  transform: none;
 }
 
 .search-page__field input {
@@ -414,6 +416,7 @@ body.search-open {
   .search-page__field {
     width: min(100%, var(--search-column-width));
     min-height: auto;
+    transform: translateY(clamp(-1.8rem, -3.6vh, -0.9rem));
   }
 
   .search-page__field input {
