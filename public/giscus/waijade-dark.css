@@ -242,13 +242,19 @@ main .gsc-reply-box .gsc-comment-box-main > :not(.gsc-comment-box-md-toolbar) {
 }
 
 main .gsc-comment-box-textarea-extras {
-  display: block !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
   width: 100% !important;
   margin-inline: auto !important;
   border: 0 !important;
   border-radius: 14px !important;
   box-shadow: none !important;
   outline: none !important;
+}
+
+main .gsc-comment-box-markdown-hint {
+  margin-left: auto !important;
 }
 
 main .gsc-comment-box-textarea,
