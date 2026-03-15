@@ -2,6 +2,7 @@
   "features": {
     "showNotes": false,
     "showToc": false,
-    "showSearch": true
+    "showSearch": true,
+    "showComments": true
   }
 }

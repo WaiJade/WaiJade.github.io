@@ -4,6 +4,7 @@ export type SiteFeatureFlags = {
   showNotes: boolean;
   showToc: boolean;
   showSearch: boolean;
+  showComments: boolean;
 };
 
 export type SiteControls = {
@@ -15,6 +16,7 @@ const defaultSiteControls: SiteControls = {
     showNotes: false,
     showToc: false,
     showSearch: true,
+    showComments: false,
   },
 };
 

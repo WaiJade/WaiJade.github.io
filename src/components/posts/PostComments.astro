@@ -1,0 +1,139 @@
+---
+import { site } from "../../config/site";
+
+const comments = site.comments;
+const themeOrigin = Astro.url.origin || new URL(site.url).origin;
+const lightTheme = new URL("/giscus/waijade-light.css", themeOrigin).toString();
+const darkTheme = new URL("/giscus/waijade-dark.css", themeOrigin).toString();
+const initialTheme = site.theme.defaultMode === "dark" ? darkTheme : lightTheme;
+const discussionsUrl = `https://github.com/${comments.repo}/discussions`;
+---
+
+<section
+  class="article-comments"
+  aria-labelledby="article-comments-title"
+  data-giscus-light-theme={lightTheme}
+  data-giscus-dark-theme={darkTheme}
+>
+  <div class="article-comments__header">
+    <p class="article-comments__eyebrow">Comments / GitHub Discussions</p>
+    <h2 id="article-comments-title" class="article-comments__title">评论区</h2>
+    <p class="article-comments__description">
+      使用 GitHub 账号参与讨论，评论内容会同步保存在仓库 Discussions。
+    </p>
+    <p class="article-comments__note">
+      如果评论组件没有正常加载，可以直接前往
+      <a href={discussionsUrl} target="_blank" rel="noreferrer">仓库 Discussions</a>
+      查看或回复。
+    </p>
+  </div>
+
+  <div id="comments" class="article-comments__embed">
+    <script
+      is:inline
+      src="https://giscus.app/client.js"
+      data-repo={comments.repo}
+      data-repo-id={comments.repoId}
+      data-category={comments.category}
+      data-category-id={comments.categoryId}
+      data-mapping={comments.mapping}
+      data-strict={comments.strict}
+      data-reactions-enabled={comments.reactionsEnabled}
+      data-emit-metadata={comments.emitMetadata}
+      data-input-position={comments.inputPosition}
+      data-theme={initialTheme}
+      data-lang={comments.lang}
+      data-loading={comments.loading}
+      crossorigin="anonymous"
+      async
+    />
+  </div>
+
+  <script is:inline>
+    (() => {
+      const container = document.querySelector("[data-giscus-light-theme][data-giscus-dark-theme]");
+      const iframeSelector = "iframe.giscus-frame";
+      const giscusOrigin = "https://giscus.app";
+      let attempts = 0;
+      const maxAttempts = 24;
+
+      if (!container) {
+        return;
+      }
+
+      const lightTheme = container.getAttribute("data-giscus-light-theme");
+      const darkTheme = container.getAttribute("data-giscus-dark-theme");
+
+      if (!lightTheme || !darkTheme) {
+        return;
+      }
+
+      const getTheme = () =>
+        document.documentElement.classList.contains("dark") ? darkTheme : lightTheme;
+
+      const postTheme = () => {
+        const iframe = document.querySelector(iframeSelector);
+
+        if (!iframe || !iframe.contentWindow) {
+          return false;
+        }
+
+        iframe.contentWindow.postMessage(
+          {
+            giscus: {
+              setConfig: {
+                theme: getTheme(),
+              },
+            },
+          },
+          giscusOrigin,
+        );
+
+        return true;
+      };
+
+      const syncTheme = () => {
+        if (postTheme() || attempts >= maxAttempts) {
+          return;
+        }
+
+        attempts += 1;
+        window.setTimeout(syncTheme, 250);
+      };
+
+      const scheduleSync = () => {
+        attempts = 0;
+        syncTheme();
+      };
+
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          if (mutation.type === "attributes" && mutation.attributeName === "class") {
+            scheduleSync();
+            break;
+          }
+        }
+      });
+
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+
+      window.addEventListener("message", (event) => {
+        if (event.origin !== giscusOrigin) {
+          return;
+        }
+
+        if (!(typeof event.data === "object" && event.data && "giscus" in event.data)) {
+          return;
+        }
+
+        scheduleSync();
+      });
+
+      window.addEventListener("load", scheduleSync, { once: true });
+      window.setTimeout(scheduleSync, 300);
+    })();
+  </script>
+</section>

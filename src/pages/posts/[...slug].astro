@@ -2,6 +2,7 @@
 import type { PostEntry } from "../../lib/posts";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import FloatingToc from "../../components/posts/FloatingToc";
+import PostComments from "../../components/posts/PostComments.astro";
 import { site } from "../../config/site";
 import {
   formatPostDate,
@@ -112,6 +113,8 @@ const articleSchema = {
         )}
       </nav>
     )}
+
+    {site.features.showComments && <PostComments />}
 
     {hasToc && <FloatingToc client:load headings={tocHeadings} />}
   </article>

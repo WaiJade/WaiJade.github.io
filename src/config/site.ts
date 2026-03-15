@@ -8,6 +8,21 @@ export type SocialItem = {
   href: string;
 };
 
+export type GiscusCommentsConfig = {
+  provider: "giscus";
+  repo: string;
+  repoId: string;
+  category: string;
+  categoryId: string;
+  mapping: "pathname";
+  strict: "0" | "1";
+  reactionsEnabled: "0" | "1";
+  emitMetadata: "0" | "1";
+  inputPosition: "top" | "bottom";
+  lang: string;
+  loading: "lazy" | "eager";
+};
+
 import { siteControls } from "./site-controls";
 
 const features = siteControls.features;
@@ -31,6 +46,20 @@ export const site = {
     { label: "GitHub", href: "https://github.com/CheongSzesuen" },
     { label: "BandBBS", href: "https://www.bandbbs.cn/members/344224/" },
   ] satisfies SocialItem[],
+  comments: {
+    provider: "giscus",
+    repo: "CheongSzesuen/WaiJade.github.io",
+    repoId: "R_kgDOI6Xr3g",
+    category: "Announcements",
+    categoryId: "DIC_kwDOI6Xr3s4CWJTt",
+    mapping: "pathname",
+    strict: "1",
+    reactionsEnabled: "0",
+    emitMetadata: "1",
+    inputPosition: "top",
+    lang: "zh-CN",
+    loading: "lazy",
+  } satisfies GiscusCommentsConfig,
   features,
   theme: {
     defaultMode: "dark" as const,

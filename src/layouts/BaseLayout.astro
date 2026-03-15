@@ -39,6 +39,7 @@ const serviceWorkerVersion = buildMeta.shellVersion;
 const canonicalUrl = new URL(Astro.url.pathname, site.url).toString();
 const ogImageUrl = new URL(ogImage, site.url).toString();
 const robotsContent = noIndex ? "noindex, nofollow" : "index, follow";
+const themeStorageKey = "waijade-theme";
 const siteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -54,6 +55,21 @@ const siteSchema = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline define:vars={{ themeStorageKey }}>
+      (() => {
+        try {
+          const storedTheme = window.localStorage.getItem(themeStorageKey);
+          const resolvedTheme =
+            storedTheme === "light" || storedTheme === "dark"
+              ? storedTheme
+              : window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+
+          document.documentElement.classList.toggle("dark", resolvedTheme === "dark");
+        } catch {}
+      })();
+    </script>
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
@@ -62,6 +78,7 @@ const siteSchema = {
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content={site.title} />
     <link rel="canonical" href={canonicalUrl} />
+    <meta name="giscus:backlink" content={canonicalUrl} />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="shortcut icon" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
