@@ -50,6 +50,12 @@ export default defineConfig({
     },
   },
   vite: {
+    server: {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+      },
+    },
     plugins: [tailwindcss(), createDevConsolePlugin()],
   },
 });

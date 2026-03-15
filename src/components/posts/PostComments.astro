@@ -6,28 +6,14 @@ const themeOrigin = Astro.url.origin || new URL(site.url).origin;
 const lightTheme = new URL("/giscus/waijade-light.css", themeOrigin).toString();
 const darkTheme = new URL("/giscus/waijade-dark.css", themeOrigin).toString();
 const initialTheme = site.theme.defaultMode === "dark" ? darkTheme : lightTheme;
-const discussionsUrl = `https://github.com/${comments.repo}/discussions`;
 ---
 
 <section
   class="article-comments"
-  aria-labelledby="article-comments-title"
+  aria-label="评论区"
   data-giscus-light-theme={lightTheme}
   data-giscus-dark-theme={darkTheme}
 >
-  <div class="article-comments__header">
-    <p class="article-comments__eyebrow">Comments / GitHub Discussions</p>
-    <h2 id="article-comments-title" class="article-comments__title">评论区</h2>
-    <p class="article-comments__description">
-      使用 GitHub 账号参与讨论，评论内容会同步保存在仓库 Discussions。
-    </p>
-    <p class="article-comments__note">
-      如果评论组件没有正常加载，可以直接前往
-      <a href={discussionsUrl} target="_blank" rel="noreferrer">仓库 Discussions</a>
-      查看或回复。
-    </p>
-  </div>
-
   <div id="comments" class="article-comments__embed">
     <script
       is:inline
