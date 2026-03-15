@@ -65,7 +65,13 @@ async function readSiteControls() {
 }
 
 async function writeSiteControls(nextControls) {
-  const normalizedControls = normalizeSiteControls(nextControls);
+  const currentControls = await readSiteControls().catch(() => defaultSiteControls);
+  const normalizedControls = normalizeSiteControls({
+    features: {
+      ...currentControls.features,
+      ...(nextControls?.features ?? {}),
+    },
+  });
   await writeFile(siteControlsPath, `${JSON.stringify(normalizedControls, null, 2)}\n`, "utf8");
   return normalizedControls;
 }
