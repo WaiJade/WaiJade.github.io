@@ -95,3 +95,78 @@ main .pagination-loader-container {
 main .gsc-loading-image {
   background-image: url("https://github.githubassets.com/images/mona-loading-dark.gif");
 }
+
+main .gsc-comments,
+main .gsc-timeline {
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+
+main .gsc-header,
+main .gsc-main,
+main .gsc-reactions {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+main .gsc-comment-box,
+main .gsc-reply-box {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: none !important;
+}
+
+main .gsc-comment-box-tabs,
+main .gsc-comment-box-main,
+main .gsc-comment-box-bottom,
+main .gsc-comment-box-textarea-extras {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+main .gsc-comment-box-textarea,
+main .gsc-reply-box textarea,
+main .gsc-reply-box .gsc-comment-box-textarea,
+main .gsc-reply-box .gsc-reply-box-textarea {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+main .gsc-comment-box-textarea:focus,
+main .gsc-reply-box textarea:focus,
+main .gsc-reply-box .gsc-comment-box-textarea:focus,
+main .gsc-reply-box .gsc-reply-box-textarea:focus {
+  border-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+main .gsc-comment {
+  border: 0 !important;
+  border-radius: 18px !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+}
+
+main .gsc-comment-content blockquote {
+  border-left: 2px solid rgba(255, 255, 255, 0.22) !important;
+}
+
+main .gsc-comment-content code {
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+main .gsc-comment-content pre {
+  border-radius: 12px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+main .gsc-reactions-button,
+main .gsc-social-reaction-summary-item,
+main .gsc-comment-button {
+  border-radius: 999px !important;
+}

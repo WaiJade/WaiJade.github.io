@@ -939,7 +939,6 @@ html:not(.dark) .note-page__content .ai-container {
   width: min(calc(100% - 3rem), 760px);
   margin: 0 auto;
   min-height: 12rem;
-  overflow: hidden;
 }
 
 .article-comments__embed .giscus,
@@ -949,7 +948,6 @@ html:not(.dark) .note-page__content .ai-container {
 
 .article-comments__embed .giscus-frame {
   border: 0;
-  border-radius: 1.3rem;
   background: transparent;
 }
 
