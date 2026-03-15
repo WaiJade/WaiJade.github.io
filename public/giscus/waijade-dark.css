@@ -343,6 +343,26 @@ main .gsc-comment {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
 }
 
+main .gsc-comment > .color-bg-primary.w-full.min-w-0.rounded-md.border,
+main .gsc-comment > .color-bg-primary.w-full.min-w-0.rounded-md.border.color-box-border-info {
+  border: 0 !important;
+  border-radius: inherit !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+main .gsc-comment .gsc-reply-box {
+  border-radius: var(--waijade-radius-panel) !important;
+}
+
+main .gsc-comment .gsc-reply-box > button.form-control.rounded.border,
+main .gsc-comment .gsc-reply-box > button.form-control.color-text-secondary.color-border-primary.w-full.cursor-text.rounded.border {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: var(--waijade-radius-panel) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  box-shadow: none !important;
+}
+
 main .gsc-comment-content blockquote {
   border-radius: var(--waijade-radius-panel) !important;
   border-left: 2px solid rgba(255, 255, 255, 0.22) !important;
