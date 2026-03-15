@@ -14,6 +14,8 @@ const defaultSiteControls = {
     showNotes: false,
     showToc: false,
     showSearch: true,
+    showComments: false,
+    showFooter: true,
   },
 };
 
@@ -41,6 +43,14 @@ function normalizeSiteControls(rawValue) {
         typeof rawFeatures.showSearch === "boolean"
           ? rawFeatures.showSearch
           : defaultSiteControls.features.showSearch,
+      showComments:
+        typeof rawFeatures.showComments === "boolean"
+          ? rawFeatures.showComments
+          : defaultSiteControls.features.showComments,
+      showFooter:
+        typeof rawFeatures.showFooter === "boolean"
+          ? rawFeatures.showFooter
+          : defaultSiteControls.features.showFooter,
     },
   };
 }

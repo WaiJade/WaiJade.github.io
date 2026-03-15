@@ -33,6 +33,7 @@ const {
   updatedTime,
   articleTags = [],
 } = Astro.props;
+const shouldRenderFooter = site.features.showFooter && showFooter;
 const pageTitle = title ? `${site.title} / ${title}` : site.title;
 const shouldRegisterServiceWorker = import.meta.env.PROD;
 const serviceWorkerVersion = buildMeta.shellVersion;
@@ -250,7 +251,7 @@ const siteSchema = {
         <main class="site-main">
           <slot />
         </main>
-        {showFooter && <SiteFooter />}
+        {shouldRenderFooter && <SiteFooter />}
       </div>
     </div>
     <Analytics />

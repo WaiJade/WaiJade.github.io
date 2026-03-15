@@ -3,6 +3,7 @@
     "showNotes": false,
     "showToc": false,
     "showSearch": true,
-    "showComments": true
+    "showComments": true,
+    "showFooter": true
   }
 }
