@@ -4,6 +4,9 @@
  */
 main {
   color-scheme: dark;
+  --waijade-radius-card: 16px;
+  --waijade-radius-panel: 12px;
+  --waijade-radius-chip: 10px;
   --color-prettylights-syntax-comment: #8490b6;
   --color-prettylights-syntax-constant: #9cb4ff;
   --color-prettylights-syntax-entity: #c3bdff;
@@ -128,7 +131,7 @@ main .gsc-reply-box {
   box-sizing: border-box !important;
   padding: 12px !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 18px !important;
+  border-radius: var(--waijade-radius-card) !important;
   background: rgba(71, 71, 75, 0.3) !important;
   box-shadow: none !important;
 }
@@ -144,7 +147,7 @@ main .gsc-comment-box-tabs {
   gap: 4px !important;
   margin: 0 0 10px !important;
   padding: 4px !important;
-  border-radius: 10px !important;
+  border-radius: var(--waijade-radius-chip) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   background: rgba(31, 31, 32, 0.42) !important;
   white-space: nowrap !important;
@@ -161,7 +164,7 @@ main .gsc-comment-box-tabs button {
   min-width: 0 !important;
   height: 28px !important;
   min-height: 28px !important;
-  border-radius: 8px !important;
+  border-radius: var(--waijade-radius-chip) !important;
   border-width: 0 !important;
   border-style: solid !important;
   padding: 0 10px !important;
@@ -218,7 +221,7 @@ main .gsc-comment-box-md-toolbar .gsc-toolbar-item {
   height: 28px !important;
   min-height: 28px !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 8px !important;
+  border-radius: var(--waijade-radius-chip) !important;
   background: rgba(255, 255, 255, 0.08) !important;
   color: #edf2ff !important;
   box-shadow: none !important;
@@ -279,7 +282,7 @@ main .gsc-comment-box-textarea-extras {
   width: 100% !important;
   margin-inline: auto !important;
   border: 0 !important;
-  border-radius: 14px !important;
+  border-radius: var(--waijade-radius-panel) !important;
   box-shadow: none !important;
   outline: none !important;
 }
@@ -296,10 +299,19 @@ main .gsc-reply-box .gsc-reply-box-textarea {
   width: 100% !important;
   margin-inline: auto !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 14px !important;
+  border-radius: var(--waijade-radius-panel) !important;
   background: rgba(255, 255, 255, 0.06) !important;
   box-shadow: none !important;
   outline: none !important;
+}
+
+main .gsc-reply-box-header,
+main .gsc-reply-box-main,
+main .gsc-comment-box-write,
+main .gsc-comment-box-write > *,
+main .gsc-reply-box .gsc-comment-box-write,
+main .gsc-reply-box .gsc-comment-box-write > * {
+  border-radius: var(--waijade-radius-panel) !important;
 }
 
 main .gsc-comment-box-textarea-extras:focus,
@@ -326,22 +338,23 @@ main .gsc-reply-box .gsc-reply-box-textarea:focus {
 
 main .gsc-comment {
   border: 0 !important;
-  border-radius: 18px !important;
+  border-radius: var(--waijade-radius-card) !important;
   background: rgba(71, 71, 75, 0.3) !important;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
 }
 
 main .gsc-comment-content blockquote {
+  border-radius: var(--waijade-radius-panel) !important;
   border-left: 2px solid rgba(255, 255, 255, 0.22) !important;
 }
 
 main .gsc-comment-content code {
-  border-radius: 8px !important;
+  border-radius: var(--waijade-radius-chip) !important;
   background: rgba(255, 255, 255, 0.08) !important;
 }
 
 main .gsc-comment-content pre {
-  border-radius: 12px !important;
+  border-radius: var(--waijade-radius-panel) !important;
   background: rgba(255, 255, 255, 0.08) !important;
 }
 
