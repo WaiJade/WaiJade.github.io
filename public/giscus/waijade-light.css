@@ -118,6 +118,43 @@ main .gsc-reply-box {
   box-shadow: none !important;
 }
 
+main .gsc-comment-box-tabs {
+  margin: 0 8px -1px !important;
+  padding-top: 8px !important;
+  gap: 4px !important;
+}
+
+main .gsc-comment-box-tabs button {
+  border-radius: 14px 14px 0 0 !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  padding: 8px 16px !important;
+  box-shadow: none !important;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease !important;
+}
+
+main .gsc-comment-box-tabs button[class*="color-bg-canvas"],
+main .gsc-comment-box-tabs button[class*="color-border-primary"] {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(16, 23, 45, 0.1) !important;
+  border-bottom-color: transparent !important;
+  color: #10172d !important;
+}
+
+main .gsc-comment-box-tabs button[class*="border-transparent"] {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #7180a0 !important;
+}
+
+main .gsc-comment-box-tabs button[class*="border-transparent"]:hover {
+  color: #10172d !important;
+  background: rgba(16, 23, 45, 0.04) !important;
+}
+
 main .gsc-comment-box-tabs,
 main .gsc-comment-box-main,
 main .gsc-comment-box-bottom,
