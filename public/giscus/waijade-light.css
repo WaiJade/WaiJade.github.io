@@ -254,6 +254,25 @@ main .gsc-reply-box .gsc-comment-box-main > :not(.gsc-comment-box-md-toolbar) {
   margin-inline: auto !important;
 }
 
+main .gsc-comment-box-write,
+main .gsc-reply-box .gsc-comment-box-write {
+  display: block !important;
+  align-self: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+main .gsc-comment-box-write > *,
+main .gsc-reply-box .gsc-comment-box-write > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  box-sizing: border-box !important;
+}
+
 main .gsc-comment-box-textarea-extras {
   display: flex !important;
   justify-content: flex-end !important;
