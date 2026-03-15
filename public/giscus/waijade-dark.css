@@ -132,7 +132,8 @@ main .gsc-comment-box-tabs {
   margin: 0 0 10px !important;
   padding: 4px !important;
   border-radius: 10px !important;
-  background: rgba(71, 71, 75, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(31, 31, 32, 0.42) !important;
   white-space: nowrap !important;
   z-index: auto !important;
 }
@@ -167,7 +168,7 @@ main .gsc-comment-box-tabs button {
 
 main .gsc-comment-box-tabs button[class*="color-bg-canvas"],
 main .gsc-comment-box-tabs button[class*="color-border-primary"] {
-  background: rgba(31, 31, 32, 0.85) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
   border-color: transparent !important;
   color: #f5f7ff !important;
   opacity: 1 !important;
@@ -176,7 +177,7 @@ main .gsc-comment-box-tabs button[class*="color-border-primary"] {
 main .gsc-comment-box-tabs button[class*="border-transparent"] {
   background: transparent !important;
   border-color: transparent !important;
-  color: #97a1c4 !important;
+  color: rgba(245, 247, 255, 0.6) !important;
 }
 
 main .gsc-comment-box-tabs button[class*="border-transparent"]:hover {
@@ -244,6 +245,10 @@ main .gsc-comment-box-textarea-extras {
   display: block !important;
   width: 100% !important;
   margin-inline: auto !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 main .gsc-comment-box-textarea,
@@ -253,9 +258,23 @@ main .gsc-reply-box .gsc-reply-box-textarea {
   display: block !important;
   width: 100% !important;
   margin-inline: auto !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 14px !important;
   background: rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+main .gsc-comment-box-textarea-extras:focus,
+main .gsc-comment-box-textarea-extras:focus-within,
+main .gsc-comment-box-main:focus-within,
+main .gsc-reply-box .gsc-comment-box-main:focus-within,
+main .gsc-comment-box-textarea:focus-visible,
+main .gsc-reply-box textarea:focus-visible,
+main .gsc-reply-box .gsc-comment-box-textarea:focus-visible,
+main .gsc-reply-box .gsc-reply-box-textarea:focus-visible {
+  border-color: transparent !important;
+  outline: none !important;
   box-shadow: none !important;
 }
 
@@ -263,7 +282,7 @@ main .gsc-comment-box-textarea:focus,
 main .gsc-reply-box textarea:focus,
 main .gsc-reply-box .gsc-comment-box-textarea:focus,
 main .gsc-reply-box .gsc-reply-box-textarea:focus {
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
   outline: none !important;
   box-shadow: none !important;
 }
