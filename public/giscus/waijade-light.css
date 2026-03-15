@@ -126,6 +126,7 @@ main .gsc-comment-box-tabs {
   flex-direction: row !important;
   align-items: center !important;
   width: fit-content !important;
+  height: 36px !important;
   max-width: 100% !important;
   gap: 4px !important;
   margin: 0 0 10px !important;
@@ -143,23 +144,24 @@ main .gsc-comment-box-tabs button {
   justify-content: center !important;
   flex: 0 0 auto !important;
   width: auto !important;
-  min-width: 52px !important;
+  min-width: 0 !important;
+  height: 28px !important;
   min-height: 28px !important;
   border-radius: 8px !important;
   border-width: 0 !important;
   border-style: solid !important;
-  padding: 5px 12px !important;
+  padding: 0 10px !important;
   box-shadow: none !important;
   font-size: 13px !important;
   font-weight: 380 !important;
+  line-height: 1 !important;
   white-space: nowrap !important;
   writing-mode: horizontal-tb !important;
   text-orientation: mixed !important;
-  opacity: 0.62 !important;
+  opacity: 0.5 !important;
   transition:
     color 0.2s ease,
     opacity 0.2s ease,
-    border-color 0.2s ease,
     background-color 0.2s ease !important;
 }
 
@@ -179,8 +181,8 @@ main .gsc-comment-box-tabs button[class*="border-transparent"] {
 
 main .gsc-comment-box-tabs button[class*="border-transparent"]:hover {
   color: #10172d !important;
-  background: rgba(255, 255, 255, 0.56) !important;
-  opacity: 0.82 !important;
+  background: transparent !important;
+  opacity: 0.74 !important;
 }
 
 main .gsc-comment-box-md-toolbar {
@@ -261,7 +263,9 @@ main .gsc-comment-box-textarea:focus,
 main .gsc-reply-box textarea:focus,
 main .gsc-reply-box .gsc-comment-box-textarea:focus,
 main .gsc-reply-box .gsc-reply-box-textarea:focus {
-  border-color: rgba(16, 23, 45, 0.18) !important;
+  border-color: rgba(16, 23, 45, 0.08) !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 main .gsc-comment {
