@@ -298,6 +298,25 @@ function getConsoleHtml() {
       rel="stylesheet"
       href="https://cdn-font.hyperos.mi.com/font/css?family=MiSans:100,200,300,400,500,600:Chinese_Simplify,Latin&display=swap"
     />
+    <script>
+      (() => {
+        const storageKey = "waijade-console-theme";
+
+        try {
+          const storedTheme = window.localStorage.getItem(storageKey);
+          const resolvedTheme =
+            storedTheme === "light" || storedTheme === "dark"
+              ? storedTheme
+              : window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+
+          document.documentElement.dataset.consoleTheme = resolvedTheme;
+        } catch {
+          document.documentElement.dataset.consoleTheme = "dark";
+        }
+      })();
+    </script>
     <style>
       @font-face {
         font-family: "NSourceSong";
@@ -319,6 +338,16 @@ function getConsoleHtml() {
         --font-family-display: "NSourceSong", serif;
         background: var(--console-background);
         color: var(--console-foreground);
+      }
+
+      html[data-console-theme="light"] {
+        color-scheme: light;
+        --console-background: #f5f7ff;
+        --console-foreground: #10172d;
+        --console-muted: rgba(16, 23, 45, 0.7);
+        --console-border: rgba(16, 23, 45, 0.08);
+        --console-card: rgba(255, 255, 255, 0.8);
+        --console-accent: #465fbc;
       }
 
       * {

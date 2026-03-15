@@ -21,10 +21,63 @@
   --console-accent-strong: #78b6ff;
   --console-accent-blue: #0088ff;
   --console-shadow: 0 20px 48px rgba(6, 10, 25, 0.28);
+  --console-button-secondary-border: rgba(255, 255, 255, 0.08);
+  --console-button-secondary-bg: rgba(255, 255, 255, 0.05);
+  --console-group-outline: rgba(255, 255, 255, 0.03);
+  --console-item-divider: rgba(255, 255, 255, 0.1);
+  --console-icon: rgba(255, 255, 255, 0.78);
+  --console-icon-post: rgba(255, 255, 255, 0.82);
+  --console-loading-base: rgba(255, 255, 255, 0.08);
+  --console-loading-shine-a: rgba(255, 255, 255, 0);
+  --console-loading-shine-b: rgba(255, 255, 255, 0.12);
+  --console-loading-shine-c: rgba(255, 255, 255, 0.24);
+  --console-note-gradient-start: rgba(255, 255, 255, 0.98);
+  --console-switch-track-bg: rgba(255, 255, 255, 0.18);
+  --console-switch-track-outline: rgba(255, 255, 255, 0.05);
+  --console-switch-track-shadow: rgba(0, 0, 0, 0.1);
+  --console-switch-thumb-bg:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 251, 0.92));
+  --console-switch-thumb-shadow:
+    0 6px 18px rgba(3, 7, 18, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
   --font-family-sans:
     "MiSans", "MiSans Chinese", MiSans, "Inter", "SF Pro Display", "Segoe UI",
     sans-serif;
   --font-family-display: "NSourceSong", serif;
+}
+
+html[data-console-theme="light"] {
+  color-scheme: light;
+  --console-background: #f5f7ff;
+  --console-foreground: #10172d;
+  --console-muted: rgba(16, 23, 45, 0.7);
+  --console-faint: rgba(16, 23, 45, 0.46);
+  --console-border: rgba(16, 23, 45, 0.08);
+  --console-divider: rgba(16, 23, 45, 0.08);
+  --console-card: rgba(255, 255, 255, 0.8);
+  --console-card-strong: rgba(255, 255, 255, 0.94);
+  --console-accent: #465fbc;
+  --console-accent-strong: #26366e;
+  --console-accent-blue: #465fbc;
+  --console-shadow: 0 18px 42px rgba(31, 40, 84, 0.12);
+  --console-button-secondary-border: rgba(16, 23, 45, 0.08);
+  --console-button-secondary-bg: rgba(255, 255, 255, 0.72);
+  --console-group-outline: rgba(16, 23, 45, 0.04);
+  --console-item-divider: rgba(16, 23, 45, 0.08);
+  --console-icon: rgba(16, 23, 45, 0.62);
+  --console-icon-post: rgba(16, 23, 45, 0.74);
+  --console-loading-base: rgba(16, 23, 45, 0.08);
+  --console-loading-shine-a: rgba(255, 255, 255, 0);
+  --console-loading-shine-b: rgba(255, 255, 255, 0.38);
+  --console-loading-shine-c: rgba(255, 255, 255, 0.72);
+  --console-note-gradient-start: rgba(16, 23, 45, 0.98);
+  --console-switch-track-bg: rgba(16, 23, 45, 0.1);
+  --console-switch-track-outline: rgba(16, 23, 45, 0.06);
+  --console-switch-track-shadow: rgba(16, 23, 45, 0.08);
+  --console-switch-thumb-bg: linear-gradient(180deg, #ffffff, #edf1ff);
+  --console-switch-thumb-shadow:
+    0 6px 18px rgba(31, 40, 84, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 * {
@@ -43,6 +96,9 @@ body {
   color: var(--console-foreground);
   background: var(--console-background);
   font-family: var(--font-family-sans);
+  transition:
+    background-color 0.22s ease,
+    color 0.22s ease;
 }
 
 button,
@@ -55,6 +111,7 @@ code {
 }
 
 .dev-console {
+  position: relative;
   width: min(880px, calc(100vw - 2rem));
   margin: 0 auto;
   padding: 8.5rem 0 8rem;
@@ -81,6 +138,51 @@ code {
   letter-spacing: -0.05em;
   font-family: var(--font-family-display);
   font-weight: 400;
+}
+
+.dev-console__theme-toggle {
+  position: fixed;
+  top: max(1rem, calc(env(safe-area-inset-top) + 0.95rem));
+  right: max(1rem, calc(env(safe-area-inset-right) + 1rem));
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  min-width: 3rem;
+  min-height: 3rem;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--console-button-secondary-border);
+  background: var(--console-card-strong);
+  box-shadow: var(--console-shadow);
+  color: var(--console-foreground);
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.dev-console__theme-toggle:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--console-card-strong) 88%, var(--console-accent) 12%);
+}
+
+.dev-console__theme-toggle:active {
+  transform: scale(0.98);
+}
+
+.dev-console__theme-toggle:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--console-accent) 42%, transparent);
+  outline-offset: 2px;
+}
+
+.dev-console__theme-toggle-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: currentColor;
 }
 
 .dev-console__sections {
@@ -142,8 +244,8 @@ code {
 }
 
 .dev-console__floating-button--secondary {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--console-button-secondary-border);
+  background: var(--console-button-secondary-bg);
 }
 
 .dev-console__floating-button--primary {
@@ -172,7 +274,7 @@ code {
   border: 0;
   border-radius: 24px;
   background: var(--console-card);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px var(--console-group-outline);
   corner-shape: superellipse(1.5);
 }
 
@@ -200,7 +302,7 @@ code {
   left: 2.9rem;
   right: 0;
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--console-item-divider);
 }
 
 .dev-console__item.is-hidden .dev-console__item-title,
@@ -220,7 +322,7 @@ code {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--console-icon);
 }
 
 .dev-console__icon[data-kind="feature"] {
@@ -228,7 +330,7 @@ code {
 }
 
 .dev-console__icon[data-kind="post"] {
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--console-icon-post);
 }
 
 .dev-console__icon-svg {
@@ -242,7 +344,7 @@ code {
 .dev-console__loading-switch {
   position: relative;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--console-loading-base);
 }
 
 .dev-console__loading-icon::after,
@@ -253,11 +355,11 @@ code {
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.12) 45%,
-    rgba(255, 255, 255, 0.24) 50%,
-    rgba(255, 255, 255, 0.12) 55%,
-    rgba(255, 255, 255, 0) 100%
+    var(--console-loading-shine-a) 0%,
+    var(--console-loading-shine-b) 45%,
+    var(--console-loading-shine-c) 50%,
+    var(--console-loading-shine-b) 55%,
+    var(--console-loading-shine-a) 100%
   );
   background-size: 220% 100%;
   animation: dev-console-skeleton-wave 1.55s linear infinite;
@@ -327,7 +429,7 @@ code {
   color: transparent;
   background-image: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.98) 0%,
+    var(--console-note-gradient-start) 0%,
     color-mix(in srgb, var(--console-foreground) 56%, transparent) 100%
   );
   -webkit-background-clip: text;
@@ -363,10 +465,10 @@ code {
   height: 32px;
   padding: 2px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--console-switch-track-bg);
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05),
-    inset 0 6px 18px rgba(0, 0, 0, 0.1);
+    inset 0 0 0 1px var(--console-switch-track-outline),
+    inset 0 6px 18px var(--console-switch-track-shadow);
   transition:
     background-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -377,11 +479,8 @@ code {
   width: 28px;
   height: 28px;
   border-radius: 999px;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 247, 251, 0.92));
-  box-shadow:
-    0 6px 18px rgba(3, 7, 18, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  background: var(--console-switch-thumb-bg);
+  box-shadow: var(--console-switch-thumb-shadow);
   transition: transform 0.2s ease;
 }
 
@@ -390,15 +489,15 @@ code {
 }
 
 .dev-console__switch-input:focus-visible + .dev-console__switch-track {
-  outline: 2px solid rgba(0, 136, 255, 0.46);
+  outline: 2px solid color-mix(in srgb, var(--console-accent) 46%, transparent);
   outline-offset: 3px;
 }
 
 .dev-console__switch-input:checked + .dev-console__switch-track {
-  background: #0088ff;
+  background: var(--console-accent);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-    0 0 0 1px rgba(0, 136, 255, 0.18);
+    0 0 0 1px color-mix(in srgb, var(--console-accent) 24%, transparent);
 }
 
 .dev-console__switch-input:checked + .dev-console__switch-track .dev-console__switch-thumb {
@@ -439,6 +538,11 @@ code {
   .dev-console {
     width: min(100vw - 1.2rem, 880px);
     padding-top: 7rem;
+  }
+
+  .dev-console__theme-toggle {
+    top: max(0.85rem, calc(env(safe-area-inset-top) + 0.8rem));
+    right: max(0.75rem, calc(env(safe-area-inset-right) + 0.75rem));
   }
 
   .page-panel__title {
