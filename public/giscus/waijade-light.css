@@ -98,6 +98,10 @@ main .gsc-loading-image {
 
 main .gsc-comments,
 main .gsc-timeline {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  box-sizing: border-box !important;
   border-radius: 0 !important;
   overflow: visible !important;
 }
@@ -105,6 +109,10 @@ main .gsc-timeline {
 main .gsc-header,
 main .gsc-main,
 main .gsc-reactions {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  box-sizing: border-box !important;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -112,7 +120,12 @@ main .gsc-reactions {
 
 main .gsc-comment-box,
 main .gsc-reply-box {
+  display: block !important;
   position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  box-sizing: border-box !important;
   padding: 12px !important;
   border: 1px solid rgba(16, 23, 45, 0.08) !important;
   border-radius: 18px !important;
