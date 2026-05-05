@@ -1,6 +1,7 @@
 ---
 import PostIndexList from "../../components/posts/PostIndexList.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../config/site";
 import { POSTS_PER_PAGE, getPublishedPosts, paginatePosts } from "../../lib/posts";
 
 export async function getStaticPaths() {
@@ -31,6 +32,6 @@ type Props = {
 const { posts, currentPage, totalPages } = Astro.props;
 ---
 
-<BaseLayout title={`PAGE ${currentPage}`}>
+<BaseLayout title={`PAGE ${currentPage}`} description={`${site.title} — 第 ${currentPage} 页`}>
   <PostIndexList posts={posts} currentPage={currentPage} totalPages={totalPages} />
 </BaseLayout>

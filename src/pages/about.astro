@@ -92,7 +92,15 @@ const defaultLocale: Locale = "zh";
 const defaultContent = aboutContentByLocale[defaultLocale];
 ---
 
-<BaseLayout title="ABOUT" description={defaultContent.description || site.description}>
+<BaseLayout
+  title="ABOUT"
+  description={defaultContent.description || site.description}
+  lang="zh-CN"
+  alternateLanguages={[
+    { lang: "zh-CN", url: new URL("/about", site.url).toString() },
+    { lang: "en", url: new URL("/about", site.url).toString() },
+  ]}
+>
   <section class="shell about-page" data-about-root data-locale={defaultLocale}>
     <script>
       import { detectPreferredLocale } from "../lib/locale";

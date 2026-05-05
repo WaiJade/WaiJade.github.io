@@ -6,6 +6,7 @@ import {
   formatNoteDate,
   getNoteExcerpt,
   getNotePathId,
+  getNoteUrl,
   getPublishedNotes,
 } from "../../lib/notes";
 import "../../styles/notes.css";
@@ -29,7 +30,26 @@ type Props = {
 
 const { note } = Astro.props;
 const pageDescription = note.data.description || getNoteExcerpt(note, 120, false);
+const noteUrl = getNoteUrl(note);
 const { Content } = await note.render();
+const noteSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: note.data.title,
+  description: pageDescription,
+  author: {
+    "@type": "Person",
+    name: site.author,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: site.title,
+  },
+  datePublished: note.data.pubDate.toISOString(),
+  dateModified: (note.data.updatedDate ?? note.data.pubDate).toISOString(),
+  mainEntityOfPage: new URL(noteUrl, site.url).toString(),
+  keywords: note.data.tags,
+};
 ---
 
 <BaseLayout
@@ -40,6 +60,7 @@ const { Content } = await note.render();
   publishedTime={note.data.pubDate.toISOString()}
   updatedTime={(note.data.updatedDate ?? note.data.pubDate).toISOString()}
   articleTags={note.data.tags}
+  ogImage={note.data.ogImage}
 >
   <article class="shell note-page">
     <header class="note-page__intro">
@@ -60,4 +81,5 @@ const { Content } = await note.render();
       </div>
     </section>
   </article>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(noteSchema)} />
 </BaseLayout>

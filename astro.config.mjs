@@ -14,7 +14,15 @@ import { createDevConsolePlugin } from "./scripts/dev-console.mjs";
 
 export default defineConfig({
   site: "https://blog.waijade.cn",
-  integrations: [react(), mdx(), sitemap()],
+  integrations: [
+    react(),
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes("/404") && !page.includes("/offline"),
+      changefreq: "weekly",
+      priority: 0.7,
+    }),
+  ],
   markdown: {
     remarkPlugins: [remarkMath, remarkDirective, remarkContentDirectives],
     rehypePlugins: [

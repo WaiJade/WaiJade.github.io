@@ -12,6 +12,7 @@ const posts = defineCollection({
     draft: z.boolean().default(false),
     series: z.string().optional(),
     featured: z.boolean().default(false),
+    ogImage: z.string().optional(),
   }),
 });
 
@@ -21,6 +22,7 @@ const pages = defineCollection({
     title: z.string(),
     description: z.string().default(""),
     lead: z.string().optional(),
+    ogImage: z.string().optional(),
   }),
 });
 
@@ -33,6 +35,7 @@ const notes = defineCollection({
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
+    ogImage: z.string().optional(),
   }),
 });
 

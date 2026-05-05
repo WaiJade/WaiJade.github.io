@@ -71,6 +71,7 @@ const articleSchema = {
   publishedTime={post.data.pubDate.toISOString()}
   updatedTime={(post.data.updatedDate ?? post.data.pubDate).toISOString()}
   articleTags={post.data.tags}
+  ogImage={post.data.ogImage}
 >
   <article class="shell article-page">
     <header class="article-header">
